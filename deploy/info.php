@@ -12,6 +12,11 @@ $app['packager'] = 'ClearFoundation';
 $app['license'] = 'GPLv3';
 $app['license_core'] = 'LGPLv3';
 $app['description'] = lang('network_app_description');
+$app['inline_help'] = array(
+    lang('network_settings') => lang('network_settings_help'),
+    lang('network_dns') => lang('network_dns_help'),
+    lang('network_interfaces') => lang('network_interfaces_help'),
+);
 
 /////////////////////////////////////////////////////////////////////////////
 // App name and categories
