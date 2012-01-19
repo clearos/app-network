@@ -107,5 +107,5 @@ $lang['network_firewall'] = 'Firewall';
 $lang['network_allow_connections'] = 'Allow Connections';
 $lang['network_settings'] = 'Settings';
 $lang['network_settings_help'] = 'Your system can be configured as a gateway or a standalone server.';
-$lang['network_dns_help'] = 'DNS configuration is essential for your system.  Without DNS, .  If you need a public DNS server to get your system up and running, you can use Google\'s 8.8.8.8 DNS server.';
+$lang['network_dns_help'] = 'DNS configuration is essential for your system.  Without DNS, .  If you need a public DNS server to get your system up and running, you can use Google\'s DNS Servers: 8.8.8.8 and 8.8.4.4.';
 $lang['network_interfaces_help'] = 'The first Your system can be configured as a gateway or a standalone server.';

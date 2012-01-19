@@ -52,10 +52,20 @@ header('Content-Type:application/x-javascript');
 
 $(document).ready(function() {
 
+
+    // Translations
+    //-------------
+
     lang_yes = '<?php echo lang("base_yes"); ?>';
     lang_no = '<?php echo lang("base_no"); ?>';
     lang_unknown = '<?php echo lang("base_unknown"); ?>';
     lang_megabits_per_second = '<?php echo lang("base_megabits_per_second"); ?>';
+
+    // Wizard previous/next button handling
+    //-------------------------------------
+
+    if ($(location).attr('href').match('.*\/edit$') != null)
+        $('#theme_wizard_nav').hide();
 
     // Network interface configuration
     //--------------------------------
