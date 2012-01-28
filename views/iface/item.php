@@ -118,6 +118,9 @@ echo field_input('ipaddr', $iface_info['ifcfg']['ipaddr'], lang('network_ip'), $
 echo field_input('netmask', $iface_info['ifcfg']['netmask'], lang('network_netmask'), $read_only);
 echo field_input('gateway', $iface_info['ifcfg']['gateway'], lang('network_gateway'), $read_only);
 
+if ($show_dhcp)
+    echo field_checkbox('enable_dhcp', $enable_dhcp, lang('network_enable_dhcp_server'), $read_only);
+
 ///////////////////////////////////////////////////////////////////////////////
 // DHCP
 ///////////////////////////////////////////////////////////////////////////////

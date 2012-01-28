@@ -175,10 +175,13 @@ function setGateway() {
     type = $('#bootproto').val();
 
     if (type == 'static') {
-        if (role == 'EXTIF')
+        if (role == 'EXTIF') {
             $('#gateway_field').show();
-        else
+            $('#enable_dhcp_field').hide();
+        } else {
             $('#gateway_field').hide();
+            $('#enable_dhcp_field').show();
+        }
     }
 }
 
@@ -191,6 +194,7 @@ function setInterfaceFields() {
     $('#ipaddr_field').hide();
     $('#netmask_field').hide();
     $('#gateway_field').hide();
+    $('#enable_dhcp_field').hide();
 
     // DHCP
     $('#hostname_field').hide();
@@ -208,6 +212,7 @@ function setInterfaceFields() {
         $('#ipaddr_field').show();
         $('#netmask_field').show();
         $('#gateway_field').show();
+        $('#enable_dhcp_field').show();
     } else if (type == 'dhcp') {
         $('#hostname_field').show();
         $('#dhcp_dns_field').show();

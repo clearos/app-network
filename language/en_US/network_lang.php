@@ -109,3 +109,4 @@ $lang['network_settings'] = 'Settings';
 $lang['network_settings_help'] = 'Your system can be configured as a gateway or a standalone server.';
 $lang['network_dns_help'] = 'DNS configuration is essential for your system.  Without DNS, well, bad things happen.  If you need a public DNS server to get your system up and running, you can use Google\'s DNS Servers: 8.8.8.8 and 8.8.4.4.';
 $lang['network_interfaces_help'] = 'You need at least one network interface configured in external mode.  An "external" role means the network interface can be used to gain access the Internet; it does not necessarily mean it is connected directly to the Internet.';
+$lang['network_enable_dhcp_server'] = 'Enable DHCP Server';

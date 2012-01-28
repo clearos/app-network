@@ -210,11 +210,14 @@ class Iface extends ClearOS_Controller
         // Load libraries
         //---------------
 
+        $this->lang->load('network');
         $this->load->library('network/Iface', $interface);
         $this->load->library('network/Iface_Manager');
         $this->load->library('network/Role');
         $this->load->library('network/Routes');
-        $this->lang->load('network');
+
+        if (clearos_app_installed('dhcp'))
+            $this->load->library('dhcp/Dnsmasq');
 
         // Set validation rules
         //---------------------
@@ -230,6 +233,8 @@ class Iface extends ClearOS_Controller
             $this->form_validation->set_policy('netmask', 'network/Iface', 'validate_netmask', TRUE);
             if ($role == Role::ROLE_EXTERNAL)
                 $this->form_validation->set_policy('gateway', 'network/Iface', 'validate_gateway', TRUE);
+            else if (clearos_app_installed('dhcp'))
+                $this->form_validation->set_policy('enable_dhcp', 'dhcp/Dnsmasq', 'validate_dhcp_state');
         } else if ($bootproto == IfaceAPI::BOOTPROTO_DHCP)  {
             $this->form_validation->set_policy('hostname', 'network/Iface', 'validate_hostname');
             $this->form_validation->set_policy('dhcp_dns', 'network/Iface', 'validate_peerdns');
@@ -261,6 +266,9 @@ class Iface extends ClearOS_Controller
                     );
 
                     $this->iface->enable(FALSE);
+
+                    if (clearos_app_installed('dhcp') && ($this->input->post('enable_dhcp')))
+                        $this->dnsmasq->add_subnet_default($interface);
                 } else if ($bootproto == IfaceAPI::BOOTPROTO_DHCP) {
                     $this->iface->save_dhcp_config(
                         $this->input->post('hostname'),
@@ -315,6 +323,15 @@ class Iface extends ClearOS_Controller
             $data['bootprotos'] = $this->iface->get_supported_bootprotos();
             $data['iface_info'] = $this->iface->get_info();
             $data['iface_count'] = $this->iface_manager->get_interface_count();
+
+            // Default to enable on unconfigured interfaces
+            if (clearos_app_installed('dhcp') && ($data['iface_info']['configured'] === FALSE)) {
+                $data['show_dhcp'] = TRUE;
+                $data['enable_dhcp'] = TRUE;
+            } else {
+                $data['show_dhcp'] = FALSE;
+            }
+            
         } catch (Exception $e) {
             $this->page->view_exception($e);
             return;
