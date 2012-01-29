@@ -115,7 +115,7 @@ class Settings extends ClearOS_Controller
 
                     $this->load->library('incoming_firewall/Incoming');
 
-                    // FIXME: beta workaround - hard code 'TCP' for now (update firewall/Incoming class)
+                    // TODO: workaround - hard code 'TCP' for now (update firewall/Incoming class)
                     $firewall_status = $this->incoming->check_port('TCP', '81');
 
                     if ($firewall_status === Firewall::CONSTANT_NOT_CONFIGURED)
