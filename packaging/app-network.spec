@@ -1,13 +1,11 @@
 
 Name: app-network
-Group: ClearOS/Apps
 Epoch: 1
-Version: 1.0.1
+Version: 1.0.2
 Release: 1%{dist}
 Summary: IP Settings
 License: GPLv3
-Packager: ClearFoundation
-Vendor: ClearFoundation
+Group: ClearOS/Apps
 Source: %{name}-%{version}.tar.gz
 Buildarch: noarch
 Requires: %{name}-core = 1:%{version}-%{release}
@@ -18,8 +16,8 @@ Provides administrators with the ability to configure the most common network ta
 
 %package core
 Summary: IP Settings - APIs and install
-Group: ClearOS/Libraries
 License: LGPLv3
+Group: ClearOS/Libraries
 Requires: app-base-core
 Requires: avahi
 Requires: bind-utils
