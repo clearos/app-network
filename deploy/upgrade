@@ -71,3 +71,8 @@ if [ -e /etc/sysconfig/network-scripts/ifcfg-ppp0 ]; then
         mv /tmp/ifcfg.ppp0.new /etc/sysconfig/network-scripts/ifcfg-ppp0
     fi
 fi
+
+# Clearsync restart
+#------------------
+
+/sbin/service clearsyncd condrestart

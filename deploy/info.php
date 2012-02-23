@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'network';
-$app['version'] = '1.0.4';
+$app['version'] = '1.0.5';
 $app['release'] = '1';
 $app['vendor'] = 'ClearFoundation';
 $app['packager'] = 'ClearFoundation';
@@ -43,6 +43,7 @@ $app['core_requires'] = array(
     'avahi',
     'bind-utils',
     'bridge-utils',
+    'csplugin-filewatch',
     'dhclient',
     'ethtool',
     'net-tools',
@@ -59,13 +60,10 @@ $app['core_directory_manifest'] = array(
 );
 
 $app['core_file_manifest'] = array(
-   'dhclient-exit-hooks' => array(
-        'target' => '/etc/dhclient-exit-hooks',
-        'mode' => '0644',
-        'owner' => 'root',
-        'group' => 'root',
-    ),
-   'network.conf' => array(
+    'dhclient-exit-hooks' => array('target' => '/etc/dhclient-exit-hooks'),
+    'filewatch-network.conf' => array('target' => '/etc/clearsync.d/filewatch-network.conf'),
+    'filewatch-network-hostname.conf' => array('target' => '/etc/clearsync.d/filewatch-network-hostname.conf'),
+    'network.conf' => array(
         'target' => '/etc/clearos/network.conf',
         'mode' => '0644',
         'owner' => 'root',

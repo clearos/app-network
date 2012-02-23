@@ -1,7 +1,7 @@
 
 Name: app-network
 Epoch: 1
-Version: 1.0.4
+Version: 1.0.5
 Release: 1%{dist}
 Summary: IP Settings
 License: GPLv3
@@ -22,6 +22,7 @@ Requires: app-base-core
 Requires: avahi
 Requires: bind-utils
 Requires: bridge-utils
+Requires: csplugin-filewatch
 Requires: dhclient
 Requires: ethtool
 Requires: net-tools
@@ -47,6 +48,8 @@ cp -r * %{buildroot}/usr/clearos/apps/network/
 install -d -m 0755 %{buildroot}/var/clearos/network
 install -d -m 0755 %{buildroot}/var/clearos/network/backup
 install -D -m 0644 packaging/dhclient-exit-hooks %{buildroot}/etc/dhclient-exit-hooks
+install -D -m 0644 packaging/filewatch-network-hostname.conf %{buildroot}/etc/clearsync.d/filewatch-network-hostname.conf
+install -D -m 0644 packaging/filewatch-network.conf %{buildroot}/etc/clearsync.d/filewatch-network.conf
 install -D -m 0644 packaging/network.conf %{buildroot}/etc/clearos/network.conf
 
 %post
@@ -93,4 +96,6 @@ exit 0
 /usr/clearos/apps/network/language
 /usr/clearos/apps/network/libraries
 /etc/dhclient-exit-hooks
+/etc/clearsync.d/filewatch-network-hostname.conf
+/etc/clearsync.d/filewatch-network.conf
 %config(noreplace) /etc/clearos/network.conf

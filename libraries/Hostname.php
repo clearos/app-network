@@ -58,12 +58,20 @@ clearos_load_language('network');
 use \clearos\apps\base\Engine as Engine;
 use \clearos\apps\base\File as File;
 use \clearos\apps\base\Shell as Shell;
+use \clearos\apps\network\Hosts as Hosts;
+use \clearos\apps\network\Iface as Iface;
+use \clearos\apps\network\Network as Network;
 use \clearos\apps\network\Network_Utils as Network_Utils;
+use \clearos\apps\network\Role as Role;
 
 clearos_load_library('base/Engine');
 clearos_load_library('base/File');
 clearos_load_library('base/Shell');
+clearos_load_library('network/Hosts');
+clearos_load_library('network/Iface');
+clearos_load_library('network/Network');
 clearos_load_library('network/Network_Utils');
+clearos_load_library('network/Role');
 
 // Exceptions
 //-----------
@@ -95,7 +103,8 @@ class Hostname extends Engine
     ///////////////////////////////////////////////////////////////////////////////
 
     const FILE_CONFIG = '/etc/sysconfig/network';
-    const CMD_HOSTNAME = '/bin/hostname';
+    const COMMAND_HOSTNAME = '/bin/hostname';
+    const DEFAULT_HOSTNAME = 'system.lan';
 
     ///////////////////////////////////////////////////////////////////////////////
     // M E T H O D S
@@ -108,6 +117,87 @@ class Hostname extends Engine
     public function __construct()
     {
         clearos_profile(__METHOD__, __LINE__);
+    }
+
+    /**
+     * Fixes the common "cannot lookup my hostname" issue.
+     *
+     * Many software packages (Apache, Squid, ProFTP, ...) require a valid
+     * hostname on startup.  This method will add an entry into the /etc/hosts
+     * file to get around this "feature".
+     *
+     * @param $force boolean force an update even if hostname is valid in DNS
+     *
+     * @returns void
+     */
+
+    public function auto_fix($force = FALSE)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        // Hostname is ok - return right away
+        //-----------------------------------
+
+        if (!$force && $this->is_resolvable())
+            return;
+
+        // Get hostname from the /etc/hosts entry
+        //---------------------------------------
+
+        $real_hostname = $this->get();
+
+        // Get the IP for the /etc/hosts entry
+        //------------------------------------
+
+        // - Find out what network mode is running
+        // - Get the IP of the LAN interface on a gateway, eth0/ppp0 on other modes
+
+        $role = new Role();
+        $network = new Network();
+        $mode = $network->get_mode();
+
+        if (($mode === Network::MODE_TRUSTED_STANDALONE) || ($mode === Network::MODE_STANDALONE))
+            $eth = $role->get_interface_definition(Role::ROLE_EXTERNAL);
+        else
+            $eth = $role->get_interface_definition(Role::ROLE_LAN);
+
+        if (!$eth)
+            return;
+
+        $iface = new Iface($eth);
+        $ip = $iface->get_live_ip();
+
+        // Check for entry in /etc/hosts
+        //------------------------------
+
+        $hosts = new Hosts();
+
+        $host_ip = $hosts->get_ip_by_hostname($real_hostname);
+        if ($host_ip)
+            return;
+
+        // Grab hostnames for IP (if any)
+        //-------------------------------
+
+        if ($hosts->entry_exists($ip))
+            $entry = $hosts->get_entry($ip);
+        else
+            $entry = array();
+
+        // Add/Update /etc/hosts entry
+        //----------------------------
+
+        if (empty($entry)) {
+            $hosts->add_entry($ip, $real_hostname, array());
+        } else {
+            // Allow default hostname to be deleted
+            if ($entry['hostname'] !== self::DEFAULT_HOSTNAME) {
+                $entry['aliases'][] = $real_hostname;
+                $real_hostname = $entry['hostname'];
+            }
+
+            $hosts->edit_entry($ip, $real_hostname, $entry['aliases']);
+        }
     }
 
     /**
@@ -124,7 +214,7 @@ class Hostname extends Engine
         $shell = new Shell();
 
         $options['validate_output'] = TRUE;
-        $shell->execute(self::CMD_HOSTNAME, '', FALSE, $options);
+        $shell->execute(self::COMMAND_HOSTNAME, '', FALSE, $options);
 
         return $shell->get_first_output_line();
     }
@@ -235,7 +325,7 @@ class Hostname extends Engine
         //------------------------
 
         $shell = new Shell();
-        $shell->execute(self::CMD_HOSTNAME, $hostname, TRUE);
+        $shell->execute(self::COMMAND_HOSTNAME, $hostname, TRUE);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
