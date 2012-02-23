@@ -1156,6 +1156,8 @@ class Iface extends Engine
         if (preg_match('/^eth/', $this->iface)
             || preg_match('/^wlan/', $this->iface)
             || preg_match('/^ath/', $this->iface)
+            || preg_match('/^em/', $this->iface)
+            || preg_match('/^p.p/', $this->iface)
             || preg_match('/^br/', $this->iface) 
             || preg_match('/^bond/', $this->iface)
             || (preg_match('/^ppp/', $this->iface) && $this->is_configured())
