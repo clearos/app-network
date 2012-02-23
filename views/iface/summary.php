@@ -43,11 +43,11 @@ $this->lang->load('base');
 ///////////////////////////////////////////////////////////////////////////////
 
 $headers = array(
-	lang('network_interface'),
-	lang('network_role'),
-	lang('network_type'),
-	lang('network_ip'),
-	lang('network_link'),
+    lang('network_interface'),
+    lang('network_role'),
+    lang('network_type'),
+    lang('network_ip'),
+    lang('network_link'),
 );
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -65,22 +65,23 @@ $anchors = array(
 $items = array();
 
 foreach ($network_interface as $interface => $detail) {
-	// Create summary
-	$ip = empty($detail['address']) ? '' : $detail['address'];
-	$speed = (isset($detail['speed']) && $detail['speed'] > 0) ? $detail['speed'] . " " . lang('base_megabits') : '';
-	$role = isset($detail['roletext']) ? $detail['roletext'] : '';
-	$bootproto = isset($detail['ifcfg']['bootprototext']) ? $detail['ifcfg']['bootprototext'] : '';
 
-	if (isset($detail['link'])) {
-		if ($detail['link'] == -1)
-			$link = '';
-		else if ($detail['link'] == 0)
-			$link = lang('base_no');
-		else
-			$link = lang('base_yes');
-	} else {
-		$link = '';
-	}
+    // Create summary
+    $ip = empty($detail['address']) ? '' : $detail['address'];
+    $speed = (isset($detail['speed']) && $detail['speed'] > 0) ? $detail['speed'] . " " . lang('base_megabits') : '';
+    $role = isset($detail['roletext']) ? $detail['roletext'] : '';
+    $bootproto = isset($detail['ifcfg']['bootprototext']) ? $detail['ifcfg']['bootprototext'] : '';
+
+    if (isset($detail['link'])) {
+        if ($detail['link'] == -1)
+            $link = '';
+        else if ($detail['link'] == 0)
+            $link = lang('base_no');
+        else
+            $link = lang('base_yes');
+    } else {
+        $link = '';
+    }
 
     // Behavior when interface is configured
     //--------------------------------------
@@ -138,18 +139,18 @@ foreach ($network_interface as $interface => $detail) {
     // Item details
     ///////////////////////////////////////////////////////////////////////////
 
-	$item['title'] = $interface;
-	$item['action'] = '';
-	$item['anchors'] = button_set($buttons);
-	$item['details'] = array(
-		$interface,
+    $item['title'] = $interface;
+    $item['action'] = '';
+    $item['anchors'] = button_set($buttons);
+    $item['details'] = array(
+        $interface,
         "<span id='role_" . $interface . "'>$role</span>",
         "<span id='bootproto_" . $interface . "'>$bootproto</span>",
         "<span id='ip_" . $interface . "'>$ip</span>",
         "<span id='link_" . $interface . "'>$link</span>",
-	);
+    );
 
-	$items[] = $item;
+    $items[] = $item;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -157,9 +158,9 @@ foreach ($network_interface as $interface => $detail) {
 ///////////////////////////////////////////////////////////////////////////////
 
 echo summary_table(
-	lang('network_interfaces'),
-	$anchors,
-	$headers,
-	$items,
+    lang('network_interfaces'),
+    $anchors,
+    $headers,
+    $items,
     array('id' => 'network_summary')
 );
