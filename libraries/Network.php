@@ -217,6 +217,10 @@ class Network extends Engine
         if (clearos_library_installed('firewall/Firewall')) {
             $modes[self::MODE_STANDALONE] = lang('network_mode_standalone');
 
+            // Bridge mode is experimental, so only show if it has been set for now.
+            if ($this->get_mode() == self::MODE_BRIDGE)
+                $modes[self::MODE_BRIDGE] = lang('network_mode_transparent_bridge');
+
             $iface_manager = new Iface_Manager();
             $iface_count = $iface_manager->get_interface_count();
 

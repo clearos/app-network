@@ -1,5 +1,7 @@
 <?php
 
+$lang['network_mode_transparent_bridge'] = 'Transparent Bridge';
+
 $lang['network_automatic_dns_servers'] = 'Automatic DNS Servers';
 $lang['network_automatic_dns_server_flag_invalid'] = 'Automatic DNS server flag is invalid.';
 $lang['network_add_virtual_interface'] = 'Add Virtual Interface';
