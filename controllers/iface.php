@@ -322,7 +322,8 @@ class Iface extends ClearOS_Controller
             $data['roles'] = $this->iface->get_supported_roles();
             $data['bootprotos'] = $this->iface->get_supported_bootprotos();
             $data['iface_info'] = $this->iface->get_info();
-            $data['iface_count'] = $this->iface_manager->get_interface_count();
+
+            $iface_count = $this->iface_manager->get_interface_count();
 
             // Default to enable on unconfigured interfaces
             if (clearos_app_installed('dhcp') && ($data['iface_info']['configured'] === FALSE)) {
@@ -338,6 +339,9 @@ class Iface extends ClearOS_Controller
         }
 
         // Set defaults
+        if (!$data['iface_info']['configured'])
+            $data['iface_info']['role'] = ($iface_count === 1) ? Role::ROLE_EXTERNAL : Role::ROLE_LAN;
+
         if (empty($data['iface_info']['ifcfg']['bootproto']))
             $data['iface_info']['ifcfg']['bootproto'] = \clearos\apps\network\Iface::BOOTPROTO_STATIC;
 

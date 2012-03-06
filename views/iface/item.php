@@ -71,7 +71,6 @@ $device = empty($iface_info['device']) ? '' : $iface_info['device'];
 $link = (isset($iface_info['link']) && $iface_info['link']) ? lang('base_yes') : lang('base_no');
 $speed = (isset($iface_info['speed']) && ($iface_info['speed'] > 0)) ? $iface_info['speed'] . ' ' . lang('base_megabits_per_second') : lang('base_unknown');
 $dns = (isset($iface_info['ifcfg']['peerdns'])) ? $iface_info['ifcfg']['peerdns'] : TRUE;
-$role_read_only = ($iface_count <= 1) ? TRUE : $read_only;
 
 $bootproto_read_only = (isset($iface_info['type']) && $iface_info['type'] === Iface::TYPE_PPPOE) ? TRUE : $read_only;
 
@@ -107,7 +106,7 @@ echo fieldset_footer();
 
 echo fieldset_header(lang('base_settings'));
 echo field_input('interface', $interface, lang('network_interface'), TRUE);
-echo field_dropdown('role', $roles, $iface_info['role'], lang('network_role'), $role_read_only, array('id' => 'role'));
+echo field_dropdown('role', $roles, $iface_info['role'], lang('network_role'), $read_only, array('id' => 'role'));
 echo field_dropdown('bootproto', $bootprotos, $iface_info['ifcfg']['bootproto'], lang('network_connection_type'), $bootproto_read_only);
 
 ///////////////////////////////////////////////////////////////////////////////
