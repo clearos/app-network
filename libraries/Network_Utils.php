@@ -232,17 +232,18 @@ class Network_Utils extends Engine
     /**
      * Validates an Internet domain name.
      *
-     * @param string $domain Internet domain name
+     * @param stringa $domain    Internet domain name
+     * @param boolean $allow_tld allow domain to be top-level (e.g. lan)
      *
      * @return string error message if Internet domain is invalid
      */
 
-    public static function is_valid_domain($domain)
+    public static function is_valid_domain($domain, $allow_tld = FALSE)
     {
         clearos_profile(__METHOD__, __LINE__);
 
         if (preg_match('/^([0-9a-zA-Z\.\-_]+)$/', $domain)) {
-            if (substr_count($domain, ".") == 0)
+            if (!$allow_tld && (substr_count($domain, ".") == 0))
                 return FALSE;
         } else
             return FALSE;
