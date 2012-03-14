@@ -1,5 +1,11 @@
 <?php
 
+$lang['network_internet_domain'] = 'Internet Domain';
+$lang['network_internet_domain_invalid'] = 'Internet domain is invalid.';
+$lang['network_wins_server'] = 'WINS Server';
+$lang['network_wins_server_invalid'] = 'WINS server is invalid.';
+$lang['network_dns_server_invalid'] = 'DNS server is invalid.';
+
 $lang['network_mode_transparent_bridge'] = 'Transparent Bridge';
 
 $lang['network_automatic_dns_servers'] = 'Automatic DNS Servers';
@@ -34,7 +40,7 @@ $lang['network_dhcp_server_did_not_respond'] = 'DHCP server did not respond.';
 $lang['network_dmz'] = 'DMZ';
 $lang['network_dns_server'] = 'DNS Server';
 $lang['network_domain'] = 'Domain';
-$lang['network_domain_invalid'] = 'Internet domain is invalid.';
+$lang['network_domain_invalid'] = 'Domain is invalid.';
 $lang['network_domain_must_have_a_period'] = 'Internet domain must have at least one period.';
 $lang['network_entire_network'] = 'All Networks';
 $lang['network_entry_already_exists'] = 'Entry already exists.';

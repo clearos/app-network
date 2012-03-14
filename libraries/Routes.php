@@ -103,10 +103,9 @@ class Routes extends Engine
     // C O N S T A N T S
     ///////////////////////////////////////////////////////////////////////////////
 
-    const FILE_CONFIG = '/etc/sysconfig/network-scripts/route-';
     const FILE_ACTIVE = '/proc/net/route';
+    const FILE_CONFIG = '/etc/clearos/network.conf';
     const FILE_NETWORK = '/etc/sysconfig/network';
-    const FILE_SYSTEM_NETWORK = '/etc/system/network';
     const COMMAND_IP = '/sbin/ip';
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -216,7 +215,7 @@ class Routes extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        $file = new File(self::FILE_SYSTEM_NETWORK);
+        $file = new File(self::FILE_CONFIG);
 
         try {
             $lans = $file->lookup_value('/^EXTRALANS=/');
@@ -259,6 +258,46 @@ class Routes extends Engine
         $device = preg_replace('/\"/', '', $device);
 
         return $device;
+    }
+
+    /**
+     * Returns most trusted networks.
+     *
+     * In gateway mode, this returns all LAN routes and extra LANS.
+     * In standalone mode, this returns all networks routes and extra LANS.
+     *
+     * This method is typically used by VPN software that is capable of
+     * sending routing information to the clients.
+     *
+     * @return array list of most trusted networks
+     * @throws Engine_Exception
+     */
+
+    public function get_most_trusted_routes()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $iface_manager = new Iface_Manager();
+
+        $local_networks = $iface_manager->get_most_trusted_networks();
+        $extra_networks = $this->get_extra_lans();
+
+        // Harmonize format for /network (/24 versus /255.255.255.0)
+        $raw_networks = array_merge($local_networks, $extra_networks);
+        $networks = array();
+
+        foreach ($raw_networks as $network) {
+            list($ip, $netmask_or_prefix) = preg_split('/\//', $network);
+
+            if (Network_Utils::is_valid_netmask($netmask_or_prefix))
+                $prefix = Network_Utils::get_prefix($netmask_or_prefix);
+            else
+                $prefix = $netmask_or_prefix;
+
+            $networks[] = "$ip/$prefix";
+        }
+
+        return $networks;
     }
 
     /**

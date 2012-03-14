@@ -339,72 +339,16 @@ class Iface_Manager extends Engine
     }
 
     /**
-     * Returns an array of trusted IP addresses.
+     * Returns list of most trusted IPs.
      *
-     * @return array LAN IPs
+     * In gateway mode, this will return a list of LAN IP addresses.
+     * In standalone mode, it will return all IPs (typically just one).
+     *
+     * @return array list of most trusted IPs.
      * @throws Engine_Exception
      */
 
-    public function get_trusted_ips()
-    {
-        clearos_profile(__METHOD__, __LINE__);
-
-        $ips = array();
-
-        $role_object = new Role();
-        $network = new Network();
-        $iface_manager = new Iface_Manager();
-
-        $mode = $network->get_mode();
-        $ifaces = $iface_manager->get_interfaces();
-
-        foreach ($ifaces as $if) {
-            $iface = new Iface($if);
-            $ifinfo = $iface->get_info();
-
-            // If the interface is down, ignore it
-            if (! ($ifinfo['flags'] & IFF_UP))
-                continue;
-
-            // Determine role of interface
-            if (isset($ifinfo["ifcfg"]["device"]))
-                $ifcfg = $ifinfo["ifcfg"]["device"];
-
-            $role = $role_object->get_interface_role($ifcfg);
-
-            switch ($role) {
-                case Role::ROLE_DMZ:
-                    break;
-
-                case Role::ROLE_LAN:
-                    $ips[] = $ifinfo["address"];
-                    break;
-
-                case Role::ROLE_EXTERNAL:
-                    switch ($mode) {
-                        case Network::MODE_STANDALONE:
-                            $ips[] = $ifinfo["address"];
-                            break;
-                        case Network::MODE_TRUSTED_STANDALONE:
-                            $ips[] = $ifinfo["address"];
-                            break;
-                    }
-
-                    break;
-            }
-        }
-
-        return $ips;
-    }
-
-    /**
-     * Returns list of available LAN IPs.
-     *
-     * @return array list of available LAN IPs.
-     * @throws Engine_Exception
-     */
-
-    public function get_lan_ips()
+    public function get_most_trusted_ips()
     {
         clearos_profile(__METHOD__, __LINE__);
 
@@ -437,13 +381,16 @@ class Iface_Manager extends Engine
     }
 
     /**
-     * Returns list of available LAN networks.
+     * Returns list of most trusted networks.
      *
-     * @return array list of available LAN networks.
+     * In gateway mode, this will return a list of LAN networks.
+     * In standalone mode, it will return all networks (typically just one).
+     *
+     * @return array list of most trusted networks.
      * @throws Engine_Exception
      */
 
-    public function get_lan_networks()
+    public function get_most_trusted_networks()
     {
         clearos_profile(__METHOD__, __LINE__);
 
@@ -475,6 +422,19 @@ class Iface_Manager extends Engine
         }
 
         return $lans;
+    }
+
+    /**
+     * @deprecated
+     *
+     * FIXME: remove in 6.2.0 RC1
+     */
+
+    public function get_trusted_ips()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        return $this->get_most_trusted_ips();
     }
 
     /**
