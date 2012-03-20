@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Network general settings view.
+ * Network mode wizard view.
  *
  * @category   ClearOS
  * @package    Network
  * @subpackage Views
  * @author     ClearFoundation <developer@clearfoundation.com>
- * @copyright  2011 ClearFoundation
+ * @copyright  2012 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
  * @link       http://www.clearfoundation.com/docs/developer/apps/network/
  */
@@ -38,8 +38,9 @@ $this->lang->load('network');
 ///////////////////////////////////////////////////////////////////////////////
 // Form
 ///////////////////////////////////////////////////////////////////////////////
+// Note: the wizard previous/next buttons are used for form submission 
 
-echo form_open('network/mode/edit', array('id' => 'mode_form')); 
+echo form_open('network/mode', array('id' => 'mode_form')); 
 echo form_header(lang('network_network_mode'));
 
 echo field_dropdown('network_mode', $network_modes, $network_mode, lang('network_network_mode'));

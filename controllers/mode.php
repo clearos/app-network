@@ -68,16 +68,10 @@ class Mode extends ClearOS_Controller
         $this->lang->load('network');
         $this->load->library('network/Network');
 
-        // Set validation rules
-        //---------------------
-         
-        $this->form_validation->set_policy('network_mode', 'network/Network', 'validate_mode', TRUE);
-        $form_ok = $this->form_validation->run();
-
         // Handle form submit
         //-------------------
 
-        if (($this->input->post('submit') && $form_ok)) {
+        if ($this->input->post('network_mode')) {
             try {
                 $this->network->set_mode($this->input->post('network_mode'));
 
@@ -99,7 +93,7 @@ class Mode extends ClearOS_Controller
                 }
 
                 $this->page->set_status_updated();
-                redirect('/network/mode');
+                redirect($this->session->userdata('wizard_redirect'));
             } catch (Engine_Exception $e) {
                 $this->page->view_exception($e->get_message());
                 return;

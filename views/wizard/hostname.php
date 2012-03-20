@@ -38,13 +38,12 @@ $this->lang->load('network');
 ///////////////////////////////////////////////////////////////////////////////
 // Form
 ///////////////////////////////////////////////////////////////////////////////
+// Note: the wizard previous/next buttons are used for form submission 
 
 echo form_open('network/hostname', array('id' => 'hostname_form')); 
 echo form_header(lang('network_hostname'));
 
 echo field_input('hostname', $hostname, lang('network_hostname'), $read_only);
-
-echo field_button_set($buttons);
 
 echo form_footer();
 echo form_close();

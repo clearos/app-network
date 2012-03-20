@@ -139,4 +139,18 @@ class Network extends ClearOS_Controller
         header('Content-type: application/json');
         echo json_encode($status);
     }
+
+    /**
+     * Redirects for wizard navigation.
+     *
+     * A helper for javascript for sending the "next" button to the 
+     * next page in the wizard.
+     *
+     * @return redirect
+     */
+
+    function wizard_redirect()
+    {
+        redirect($this->session->userdata('wizard_redirect'));
+    }
 }

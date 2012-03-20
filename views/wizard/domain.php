@@ -34,38 +34,16 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 $this->lang->load('network');
-$this->lang->load('base');
-
-///////////////////////////////////////////////////////////////////////////////
-// Form handler
-///////////////////////////////////////////////////////////////////////////////
-
-if ($form_type === 'edit') {
-	$read_only = FALSE;
-	$buttons = array(
-		form_submit_update('submit'),
-		anchor_cancel('/app/network/domain')
-	);
-} else if ($form_type === 'wizard') {
-	$read_only = FALSE;
-	$buttons = array(
-		form_submit_update('submit'),
-	);
-} else {
-	$read_only = TRUE;
-	$buttons = array(anchor_edit('/app/network/domain/edit'));
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Form
 ///////////////////////////////////////////////////////////////////////////////
+// Note: the wizard previous/next buttons are used for form submission 
 
-echo form_open('network/domain/edit'); 
+echo form_open('network/domain', array('id' => 'domain_form')); 
 echo form_header(lang('network_default_domain'));
 
-echo field_input('domain', $domain, lang('network_domain'), $read_only);
-
-echo field_button_set($buttons);
+echo field_input('domain', $domain, lang('network_domain'));
 
 echo form_footer();
 echo form_close();

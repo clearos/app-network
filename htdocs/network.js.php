@@ -68,6 +68,10 @@ $(document).ready(function() {
             $('form#hostname_form').submit();
         else if ($(location).attr('href').match('.*\/mode$') != null)
             $('form#mode_form').submit();
+        else if ($(location).attr('href').match('.*\/domain$') != null)
+            $('form#domain_form').submit();
+        else if ($(location).attr('href').match('.*\/iface') != null)
+            window.location = '/app/network/wizard_redirect';
     });
 
     // Network interface configuration

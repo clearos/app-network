@@ -84,7 +84,7 @@ class Hostname extends ClearOS_Controller
                 $this->hostname->set($this->input->post('hostname'));
 
                 $this->page->set_status_updated();
-                redirect($this->input->post('wizard_next'));
+                redirect($this->session->userdata('wizard_redirect'));
             } catch (Engine_Exception $e) {
                 $this->page->view_exception($e->get_message());
                 return;

@@ -53,6 +53,11 @@ $app['controllers']['hostname']['inline_help'] = array(
     lang('network_standalone_or_gateway') => lang('network_mode_help'),
 );
 
+$app['controllers']['domain']['wizard_name'] = 'Base Domain'; // FIXME
+$app['controllers']['domain']['wizard_description'] = 'Domain Description'; // FIXME
+$app['controllers']['domain']['inline_help'] = array(
+    'extra help' => 'blah blah blah'
+);
 
 /////////////////////////////////////////////////////////////////////////////
 // Packaging

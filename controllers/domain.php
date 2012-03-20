@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Network settings controller.
+ * Network domain controller.
  *
  * @category   Apps
  * @package    Network
  * @subpackage Controllers
  * @author     ClearFoundation <developer@clearfoundation.com>
- * @copyright  2011 ClearFoundation
+ * @copyright  2012 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
  * @link       http://www.clearfoundation.com/docs/developer/apps/network/
  */
@@ -41,13 +41,13 @@ use \clearos\apps\network\Network as Network;
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * Network settings controller.
+ * Network domain controller.
  *
  * @category   Apps
  * @package    Network
  * @subpackage Controllers
  * @author     ClearFoundation <developer@clearfoundation.com>
- * @copyright  2011 ClearFoundation
+ * @copyright  2012 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
  * @link       http://www.clearfoundation.com/docs/developer/apps/network/
  */
@@ -55,58 +55,33 @@ use \clearos\apps\network\Network as Network;
 class Domain extends ClearOS_Controller
 {
     /**
-     * General settings overview.
+     * Domain overview.
      *
      * @return view
      */
 
     function index()
     {
-        $this->_view_edit('view');
-    }
-
-    /**
-     * General settings edit view.
-     *
-     * @return view
-     */
-
-    function edit()
-    {
-        $this->_view_edit('edit');
-    }
-
-    /**
-     * Common view/edit form
-     *
-     * @param string $form_type form type
-     *
-     * @return view
-     */
-
-    function _view_edit($form_type)
-    {
         // Load libraries
         //---------------
 
-        $this->load->library('network/Network');
-        $this->load->library('network/Hostname');
+        $this->load->library('network/Domain');
 
         // Set validation rules
         //---------------------
          
-        $this->form_validation->set_policy('hostname', 'network/Hostname', 'validate_hostname', TRUE);
+        $this->form_validation->set_policy('domain', 'network/Domain', 'validate_domain', TRUE);
         $form_ok = $this->form_validation->run();
 
         // Handle form submit
         //-------------------
 
-        if (($this->input->post('submit') && $form_ok)) {
+        if (($this->input->post('domain') && $form_ok)) {
             try {
-                $this->hostname->set($this->input->post('hostname'));
+                $this->domain->set_default($this->input->post('domain'));
 
                 $this->page->set_status_updated();
-                redirect('/network/settings');
+                redirect($this->session->userdata('wizard_redirect'));
             } catch (Engine_Exception $e) {
                 $this->page->view_exception($e->get_message());
                 return;
@@ -117,8 +92,7 @@ class Domain extends ClearOS_Controller
         //---------------
 
         try {
-            $data['form_type'] = $form_type;
-            $data['hostname'] = $this->hostname->get();
+            $data['domain'] = $this->domain->get_default();
         } catch (Exception $e) {
             $this->page->view_exception($e);
             return;
@@ -126,9 +100,6 @@ class Domain extends ClearOS_Controller
 
         // Load views
         //-----------
-
-        if (clearos_console())
-            $options['type'] = MY_Page::TYPE_CONSOLE;
 
         $this->page->view_form('network/wizard/domain', $data, lang('base_settings'), $options);
     }
