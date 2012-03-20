@@ -29,12 +29,12 @@ $app['subcategory'] = lang('base_subcategory_settings');
 // Controller info
 /////////////////////////////////////////////////////////////////////////////
 
-/*
 $app['controllers']['network']['title'] = lang('network_app_name');
 $app['controllers']['dns']['title'] = lang('network_dns');
 $app['controllers']['iface']['title'] = lang('network_network_interfaces');
 $app['controllers']['settings']['title'] = lang('base_settings');
-*/
+
+// Wizard extras
 $app['controllers']['iface']['wizard_name'] = lang('network_network_interfaces');
 $app['controllers']['iface']['wizard_description'] = 'Network Interfaces Description'; // FIXME
 $app['controllers']['iface']['inline_help'] = array(
