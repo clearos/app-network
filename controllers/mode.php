@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Network DNS server controller.
+ * Network settings controller.
  *
  * @category   Apps
  * @package    Network
@@ -41,7 +41,7 @@ use \clearos\apps\network\Network as Network;
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * Network DNS server controller.
+ * Network settings controller.
  *
  * @category   Apps
  * @package    Network
@@ -52,64 +52,26 @@ use \clearos\apps\network\Network as Network;
  * @link       http://www.clearfoundation.com/docs/developer/apps/network/
  */
 
-class DNS extends ClearOS_Controller
+class Mode extends ClearOS_Controller
 {
     /**
-     * General DNS overview.
+     * Mode settings overview.
      *
      * @return view
      */
 
     function index()
     {
-        $this->_view_edit('view');
-    }
-
-    /**
-     * General DNS edit view.
-     *
-     * @return view
-     */
-
-    function edit()
-    {
-        $this->_view_edit('edit');
-    }
-
-    /**
-     * General DNS read-only view.
-     *
-     * @return view
-     */
-
-    function view()
-    {
-        $this->_view_edit('view');
-    }
-
-    /**
-     * Common view/edit form
-     *
-     * @param string $form_type form type
-     *
-     * @return view
-     */
-
-    function _view_edit($form_type)
-    {
         // Load libraries
         //---------------
 
-        $this->load->library('network/Resolver');
+        $this->lang->load('network');
+        $this->load->library('network/Network');
 
         // Set validation rules
         //---------------------
          
-        $dns = $this->input->post('dns');
-
-        for ($dns_id = 1; $dns_id <= count($dns); $dns_id++)
-            $this->form_validation->set_policy('dns[' . $dns_id . ']', 'network/Resolver', 'validate_ip');
-
+        $this->form_validation->set_policy('network_mode', 'network/Network', 'validate_mode', TRUE);
         $form_ok = $this->form_validation->run();
 
         // Handle form submit
@@ -117,10 +79,27 @@ class DNS extends ClearOS_Controller
 
         if (($this->input->post('submit') && $form_ok)) {
             try {
-                $this->resolver->set_nameservers($this->input->post('dns'));
+                $this->network->set_mode($this->input->post('network_mode'));
+
+                // Open port 81 if going into standalone mode, or users
+                // will get locked out!
+
+                if (($this->input->post('network_mode') !== Network::MODE_TRUSTED_STANDALONE)
+                    && clearos_library_installed('incoming_firewall/Incoming')) {
+
+                    $this->load->library('incoming_firewall/Incoming');
+
+                    // TODO: workaround - hard code 'TCP' for now (update firewall/Incoming class)
+                    $firewall_status = $this->incoming->check_port('TCP', '81');
+
+                    if ($firewall_status === Firewall::CONSTANT_NOT_CONFIGURED)
+                        $this->incoming->add_allow_port('webconfig', 'TCP', '81');
+                    else if ($firewall_status === Firewall::CONSTANT_DISABLED)
+                        $this->incoming->set_allow_port_state(TRUE, 'TCP', '81');
+                }
 
                 $this->page->set_status_updated();
-                redirect('/network/dns');
+                redirect('/network/mode');
             } catch (Engine_Exception $e) {
                 $this->page->view_exception($e->get_message());
                 return;
@@ -131,9 +110,8 @@ class DNS extends ClearOS_Controller
         //---------------
 
         try {
-            $data['form_type'] = $form_type;
-            $data['dns'] = $this->resolver->get_nameservers();
-            $data['is_automatic'] = $this->resolver->is_automatically_configured();
+            $data['network_mode'] = $this->network->get_mode();
+            $data['network_modes'] = $this->network->get_supported_modes();
         } catch (Exception $e) {
             $this->page->view_exception($e);
             return;
@@ -142,9 +120,6 @@ class DNS extends ClearOS_Controller
         // Load views
         //-----------
 
-        if (clearos_console())
-            $options['type'] = MY_Page::TYPE_CONSOLE;
-
-        $this->page->view_form('network/dns', $data, lang('network_dns'), $options);
+        $this->page->view_form('network/wizard/mode', $data, lang('network_network_mode'), $options);
     }
 }

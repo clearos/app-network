@@ -1,13 +1,15 @@
 <?php
 
 /**
- * Network DNS server controller.
+ * Hostname controller.
+ *
+ * This controller is only used during the install wizard.
  *
  * @category   Apps
  * @package    Network
  * @subpackage Controllers
  * @author     ClearFoundation <developer@clearfoundation.com>
- * @copyright  2011 ClearFoundation
+ * @copyright  2012 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
  * @link       http://www.clearfoundation.com/docs/developer/apps/network/
  */
@@ -41,86 +43,48 @@ use \clearos\apps\network\Network as Network;
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * Network DNS server controller.
+ * Hostname controller.
  *
  * @category   Apps
  * @package    Network
  * @subpackage Controllers
  * @author     ClearFoundation <developer@clearfoundation.com>
- * @copyright  2011 ClearFoundation
+ * @copyright  2012 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
  * @link       http://www.clearfoundation.com/docs/developer/apps/network/
  */
 
-class DNS extends ClearOS_Controller
+class Hostname extends ClearOS_Controller
 {
     /**
-     * General DNS overview.
+     * General settings overview.
      *
      * @return view
      */
 
     function index()
     {
-        $this->_view_edit('view');
-    }
-
-    /**
-     * General DNS edit view.
-     *
-     * @return view
-     */
-
-    function edit()
-    {
-        $this->_view_edit('edit');
-    }
-
-    /**
-     * General DNS read-only view.
-     *
-     * @return view
-     */
-
-    function view()
-    {
-        $this->_view_edit('view');
-    }
-
-    /**
-     * Common view/edit form
-     *
-     * @param string $form_type form type
-     *
-     * @return view
-     */
-
-    function _view_edit($form_type)
-    {
         // Load libraries
         //---------------
 
-        $this->load->library('network/Resolver');
+        $this->load->library('network/Network');
+        $this->load->library('network/Hostname');
 
         // Set validation rules
         //---------------------
          
-        $dns = $this->input->post('dns');
-
-        for ($dns_id = 1; $dns_id <= count($dns); $dns_id++)
-            $this->form_validation->set_policy('dns[' . $dns_id . ']', 'network/Resolver', 'validate_ip');
-
+        $this->form_validation->set_policy('hostname', 'network/Hostname', 'validate_hostname', TRUE);
         $form_ok = $this->form_validation->run();
 
         // Handle form submit
         //-------------------
 
-        if (($this->input->post('submit') && $form_ok)) {
+        if (($this->input->post('hostname') && $form_ok)) {
             try {
-                $this->resolver->set_nameservers($this->input->post('dns'));
+                $this->hostname->set($this->input->post('hostname'));
 
                 $this->page->set_status_updated();
-                redirect('/network/dns');
+                redirect($this->input->post('wizard_next'));
             } catch (Engine_Exception $e) {
                 $this->page->view_exception($e->get_message());
                 return;
@@ -131,9 +95,8 @@ class DNS extends ClearOS_Controller
         //---------------
 
         try {
-            $data['form_type'] = $form_type;
-            $data['dns'] = $this->resolver->get_nameservers();
-            $data['is_automatic'] = $this->resolver->is_automatically_configured();
+            $data['form_type'] = 'edit';
+            $data['hostname'] = $this->hostname->get();
         } catch (Exception $e) {
             $this->page->view_exception($e);
             return;
@@ -142,9 +105,35 @@ class DNS extends ClearOS_Controller
         // Load views
         //-----------
 
-        if (clearos_console())
-            $options['type'] = MY_Page::TYPE_CONSOLE;
+        $this->page->view_form('network/wizard/hostname', $data, lang('base_settings'), $options);
+    }
 
-        $this->page->view_form('network/dns', $data, lang('network_dns'), $options);
+    /**
+     * Ajax helper for wizard.
+     *
+     * @return JSON
+     */
+
+    function wizard_update()
+    {
+        // Load libraries
+        //---------------
+
+        $this->load->library('network/Hostname');
+
+        // Handle form submit
+        //-------------------
+
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Expires: Fri, 01 Jan 2010 05:00:00 GMT');
+        header('Content-type: application/json');
+
+        try {
+            $this->hostname->set($this->input->post('hostname'));
+
+            echo json_encode(array('code' => 0));
+        } catch (Exception $e) {
+            echo json_encode(array('code' => clearos_exception_code($e), 'error_message' => clearos_exception_message($e)));
+        }
     }
 }

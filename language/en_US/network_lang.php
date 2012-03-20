@@ -1,5 +1,10 @@
 <?php
 
+$lang['network_connecting_to_the_internet'] = 'Connecting to the Internet';
+$lang['network_standalone_or_gateway'] = 'Standalone or Gateway';
+$lang['network_default_domain'] = 'Default Domain';
+$lang['network_mode_help'] = 'Network mode help';
+
 $lang['network_internet_domain'] = 'Internet Domain';
 $lang['network_internet_domain_invalid'] = 'Internet domain is invalid.';
 $lang['network_wins_server'] = 'WINS Server';

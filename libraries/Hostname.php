@@ -76,8 +76,10 @@ clearos_load_library('network/Role');
 // Exceptions
 //-----------
 
+use \clearos\apps\base\File_No_Match_Exception as File_No_Match_Exception;
 use \clearos\apps\base\Validation_Exception as Validation_Exception;
 
+clearos_load_library('base/File_No_Match_Exception');
 clearos_load_library('base/Validation_Exception');
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -103,8 +105,10 @@ class Hostname extends Engine
     ///////////////////////////////////////////////////////////////////////////////
 
     const FILE_CONFIG = '/etc/sysconfig/network';
+    const FILE_APP_CONFIG = '/etc/clearos/network.conf';
     const COMMAND_HOSTNAME = '/bin/hostname';
     const DEFAULT_HOSTNAME = 'system.lan';
+    const DEFAULT_INTERNET_HOSTNAME = 'external.system.lan';
 
     ///////////////////////////////////////////////////////////////////////////////
     // M E T H O D S
@@ -263,6 +267,32 @@ class Hostname extends Engine
         $domain = preg_replace('/^([\w\-]*)\./', '', $hostname);
 
         return $domain;
+    }
+
+    /**
+     * Returns Internet hostname.
+     *
+     * In order to support certain apps (e.g. Certificate Manager), an Internet 
+     * hostname needs to be specified.
+     */
+
+    public function get_internet_hostname()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $file = new File(self::FILE_CONFIG);
+
+        try {
+            $hostname = $file->lookup_value('/^INTERNET_HOSTNAME=/');
+            $hostname = preg_replace('/"/', '', $hostname);
+        } catch (File_No_Match_Exception $e) {
+            // Not fatal
+        }
+
+        if (empty($hostname))
+            $hostname = self::DEFAULT_INTERNET_HOSTNAME;
+
+        return $hostname;
     }
 
     /**

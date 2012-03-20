@@ -90,7 +90,7 @@ class Iface extends ClearOS_Controller
         if (clearos_console())
             $options['type'] = MY_Page::TYPE_CONSOLE;
 
-        $this->page->view_form('network/iface/summary', $data, lang('network_interfaces'), $options);
+        $this->page->view_form('network/ifaces', $data, lang('network_interfaces'), $options);
     }
 
     /**
@@ -172,7 +172,7 @@ class Iface extends ClearOS_Controller
             }
 
             $this->page->set_status_deleted();
-            redirect('/network');
+            redirect('/network/iface');
         } catch (Exception $e) {
             $this->page->view_exception($e);
             return;
@@ -308,7 +308,7 @@ class Iface extends ClearOS_Controller
                 //-------------------------------------------
 
                 $this->page->set_status_updated();
-                redirect('/network');
+                redirect('/network/iface');
             } catch (Exception $e) {
                 $this->page->view_exception($e);
                 return;
@@ -357,6 +357,6 @@ class Iface extends ClearOS_Controller
         if (clearos_console())
             $options['type'] = MY_Page::TYPE_CONSOLE;
 
-        $this->page->view_form('network/iface/item', $data, lang('network_interface'), $options);
+        $this->page->view_form('network/iface', $data, lang('network_interface'), $options);
     }
 }

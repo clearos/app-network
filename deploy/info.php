@@ -15,7 +15,6 @@ $app['description'] = lang('network_app_description');
 $app['inline_help'] = array(
     lang('network_settings') => lang('network_settings_help'),
     lang('network_dns') => lang('network_dns_help'),
-    lang('network_interfaces') => lang('network_interfaces_help'),
 );
 
 /////////////////////////////////////////////////////////////////////////////
@@ -30,10 +29,30 @@ $app['subcategory'] = lang('base_subcategory_settings');
 // Controller info
 /////////////////////////////////////////////////////////////////////////////
 
+/*
 $app['controllers']['network']['title'] = lang('network_app_name');
 $app['controllers']['dns']['title'] = lang('network_dns');
 $app['controllers']['iface']['title'] = lang('network_network_interfaces');
 $app['controllers']['settings']['title'] = lang('base_settings');
+*/
+$app['controllers']['iface']['wizard_name'] = lang('network_network_interfaces');
+$app['controllers']['iface']['wizard_description'] = 'Network Interfaces Description'; // FIXME
+$app['controllers']['iface']['inline_help'] = array(
+    lang('network_interfaces') => lang('network_interfaces_help'),
+);
+
+$app['controllers']['mode']['wizard_name'] = 'Network Mode'; // FIXME
+$app['controllers']['mode']['wizard_description'] = 'Network Mode Description'; // FIXME
+$app['controllers']['mode']['inline_help'] = array(
+    lang('network_standalone_or_gateway') => lang('network_mode_help'),
+);
+
+$app['controllers']['hostname']['wizard_name'] = 'Network Hostname'; // FIXME
+$app['controllers']['hostname']['wizard_description'] = 'Network Hostname Description'; // FIXME
+$app['controllers']['hostname']['inline_help'] = array(
+    lang('network_standalone_or_gateway') => lang('network_mode_help'),
+);
+
 
 /////////////////////////////////////////////////////////////////////////////
 // Packaging

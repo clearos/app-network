@@ -91,12 +91,14 @@ class Settings extends ClearOS_Controller
 
         $this->load->library('network/Network');
         $this->load->library('network/Hostname');
+        $this->load->library('network/Domain');
 
         // Set validation rules
         //---------------------
          
         $this->form_validation->set_policy('network_mode', 'network/Network', 'validate_mode', TRUE);
         $this->form_validation->set_policy('hostname', 'network/Hostname', 'validate_hostname', TRUE);
+        $this->form_validation->set_policy('domain', 'network/Domain', 'validate_domain', TRUE);
         $form_ok = $this->form_validation->run();
 
         // Handle form submit
@@ -106,11 +108,12 @@ class Settings extends ClearOS_Controller
             try {
                 $this->network->set_mode($this->input->post('network_mode'));
                 $this->hostname->set($this->input->post('hostname'));
+                $this->domain->set_default($this->input->post('domain'));
 
                 // Open port 81 if going into standalone mode, or users
                 // will get locked out!
 
-                if (($this->input->post('network_mode') === Network::MODE_STANDALONE)
+                if (($this->input->post('network_mode') !== Network::MODE_TRUSTED_STANDALONE)
                     && clearos_library_installed('incoming_firewall/Incoming')) {
 
                     $this->load->library('incoming_firewall/Incoming');
@@ -140,6 +143,7 @@ class Settings extends ClearOS_Controller
             $data['network_mode'] = $this->network->get_mode();
             $data['network_modes'] = $this->network->get_supported_modes();
             $data['hostname'] = $this->hostname->get();
+            $data['domain'] = $this->domain->get_default();
         } catch (Exception $e) {
             $this->page->view_exception($e);
             return;
@@ -151,6 +155,6 @@ class Settings extends ClearOS_Controller
         if (clearos_console())
             $options['type'] = MY_Page::TYPE_CONSOLE;
 
-        $this->page->view_form('settings/view_edit', $data, lang('base_settings'), $options);
+        $this->page->view_form('network/settings', $data, lang('base_settings'), $options);
     }
 }

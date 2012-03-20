@@ -34,34 +34,15 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 $this->lang->load('network');
-$this->lang->load('base');
 
 ///////////////////////////////////////////////////////////////////////////////
-// Form handler
+// Form
 ///////////////////////////////////////////////////////////////////////////////
 
-if ($form_type === 'edit') {
-	$read_only = FALSE;
-	$buttons = array(
-		form_submit_update('submit'),
-		anchor_cancel('/app/network')
-	);
-} else {
-	$read_only = TRUE;
-	$buttons = array(anchor_edit('/app/network/settings/edit'));
-}
+echo form_open('network/mode/edit', array('id' => 'mode_form')); 
+echo form_header(lang('network_network_mode'));
 
-///////////////////////////////////////////////////////////////////////////////
-// Form open
-///////////////////////////////////////////////////////////////////////////////
-
-echo form_open('network/settings/edit'); 
-echo form_header(lang('base_settings'));
-
-echo field_dropdown('network_mode', $network_modes, $network_mode, lang('network_network_mode'), $read_only);
-echo field_input('hostname', $hostname, lang('network_hostname'), $read_only);
-
-echo field_button_set($buttons);
+echo field_dropdown('network_mode', $network_modes, $network_mode, lang('network_network_mode'));
 
 echo form_footer();
 echo form_close();

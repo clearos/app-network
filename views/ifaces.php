@@ -158,7 +158,7 @@ foreach ($network_interface as $interface => $detail) {
 ///////////////////////////////////////////////////////////////////////////////
 
 echo summary_table(
-    lang('network_interfaces'),
+    lang('network_network_interfaces'),
     $anchors,
     $headers,
     $items,

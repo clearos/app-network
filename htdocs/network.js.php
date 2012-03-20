@@ -52,7 +52,6 @@ header('Content-Type:application/x-javascript');
 
 $(document).ready(function() {
 
-
     // Translations
     //-------------
 
@@ -61,11 +60,15 @@ $(document).ready(function() {
     lang_unknown = '<?php echo lang("base_unknown"); ?>';
     lang_megabits_per_second = '<?php echo lang("base_megabits_per_second"); ?>';
 
-    // Wizard previous/next button handling
-    //-------------------------------------
+    // Wizard next button handling
+    //----------------------------
 
-    if ($(location).attr('href').match('.*\/edit$') != null)
-        $('#theme_wizard_nav').hide();
+    $("#wizard_nav_next").click(function(){
+        if ($(location).attr('href').match('.*\/hostname$') != null)
+            $('form#hostname_form').submit();
+        else if ($(location).attr('href').match('.*\/mode$') != null)
+            $('form#mode_form').submit();
+    });
 
     // Network interface configuration
     //--------------------------------
