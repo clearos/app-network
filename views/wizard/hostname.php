@@ -33,6 +33,7 @@
 // Load dependencies
 ///////////////////////////////////////////////////////////////////////////////
 
+$this->lang->load('base');
 $this->lang->load('network');
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -41,9 +42,10 @@ $this->lang->load('network');
 // Note: the wizard previous/next buttons are used for form submission 
 
 echo form_open('network/hostname', array('id' => 'hostname_form')); 
-echo form_header(lang('network_hostname'));
+echo form_header(lang('base_settings'));
 
 echo field_input('hostname', $hostname, lang('network_hostname'), $read_only);
+echo field_input('internet_hostname', $internet_hostname, lang('network_internet_hostname'), $read_only);
 
 echo form_footer();
 echo form_close();

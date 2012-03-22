@@ -33,6 +33,7 @@
 // Load dependencies
 ///////////////////////////////////////////////////////////////////////////////
 
+$this->lang->load('base');
 $this->lang->load('network');
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -41,7 +42,7 @@ $this->lang->load('network');
 // Note: the wizard previous/next buttons are used for form submission 
 
 echo form_open('network/mode', array('id' => 'mode_form')); 
-echo form_header(lang('network_network_mode'));
+echo form_header(lang('base_settings'));
 
 echo field_dropdown('network_mode', $network_modes, $network_mode, lang('network_network_mode'));
 

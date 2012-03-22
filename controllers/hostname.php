@@ -74,6 +74,7 @@ class Hostname extends ClearOS_Controller
         //---------------------
          
         $this->form_validation->set_policy('hostname', 'network/Hostname', 'validate_hostname', TRUE);
+        $this->form_validation->set_policy('internet_hostname', 'network/Hostname', 'validate_internet_hostname', TRUE);
         $form_ok = $this->form_validation->run();
 
         // Handle form submit
@@ -82,6 +83,7 @@ class Hostname extends ClearOS_Controller
         if (($this->input->post('hostname') && $form_ok)) {
             try {
                 $this->hostname->set($this->input->post('hostname'));
+                $this->hostname->set_internet_hostname($this->input->post('internet_hostname'));
 
                 $this->page->set_status_updated();
                 redirect($this->session->userdata('wizard_redirect'));
@@ -97,6 +99,7 @@ class Hostname extends ClearOS_Controller
         try {
             $data['form_type'] = 'edit';
             $data['hostname'] = $this->hostname->get();
+            $data['internet_hostname'] = $this->hostname->get_internet_hostname();
         } catch (Exception $e) {
             $this->page->view_exception($e);
             return;

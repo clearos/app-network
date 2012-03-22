@@ -280,7 +280,7 @@ class Hostname extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        $file = new File(self::FILE_CONFIG);
+        $file = new File(self::FILE_APP_CONFIG);
 
         try {
             $hostname = $file->lookup_value('/^INTERNET_HOSTNAME=/');
@@ -322,21 +322,15 @@ class Hostname extends Engine
      *
      * @param string $hostname hostname
      *
-     * @return  void
-     * @throws  Exception, Validation_Exception
+     * @return void
+     * @throws Exception, Validation_Exception
      */
 
     public function set($hostname)
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        // Validate
-        //---------
-
-        if (Network_Utils::is_valid_hostname($hostname) === FALSE) {
-            throw new Validation_Exception(
-                lang('network_hostname_invalid'), CLEAROS_ERROR);
-        }
+        Validation_Exception::is_valid($this->validate_hostname($hostname));
 
         // Update tag if it exists
         //------------------------
@@ -358,6 +352,37 @@ class Hostname extends Engine
         $shell->execute(self::COMMAND_HOSTNAME, $hostname, TRUE);
     }
 
+    /**
+     * Sets Internet hostname.
+     *
+     * Internet hostname must have at least one period.
+     *
+     * @param string $hostname hostname
+     *
+     * @return void
+     * @throws Exception, Validation_Exception
+     */
+
+    public function set_internet_hostname($hostname)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        Validation_Exception::is_valid($this->validate_hostname($hostname));
+
+        // Update tag if it exists
+        //------------------------
+
+        $file = new File(self::FILE_APP_CONFIG);
+
+        $match = $file->replace_lines('/^INTERNET_HOSTNAME=/', "INTERNET_HOSTNAME=\"$hostname\"\n");
+
+        // If tag does not exist, add it
+        //------------------------------
+
+        if (! $match)
+            $file->add_lines("INTERNET_HOSTNAME=\"$hostname\"\n");
+    }
+
     ///////////////////////////////////////////////////////////////////////////////
     // V A L I D A T I O N   R O U T I N E S
     ///////////////////////////////////////////////////////////////////////////////
@@ -376,5 +401,21 @@ class Hostname extends Engine
 
         if (! Network_Utils::is_valid_hostname($hostname))
             return lang('network_hostname_invalid');
+    }
+
+    /**
+     * Validates an Internet hostname.
+     *
+     * @param string $hostname hostname
+     *
+     * @return string error message if Internet hostname is invalid
+     */
+
+    public function validate_internet_hostname($hostname)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        if (! Network_Utils::is_valid_hostname($hostname))
+            return lang('network_internet_hostname_invalid');
     }
 }

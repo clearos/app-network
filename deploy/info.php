@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'network';
-$app['version'] = '1.0.8';
+$app['version'] = '1.0.9';
 $app['release'] = '1';
 $app['vendor'] = 'ClearFoundation';
 $app['packager'] = 'ClearFoundation';
@@ -41,22 +41,24 @@ $app['controllers']['iface']['inline_help'] = array(
     lang('network_interfaces') => lang('network_interfaces_help'),
 );
 
-$app['controllers']['mode']['wizard_name'] = 'Network Mode'; // FIXME
-$app['controllers']['mode']['wizard_description'] = 'Network Mode Description'; // FIXME
+$app['controllers']['mode']['wizard_name'] = lang('network_network_mode');
+$app['controllers']['mode']['wizard_description'] = lang('network_network_mode_wizard_description');
 $app['controllers']['mode']['inline_help'] = array(
-    lang('network_standalone_or_gateway') => lang('network_mode_help'),
+    lang('network_you_can_change_your_mind_later') => lang('network_network_mode_help'),
+    lang('network_best_practices') => lang('network_network_mode_best_practices_help'),
 );
 
-$app['controllers']['hostname']['wizard_name'] = 'Network Hostname'; // FIXME
-$app['controllers']['hostname']['wizard_description'] = 'Network Hostname Description'; // FIXME
+$app['controllers']['hostname']['wizard_name'] = lang('network_hostname');
+$app['controllers']['hostname']['wizard_description'] = lang('network_hostname_wizard_description');
 $app['controllers']['hostname']['inline_help'] = array(
-    lang('network_standalone_or_gateway') => lang('network_mode_help'),
+    lang('network_hostname') => lang('network_hostname_help'),
+    lang('network_internet_hostname') => lang('network_internet_hostname_help'),
 );
 
-$app['controllers']['domain']['wizard_name'] = 'Base Domain'; // FIXME
-$app['controllers']['domain']['wizard_description'] = 'Domain Description'; // FIXME
+$app['controllers']['domain']['wizard_name'] = lang('network_internet_domain');
+$app['controllers']['domain']['wizard_description'] = lang('network_internet_domain_wizard_description');
 $app['controllers']['domain']['inline_help'] = array(
-    'extra help' => 'blah blah blah'
+    lang('network_just_a_default') => lang('network_internet_domain_wizard_help'),
 );
 
 /////////////////////////////////////////////////////////////////////////////

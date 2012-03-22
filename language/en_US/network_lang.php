@@ -1,4 +1,19 @@
 <?php
+$lang['network_hostname_help'] = 'The hostname is the name of your system when accessed from an internal network or VPN.  For example, a file server might have the hostname fileserver.lan.  It is what you normally expect for a hostname.';
+$lang['network_internet_hostname_help'] = 'The Internet hostname is the name of your system when accessed from the Internet.  Continuing our file server example, there may be a public web folder available for downloading files.  The Internet hostname could be set to filleserver.example.com.';
+$lang['network_hostname_and_internet_hostname'] = 'Hostname and Internet Hostname';
+$lang['network_hostname_wizard_description'] = 'It is time to define the hostname for your system.  Hey, wait a minute... why do I need two hostnames?  Often, these two hostnames are the same, but please read the help section for more information.';
+$lang['network_internet_hostname_invalid'] = 'Internet hostname is invalid.';
+$lang['network_network_mode'] = 'Network Mode';
+$lang['network_network_mode_wizard_description'] = 'You can configure your system as a standalone server or gateway.';
+$lang['network_network_mode_help'] = 'You can always change the network mode of your system after the install wizard.  For example, if you are preparing the system for a deployment, you can run the install as a standalone system now and change it to a gateway later.';
+$lang['network_you_can_change_your_mind_later'] = 'You Can Change It Later';
+$lang['network_best_practices'] = 'Best Practices';
+$lang['network_network_mode_best_practices_help'] = 'It is always good practice to have a dedicated system for firewall and gateway duties, while having separate systems for server duties.';
+$lang['network_internet_hostname'] = 'Internet Hostname';
+$lang['network_internet_domain_wizard_description'] = 'Set a default Internet domain for your system, for example: example.com.  By the way, we use "Internet domain" instead of just "domain" in our terminology to avoid confusion with "Windows domains".';
+$lang['network_internet_domain_wizard_help'] = 'Many apps need to know the Internet domain that you use for your network.  DHCP, VPN, LDAP and many others require an Internet domain in the app configuration.  In the end, it is just a starting point and you can always override the default in each app.';
+$lang['network_just_a_default'] = 'Just a Default';
 
 $lang['network_connecting_to_the_internet'] = 'Connecting to the Internet';
 $lang['network_standalone_or_gateway'] = 'Standalone or Gateway';
