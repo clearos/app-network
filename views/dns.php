@@ -42,24 +42,30 @@ $this->lang->load('base');
 
 if ($form_type === 'edit') {
     if ($is_automatic) {
-        $read_only = TRUE;
+        $read_only = FALSE;
         $is_automatic_warning = TRUE;
         $buttons = array(
-            anchor_cancel('/app/network')
+            form_submit_update('submit'),
+            anchor_cancel('/app/network/dns')
         );
     } else {
         $read_only = FALSE;
         $is_automatic_warning = FALSE;
         $buttons = array(
             form_submit_update('submit'),
-            anchor_cancel('/app/network')
+            anchor_cancel('/app/network/dns')
         );
     }
-
+} else if ($form_type === 'wizard') {
+    $read_only = FALSE;
+    $is_automatic_warning = FALSE;
+    $buttons = array();
 } else {
 	$read_only = TRUE;
     $is_automatic_warning = FALSE;
-    if (! $is_automatic)
+    if ($is_automatic)
+        $buttons = array(anchor_custom('/app/network/dns/edit', lang('network_override')));
+    else
         $buttons = array(anchor_edit('/app/network/dns/edit'));
 }
 
@@ -73,20 +79,23 @@ if (! $read_only) {
     // Always show at least 1 DNS server
     if ($dns_fields < 3)
         $dns_fields = 3;
+
+// Show 2 DNS servers when in automatic mode
+} else if ($is_automatic) {
+    $dns_fields = 2;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Warnings
 ///////////////////////////////////////////////////////////////////////////////
 
-if (! $read_only) {
+if (!($form_type === 'wizard') && !$read_only) {
     if ($dns_count === 0)
         echo infobox_warning(lang('network_network_degraded'), lang('network_no_dns_servers_warning'));
     else if ($dns_count === 3)
         echo infobox_highlight(lang('network_best_practices'), lang('network_too_many_dns_servers_warning'));
     else if ($dns_count > 3)
         echo infobox_warning(lang('network_network_degraded'), lang('network_too_many_dns_servers_warning'));
-
 }
 
 if ($is_automatic_warning)
@@ -96,16 +105,27 @@ if ($is_automatic_warning)
 // Form open
 ///////////////////////////////////////////////////////////////////////////////
 
-echo form_open('network/dns/edit'); 
+echo form_open('network/dns/edit', array('id' => 'dns_form')); 
 echo form_header(lang('network_dns'));
 
 ///////////////////////////////////////////////////////////////////////////////
 // Form fields and buttons
 ///////////////////////////////////////////////////////////////////////////////
 
+if (($read_only) && $is_automatic)
+    echo field_view(lang('network_dns_servers'), '', 'dns_auto');
+
 for ($inx = 1; $inx < $dns_fields + 1; $inx++) {
     $dns_server = isset($dns[$inx-1]) ? $dns[$inx-1] : '';
-    echo field_input('dns[' . $inx . ']', $dns_server, lang('network_dns_server') . " #" . $inx, $read_only);
+
+    // TODO: the variable name used in read-only mode is not javascript friendly
+    // For now, use field_view and a simplified variable name.
+    // echo field_input('dns[' . $inx . ']', $dns_server, lang('network_dns_server') . " #" . $inx, $read_only);
+
+    if (($read_only) && $is_automatic)
+        echo field_view(lang('network_dns_server') . " #" . $inx, $dns_server, 'dns' . ($inx-1));
+    else
+        echo field_input('dns[' . $inx . ']', $dns_server, lang('network_dns_server') . " #" . $inx, $read_only);
 }
 
 if (! empty($buttons))

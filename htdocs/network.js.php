@@ -59,6 +59,17 @@ $(document).ready(function() {
     lang_no = '<?php echo lang("base_no"); ?>';
     lang_unknown = '<?php echo lang("base_unknown"); ?>';
     lang_megabits_per_second = '<?php echo lang("base_megabits_per_second"); ?>';
+    lang_no_external = '<?php echo lang("network_lang_one_external_interface_required"); ?>';
+    lang_connected = '<?php echo lang("network_lang_connection_to_the_internet_is_online"); ?>';
+    lang_not_connected = '<?php echo lang("network_lang_connection_to_the_internet_not_available"); ?>';
+    lang_waiting = '<?php echo lang("base_waiting"); ?>';
+
+    // Defaults
+    //---------
+
+    $('#dns_auto_field').hide();
+    $('#dns0_field').hide();
+    $('#dns1_field').hide();
 
     // Wizard next button handling
     //----------------------------
@@ -70,8 +81,10 @@ $(document).ready(function() {
             $('form#mode_form').submit();
         else if ($(location).attr('href').match('.*\/domain$') != null)
             $('form#domain_form').submit();
+        else if ($(location).attr('href').match('.*\/dns') != null)
+            $('form#dns_form').submit();
         else if ($(location).attr('href').match('.*\/iface') != null)
-            window.location = '/app/network/wizard_redirect';
+            window.location = '/app/base/wizard/next_step';
     });
 
     // Network interface configuration
@@ -95,7 +108,7 @@ $(document).ready(function() {
     //-------------
 
     } else if ($('#network_summary').length != 0)  {
-        getAllInteraceInfo();
+        getAllNetworkInfo();
     }
 });
 
@@ -103,18 +116,18 @@ $(document).ready(function() {
  * Ajax call to get network information for all interfaces
  */
 
-function getAllInteraceInfo() {
+function getAllNetworkInfo() {
 
     $.ajax({
         url: '/app/network/get_all_info',
         method: 'GET',
         dataType: 'json',
         success : function(payload) {
-            showAllInterfaceInfo(payload);
-            window.setTimeout(getAllInteraceInfo, 1000);
+            showAllNetworkInfo(payload);
+            window.setTimeout(getAllNetworkInfo, 1000);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            window.setTimeout(getAllInteraceInfo, 1000);
+            window.setTimeout(getAllNetworkInfo, 1000);
         }
     });
 }
@@ -144,19 +157,70 @@ function getInterfaceInfo() {
  * Updates network information (IP, link) for all interfaces
  */
 
-function showAllInterfaceInfo(payload) {
-    for (var iface in payload) {
-        var link_text = (payload[iface].link) ? lang_yes : lang_no;
+function showAllNetworkInfo(payload) {
+    var external = false;
+
+    // Network interface details
+    //--------------------------
+
+    for (var iface in payload['network']) {
+        var link_text = (payload['network'][iface].link) ? lang_yes : lang_no;
         var ip_text = '';
 
-        if (payload[iface].configured)
-           ip_text = (payload[iface].address) ? payload[iface].address : '<div class="theme-loading-small"></div>';
+        if (payload['network'][iface].configured) {
+            ip_text = (payload['network'][iface].address) ? payload['network'][iface].address : '<div class="theme-loading-small"></div>';
+            if (payload['network'][iface].role == 'EXTIF')
+                external = true;
+        }
 
-        $('#role_' + iface).html(payload[iface].roletext);
-        $('#bootproto_' + iface).html(payload[iface].bootprototext);
+        $('#role_' + iface).html(payload['network'][iface].roletext);
+        $('#bootproto_' + iface).html(payload['network'][iface].bootprototext);
         $('#ip_' + iface).html(ip_text);
         $('#link_' + iface).html(link_text);
     }
+
+    // DNS server details
+    //-------------------
+
+    if (payload['dns_servers'].length == 0) {
+        $('#dns_auto_text').html('<div class="theme-loading-small">' + lang_waiting + '</div>');
+        $('#dns_auto_field').show();
+        $('#dns0_field').hide();
+        $('#dns1_field').hide();
+    } else if (payload['dns_servers'].length == 1) {
+        $('#dns_auto_text').html('');
+        $('#dns_auto_field').hide();
+        $('#dns0_field').show();
+        $('#dns1_field').hide();
+    } else {
+        $('#dns_auto_text').html('');
+        $('#dns_auto_field').hide();
+        $('#dns0_field').show();
+        $('#dns1_field').show();
+    }
+
+    for (dns_index in payload['dns_servers']) {
+        var dns_html_index = dns_index + 1;
+        $('#dns' + dns_index + '_text').html(payload['dns_servers'][dns_index]);
+    }
+
+    // Network status
+    //---------------
+
+    /*
+    var network_status_message = '';
+
+    if (external) {
+        external_message = '';
+        network_status_message = (payload['connection_status']) ? lang_connected : lang_no_connection;
+    } else {
+        external_message = lang_no_external;
+        network_status_message = '';
+    }
+
+    $('#no_external_warning').html(external_message);
+    $('#network_status').html(network_status_message);
+    */
 }
 
 /**

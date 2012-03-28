@@ -83,15 +83,19 @@ class Network extends ClearOS_Controller
         //---------------
 
         $this->load->library('network/Iface_Manager');
+        $this->load->library('network/Network_Status');
+        $this->load->library('network/Resolver');
 
         // Dump JSON information
         //----------------------
 
-        $network = $this->iface_manager->get_interface_details();
+        $data['network'] = $this->iface_manager->get_interface_details();
+        $data['dns_servers'] = $this->resolver->get_nameservers();
+        $data['connection_status'] = $this->network_status->get_connection_status();
 
         header('Cache-Control: no-cache, must-revalidate');
         header('Content-type: application/json');
-        echo json_encode($network);
+        echo json_encode($data);
     }
 
     /**
@@ -138,19 +142,5 @@ class Network extends ClearOS_Controller
         header('Cache-Control: no-cache, must-revalidate');
         header('Content-type: application/json');
         echo json_encode($status);
-    }
-
-    /**
-     * Redirects for wizard navigation.
-     *
-     * A helper for javascript for sending the "next" button to the 
-     * next page in the wizard.
-     *
-     * @return redirect
-     */
-
-    function wizard_redirect()
-    {
-        redirect($this->session->userdata('wizard_redirect'));
     }
 }

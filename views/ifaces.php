@@ -51,6 +51,15 @@ $headers = array(
 );
 
 ///////////////////////////////////////////////////////////////////////////////
+// Title
+///////////////////////////////////////////////////////////////////////////////
+
+if ($form_type === 'wizard')
+    $title = lang('base_settings');
+else
+    $title = lang('network_network_interfaces');
+
+///////////////////////////////////////////////////////////////////////////////
 // Anchors 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -64,7 +73,7 @@ $anchors = array(
 
 $items = array();
 
-foreach ($network_interface as $interface => $detail) {
+foreach ($network_interfaces as $interface => $detail) {
 
     // Create summary
     $ip = empty($detail['address']) ? '' : $detail['address'];
@@ -122,7 +131,7 @@ foreach ($network_interface as $interface => $detail) {
         // Show only Ethernet interfaces
         //------------------------------
 
-        if ($detail['type'] === Iface::TYPE_ETHERNET) {
+        if (($detail['type'] === Iface::TYPE_ETHERNET) && !preg_match('/^ppp/', $interface)) {
             $buttons = array(
                 anchor_add('/app/network/iface/add/' . $interface),
             );
@@ -154,11 +163,25 @@ foreach ($network_interface as $interface => $detail) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Infobox
+///////////////////////////////////////////////////////////////////////////////
+
+/*
+echo "<div id='network_status_box'>";
+echo infobox_highlight(
+    lang('network_internet_connection_status'),
+    "<div id='network_status'> </div>" .
+    "<div id='no_external_warning'> </div>"
+);
+echo "</div>";
+*/
+
+///////////////////////////////////////////////////////////////////////////////
 // Summary table
 ///////////////////////////////////////////////////////////////////////////////
 
 echo summary_table(
-    lang('network_network_interfaces'),
+    $title,
     $anchors,
     $headers,
     $items,

@@ -36,7 +36,7 @@ $app['controllers']['settings']['title'] = lang('base_settings');
 
 // Wizard extras
 $app['controllers']['iface']['wizard_name'] = lang('network_network_interfaces');
-$app['controllers']['iface']['wizard_description'] = 'Network Interfaces Description'; // FIXME
+$app['controllers']['iface']['wizard_description'] = lang('network_interfaces_help');
 $app['controllers']['iface']['inline_help'] = array(
     lang('network_interfaces') => lang('network_interfaces_help'),
 );
@@ -46,6 +46,12 @@ $app['controllers']['mode']['wizard_description'] = lang('network_network_mode_w
 $app['controllers']['mode']['inline_help'] = array(
     lang('network_you_can_change_your_mind_later') => lang('network_network_mode_help'),
     lang('network_best_practices') => lang('network_network_mode_best_practices_help'),
+);
+
+$app['controllers']['dns']['wizard_name'] = lang('network_dns_servers');
+$app['controllers']['dns']['wizard_description'] = lang('network_dns_help');
+$app['controllers']['dns']['inline_help'] = array(
+    lang('network_best_practices') => lang('network_dns_best_practices_help'),
 );
 
 $app['controllers']['hostname']['wizard_name'] = lang('network_hostname');

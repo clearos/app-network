@@ -425,19 +425,6 @@ class Iface_Manager extends Engine
     }
 
     /**
-     * @deprecated
-     *
-     * FIXME: remove in 6.2.0 RC1
-     */
-
-    public function get_trusted_ips()
-    {
-        clearos_profile(__METHOD__, __LINE__);
-
-        return $this->get_most_trusted_ips();
-    }
-
-    /**
      * Returns list of Wifi interfaces.
      *
      * @return array list of Wifi interfaces

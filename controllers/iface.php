@@ -66,19 +66,17 @@ class Iface extends ClearOS_Controller
         //---------------
 
         $this->load->library('network/Iface_Manager');
-
-        // Set validation rules
-        //---------------------
-
-        // Handle form submit
-        //-------------------
+        $this->load->library('network/Network_Status');
 
         // Load view data
         //---------------
 
         try {
             $data['mode'] = $mode;
-            $data['network_interface'] = $this->iface_manager->get_interface_details();
+            $data['form_type'] = ($this->session->userdata('wizard')) ? 'wizard' : 'view';
+            $data['network_status'] = $this->network_status->get_connection_status();
+            $data['network_interfaces'] = $this->iface_manager->get_interface_details();
+            $data['external_interfaces'] = $this->iface_manager->get_external_interfaces();
         } catch (Exception $e) {
             $this->page->view_exception($e);
             return;

@@ -107,20 +107,42 @@ class DNS extends ClearOS_Controller
          
         $dns = $this->input->post('dns');
 
-        for ($dns_id = 1; $dns_id <= count($dns); $dns_id++)
+        for ($dns_id = 1; $dns_id <= count($dns); $dns_id++) {
             $this->form_validation->set_policy('dns[' . $dns_id . ']', 'network/Resolver', 'validate_ip');
+        }
 
         $form_ok = $this->form_validation->run();
+
+        // Extra validation
+        //-----------------
+
+        if ($form_ok && !$this->resolver->is_automatically_configured()) {
+            $dns_empty = TRUE;
+
+            foreach ($dns as $server) {
+                if (! empty($server))
+                    $dns_empty = FALSE;
+            }
+
+            if ($dns_empty) {
+                $this->form_validation->set_error('dns[1]', lang('required'));
+                $form_ok = FALSE;
+            }
+        }
 
         // Handle form submit
         //-------------------
 
-        if (($this->input->post('submit') && $form_ok)) {
+        if (($this->input->post('dns') && $form_ok)) {
             try {
                 $this->resolver->set_nameservers($this->input->post('dns'));
 
                 $this->page->set_status_updated();
-                redirect('/network/dns');
+
+                if ($this->session->userdata('wizard_redirect'))
+                    redirect($this->session->userdata('wizard_redirect'));
+                else
+                    redirect('/network/dns');
             } catch (Engine_Exception $e) {
                 $this->page->view_exception($e->get_message());
                 return;
@@ -131,9 +153,9 @@ class DNS extends ClearOS_Controller
         //---------------
 
         try {
-            $data['form_type'] = $form_type;
-            $data['dns'] = $this->resolver->get_nameservers();
+            $data['form_type'] = ($this->session->userdata('wizard')) ? 'wizard' : $form_type;
             $data['is_automatic'] = $this->resolver->is_automatically_configured();
+            $data['dns'] = $this->resolver->get_nameservers();
         } catch (Exception $e) {
             $this->page->view_exception($e);
             return;

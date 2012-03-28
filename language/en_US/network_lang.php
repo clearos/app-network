@@ -1,4 +1,8 @@
 <?php
+$lang['network_lang_connection_to_the_internet_is_online'] = 'Connection to the Internet is online.';
+$lang['network_dns_servers'] = 'DNS Servers';
+$lang['network_lang_one_external_interface_required'] = 'At least one external interface is required to reach the Internet.';
+$lang['network_internet_connection_status'] = 'Internet Connection Status';
 $lang['network_hostname_help'] = 'The hostname is the name of your system when accessed from an internal network or VPN.  For example, a file server might have the hostname fileserver.lan.  It is what you normally expect for a hostname.';
 $lang['network_internet_hostname_help'] = 'The Internet hostname is the name of your system when accessed from the Internet.  Continuing our file server example, there may be a public web folder available for downloading files.  The Internet hostname could be set to filleserver.example.com.';
 $lang['network_hostname_and_internet_hostname'] = 'Hostname and Internet Hostname';
@@ -34,10 +38,11 @@ $lang['network_add_virtual_interface'] = 'Add Virtual Interface';
 $lang['network_dns'] = 'DNS';
 $lang['network_too_many_dns_servers_warning'] = 'We do not recommend configuring more than 3 DNS servers.';
 $lang['network_no_dns_servers_warning'] = 'No DNS servers are configured.';
+$lang['network_override'] = 'Override';
 $lang['network_network_degraded'] = 'Network Degraded';
 $lang['network_best_practices'] = 'Best Practices';
 $lang['network_dns_automatically_configured'] = 'DNS Automatically Configured';
-$lang['network_dns_automatically_configured_message'] = 'The DNS servers for this system are automatically configured.';
+$lang['network_dns_automatically_configured_message'] = 'The DNS servers for this system are automatically configured.  You can temporarily override these settings if required.';
 
 $lang['network_app_description'] = 'Provides administrators with the ability to configure the most common network tasks like mode, system hostname, DNS servers and Network Interface Card (NIC) settings.';
 $lang['network_app_name'] = 'IP Settings';
@@ -138,3 +143,4 @@ $lang['network_settings_help'] = 'Your system can be configured as a gateway or 
 $lang['network_dns_help'] = 'DNS configuration is essential for your system.  Without DNS, well, bad things happen.  If you need a public DNS server to get your system up and running, you can use Google\'s DNS Servers: 8.8.8.8 and 8.8.4.4.';
 $lang['network_interfaces_help'] = 'You need at least one network interface configured in external mode.  An "external" role means the network interface can be used to gain access the Internet; it does not necessarily mean it is connected directly to the Internet.';
 $lang['network_enable_dhcp_server'] = 'Enable DHCP Server';
+$lang['network_dns_best_practices_help'] = 'As with many things in life, sometimes less is more.  If you are manually configuring DNS servers, we do not recommend using more than three.  The more DNS servers configured, the more likely you will run into a misbehaving DNS system.';
