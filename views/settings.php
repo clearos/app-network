@@ -59,8 +59,11 @@ echo form_open('network/settings/edit');
 echo form_header(lang('base_settings'));
 
 echo field_dropdown('network_mode', $network_modes, $network_mode, lang('network_network_mode'), $read_only);
-echo field_input('hostname', $hostname, lang('network_hostname'), $read_only);
-echo field_input('domain', $domain, lang('network_default_domain'), $read_only);
+
+if (!clearos_console()) {
+    echo field_input('hostname', $hostname, lang('network_hostname'), $read_only);
+    echo field_input('domain', $domain, lang('network_default_domain'), $read_only);
+}
 
 echo field_button_set($buttons);
 

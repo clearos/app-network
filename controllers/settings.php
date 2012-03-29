@@ -97,8 +97,12 @@ class Settings extends ClearOS_Controller
         //---------------------
          
         $this->form_validation->set_policy('network_mode', 'network/Network', 'validate_mode', TRUE);
-        $this->form_validation->set_policy('hostname', 'network/Hostname', 'validate_hostname', TRUE);
-        $this->form_validation->set_policy('domain', 'network/Domain', 'validate_domain', TRUE);
+
+        if (!clearos_console()) {
+            $this->form_validation->set_policy('hostname', 'network/Hostname', 'validate_hostname', TRUE);
+            $this->form_validation->set_policy('domain', 'network/Domain', 'validate_domain', TRUE);
+        }
+
         $form_ok = $this->form_validation->run();
 
         // Handle form submit
@@ -107,8 +111,11 @@ class Settings extends ClearOS_Controller
         if (($this->input->post('submit') && $form_ok)) {
             try {
                 $this->network->set_mode($this->input->post('network_mode'));
-                $this->hostname->set($this->input->post('hostname'));
-                $this->domain->set_default($this->input->post('domain'));
+
+                if (!clearos_console()) {
+                    $this->hostname->set($this->input->post('hostname'));
+                    $this->domain->set_default($this->input->post('domain'));
+                }
 
                 // Open port 81 if going into standalone mode, or users
                 // will get locked out!
