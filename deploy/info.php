@@ -95,6 +95,7 @@ $app['core_file_manifest'] = array(
     'dhclient-exit-hooks' => array('target' => '/etc/dhclient-exit-hooks'),
     'filewatch-network.conf' => array('target' => '/etc/clearsync.d/filewatch-network.conf'),
     'filewatch-network-hostname.conf' => array('target' => '/etc/clearsync.d/filewatch-network-hostname.conf'),
+    'filewatch-network-connected.conf' => array('target' => '/etc/clearsync.d/filewatch-network-connected.conf'),
     'network.conf' => array(
         'target' => '/etc/clearos/network.conf',
         'mode' => '0644',
