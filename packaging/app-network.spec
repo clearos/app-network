@@ -47,7 +47,7 @@ cp -r * %{buildroot}/usr/clearos/apps/network/
 
 install -d -m 0755 %{buildroot}/var/clearos/network
 install -d -m 0755 %{buildroot}/var/clearos/network/backup
-install -D -m 0644 packaging/dhclient-exit-hooks %{buildroot}/etc/dhclient-exit-hooks
+install -D -m 0755 packaging/dhclient-exit-hooks %{buildroot}/etc/dhcp/dhclient-exit-hooks
 install -D -m 0644 packaging/filewatch-network-connected.conf %{buildroot}/etc/clearsync.d/filewatch-network-connected.conf
 install -D -m 0644 packaging/filewatch-network-hostname.conf %{buildroot}/etc/clearsync.d/filewatch-network-hostname.conf
 install -D -m 0644 packaging/filewatch-network.conf %{buildroot}/etc/clearsync.d/filewatch-network.conf
@@ -96,7 +96,7 @@ exit 0
 /usr/clearos/apps/network/deploy
 /usr/clearos/apps/network/language
 /usr/clearos/apps/network/libraries
-/etc/dhclient-exit-hooks
+/etc/dhcp/dhclient-exit-hooks
 /etc/clearsync.d/filewatch-network-connected.conf
 /etc/clearsync.d/filewatch-network-hostname.conf
 /etc/clearsync.d/filewatch-network.conf
