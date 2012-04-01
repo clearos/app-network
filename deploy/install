@@ -11,6 +11,16 @@ if [ -n "$CHECK" ]; then
     /sbin/service avahi-daemon stop >/dev/null 2>&1
 fi
 
+# Disable zeroconf
+#-----------------
+
+CHECK=`grep NOZEROCONF /etc/sysconfig/network 2>/dev/null`
+
+if [ -z "$CHECK" ]; then
+    logger -p local6.notice -t installer "app-network-core - disabling zeroconf"
+    echo "NOZEROCONF=\"yes\"" >> /etc/sysconfig/network
+fi
+
 # Disable PPPoE server
 #---------------------
 
