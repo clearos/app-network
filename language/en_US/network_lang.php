@@ -48,6 +48,7 @@ $lang['network_app_description'] = 'Provides administrators with the ability to 
 $lang['network_app_name'] = 'IP Settings';
 $lang['network_bandwidth'] = 'Bandwidth';
 $lang['network_boot_protocol_invalid'] = 'Boot protocol is invalid.';
+$lang['network_protocol'] = 'Protocol';
 $lang['network_bootproto_bootp'] = 'BootP';
 $lang['network_bootproto_dhcp'] = 'DHCP';
 $lang['network_bootproto_pppoe'] = 'PPPoE';
