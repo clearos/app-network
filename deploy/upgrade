@@ -72,11 +72,6 @@ if [ -e /etc/sysconfig/network-scripts/ifcfg-ppp0 ]; then
     fi
 fi
 
-# Clearsync restart
-#------------------
-
-/sbin/service clearsyncd condrestart
-
 # FIXME: 6.2.0 beta only, remove after final - disable zeroconf
 #--------------------------------------------------------------
 
