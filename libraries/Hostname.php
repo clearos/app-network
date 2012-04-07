@@ -290,7 +290,7 @@ class Hostname extends Engine
         }
 
         if (empty($hostname))
-            $hostname = self::DEFAULT_INTERNET_HOSTNAME;
+            $hostname = $this->get_actual();
 
         return $hostname;
     }
