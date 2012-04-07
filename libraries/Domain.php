@@ -183,6 +183,42 @@ class Domain extends Engine
 
         if (! $match)
             $file->add_lines("DEFAULT_DOMAIN=\"$domain\"\n");
+
+        // Set default for core apps that might already be installed 
+        //----------------------------------------------------------
+
+        if (clearos_library_installed('dhcp/Dnsmasq')) {
+            clearos_load_library('dhcp/Dnsmasq');
+
+            try {
+                $dhcp = new \clearos\apps\dhcp\Dnsmasq();
+                $dhcp->set_domain_name($domain);
+            } catch (Exception $e) {
+                // Keep going, not fatal
+            }
+        }
+
+        if (clearos_library_installed('openvpn/OpenVPN')) {
+            clearos_load_library('openvpn/OpenVPN');
+
+            try {
+                $openvpn = new \clearos\apps\openvpn\OpenVPN();
+                $openvpn->set_domain($domain);
+            } catch (Exception $e) {
+                // Keep going, not fatal
+            }
+        }
+
+        if (clearos_library_installed('google_apps/Provision')) {
+            clearos_load_library('google_apps/Provision');
+
+            try {
+                $google_apps = new \clearos\apps\google_apps\Provision();
+                $google_apps->set_domain($domain);
+            } catch (Exception $e) {
+                // Keep going, not fatal
+            }
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////
