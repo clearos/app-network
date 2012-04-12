@@ -47,11 +47,11 @@ $read_only = FALSE;
 
 $gateway_label = "<span style='font-size: 13px; font-weight: bold;'>Gateway Mode</span>";
 $gateway_options['image'] = clearos_app_htdocs('network') . '/gateway.png';
-$gateway_options['label_help'] = "<p style='font-size: 13px;  padding-left: 25px'>Gateway mode is used to connect a network of systems to the Internet or internal network.  You need two network cards for this mode.</p>";
+$gateway_options['label_help'] = "<p style='font-size: 13px;  padding-left: 25px'>Gateway mode is used to connect a network of systems to the Internet or internal network.  You need at least two network cards for this mode.</p>";
 
 $private_label = "<span style='font-size: 13px; font-weight: bold;'>Private Server Mode (No Firewall)</span>";
 $private_options['image'] = clearos_app_htdocs('network') . '/private_server.png';
-$private_options['label_help'] = "<p style='font-size: 13px;  padding-left: 25px'>This mode is appropriate for standalone servers installed on a protected network, for example, an office network.  The firewall on this system is disabled in this mode!</p>";
+$private_options['label_help'] = "<p style='font-size: 13px;  padding-left: 25px'>This mode is appropriate for standalone servers installed on a protected network, for example, an office network.  The firewall is disabled in this mode.</p>";
 
 $public_label = "<span style='font-size: 13px; font-weight: bold;'>Public Server Mode</span>";
 $public_options['image'] = clearos_app_htdocs('network') . '/public_server.png';
