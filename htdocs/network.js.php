@@ -74,6 +74,11 @@ $(document).ready(function() {
     // Wizard next button handling
     //----------------------------
 
+    if (($(location).attr('href').match('.*\/iface\/edit') != null) || $(location).attr('href').match('.*\/iface\/add') != null) {
+        $('#theme_wizard_nav_next').hide();
+        $('#theme_wizard_nav_previous').hide();
+    }
+
     $("#wizard_nav_next").click(function(){
         if ($(location).attr('href').match('.*\/hostname$') != null)
             $('form#hostname_form').submit();

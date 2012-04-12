@@ -1,7 +1,7 @@
 
 Name: app-network
 Epoch: 1
-Version: 1.0.10
+Version: 1.0.16
 Release: 1%{dist}
 Summary: IP Settings
 License: GPLv3

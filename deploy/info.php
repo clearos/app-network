@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'network';
-$app['version'] = '1.0.10';
+$app['version'] = '1.0.16';
 $app['release'] = '1';
 $app['vendor'] = 'ClearFoundation';
 $app['packager'] = 'ClearFoundation';
@@ -38,7 +38,9 @@ $app['controllers']['settings']['title'] = lang('base_settings');
 $app['controllers']['iface']['wizard_name'] = lang('network_network_interfaces');
 $app['controllers']['iface']['wizard_description'] = lang('network_interfaces_help');
 $app['controllers']['iface']['inline_help'] = array(
-    lang('network_interfaces') => lang('network_interfaces_help'),
+    lang('network_external') => lang('network_external_help'),
+    lang('network_lan') => lang('network_lan_help'),
+    lang('network_dmz_versus_hotlan') => lang('network_dmz_versus_hotlan_help'),
 );
 
 $app['controllers']['mode']['wizard_name'] = lang('network_network_mode');

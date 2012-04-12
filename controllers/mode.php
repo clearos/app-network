@@ -67,6 +67,8 @@ class Mode extends ClearOS_Controller
 
         $this->lang->load('network');
         $this->load->library('network/Network');
+        $this->load->library('network/Iface_Manager');
+        $this->load->library('network/Network_Utils');
 
         // Handle form submit
         //-------------------
@@ -106,10 +108,34 @@ class Mode extends ClearOS_Controller
         try {
             $data['network_mode'] = $this->network->get_mode();
             $data['network_modes'] = $this->network->get_supported_modes();
+            $data['iface_count'] = $this->iface_manager->get_interface_count();
         } catch (Exception $e) {
             $this->page->view_exception($e);
             return;
         }
+
+        // If network interface is a public IP in standalone, default to firewall enabled
+        /* TODO: need to set a default (or blank) in the firewall to get this done
+           otherwise, we'll keep stomping on the user's choice
+
+        $data['is_public'] = FALSE;
+
+        try {
+            if ($data['iface_count'] === 1)  {
+                $ifaces = $this->iface_manager->get_interfaces();
+
+                $this->load->library('network/Iface', $ifaces[0]);
+
+                $ip = $this->iface->get_live_ip();
+
+                if (! $this->network_utils->is_private_ip($ip))
+                    $data['is_public'] = TRUE;
+            }
+        } catch (Exception $e) {
+            // Not fatal
+        }
+        $data['is_public'] = TRUE;
+        */
 
         // Load views
         //-----------

@@ -42,7 +42,7 @@ $read_only = FALSE;
 // Content
 ///////////////////////////////////////////////////////////////////////////////
 
-// TODO: translate
+// FIXME: translate
 // TODO: move HTML/CSS elements to theme
 
 $gateway_label = "<span style='font-size: 13px; font-weight: bold;'>Gateway Mode</span>";
@@ -59,6 +59,25 @@ $public_options['label_help'] = "<p style='font-size: 13px; padding-left: 25px;'
 
 $checked[$network_mode] = TRUE;
 
+// Put what makes sense at the top of the list
+if ($iface_count > 1) {
+    $radio_buttons = array(
+        field_radio_set_item('gateway', 'network_mode', $gateway_label, $checked['gateway'], $read_only, $gateway_options),
+        field_radio_set_item('trustedstandalone', 'network_mode', $private_label, $checked['trustedstandalone'], $read_only, $private_options),
+        field_radio_set_item('standalone', 'network_mode', $public_label, $checked['standalone'], $read_only, $public_options),
+    );
+} else {
+    $gateway_options['disabled'] = TRUE;
+    $gateway_label = "<span style='font-size: 13px; font-weight: bold;'>Gateway Mode (Unavailable)</span>";
+    $gateway_options['label_help'] = "<p style='font-size: 13px;  padding-left: 25px'>Gateway mode is used to connect a network of systems to the Internet or internal network.  <span style='color: red'>You need at least two network cards for this mode.</span></p>";
+
+    $radio_buttons = array(
+        field_radio_set_item('trustedstandalone', 'network_mode', $private_label, $checked['trustedstandalone'], $read_only, $private_options),
+        field_radio_set_item('standalone', 'network_mode', $public_label, $checked['standalone'], $read_only, $public_options),
+        field_radio_set_item('gateway', 'network_mode', $gateway_label, $checked['gateway'], $read_only, $gateway_options),
+    );
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // Form
 ///////////////////////////////////////////////////////////////////////////////
@@ -68,11 +87,7 @@ echo form_header(lang('base_settings'));
 
 echo field_radio_set(
     '',
-    array(
-        field_radio_set_item('gateway', 'network_mode', $gateway_label, $checked['gateway'], $read_only, $gateway_options),
-        field_radio_set_item('trustedstandalone', 'network_mode', $private_label, $checked['trustedstandalone'], $read_only, $private_options),
-        field_radio_set_item('standalone', 'network_mode', $public_label, $checked['standalone'], $read_only, $public_options),
-    )
+    $radio_buttons
 );
 
 echo form_footer();
