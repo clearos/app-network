@@ -62,6 +62,24 @@ class DNS extends ClearOS_Controller
 
     function index()
     {
+        // Load libraries
+        //---------------
+
+        $this->load->library('network/Resolver');
+
+        // Handle wizard mode
+        //-------------------
+
+        // if wizard mode and automatic DNS is disabled, go straight to edit mode
+        $is_wizard = ($this->session->userdata('wizard')) ? TRUE : FALSE;
+        $is_automatic = $this->resolver->is_automatically_configured();
+
+        if ($is_wizard && !$is_automatic)
+            redirect('/network/dns/edit');
+
+        // Load views
+        //-----------
+
         $this->_view_edit('view');
     }
 
@@ -153,7 +171,8 @@ class DNS extends ClearOS_Controller
         //---------------
 
         try {
-            $data['form_type'] = ($this->session->userdata('wizard')) ? 'wizard' : $form_type;
+            $data['form_type'] = $form_type;
+            $data['is_wizard'] = ($this->session->userdata('wizard')) ? TRUE : FALSE;
             $data['is_automatic'] = $this->resolver->is_automatically_configured();
             $data['dns'] = $this->resolver->get_nameservers();
         } catch (Exception $e) {

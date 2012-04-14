@@ -86,8 +86,10 @@ $(document).ready(function() {
             $('form#mode_form').submit();
         else if ($(location).attr('href').match('.*\/domain$') != null)
             $('form#domain_form').submit();
-        else if ($(location).attr('href').match('.*\/dns') != null)
+        else if ($(location).attr('href').match('.*\/dns\/edit') != null)
             $('form#dns_form').submit();
+        else if ($(location).attr('href').match('.*\/dns') != null)
+            window.location = '/app/base/wizard/next_step';
         else if ($(location).attr('href').match('.*\/iface') != null)
             window.location = '/app/base/wizard/next_step';
     });
@@ -112,7 +114,7 @@ $(document).ready(function() {
     // Summary page
     //-------------
 
-    } else if ($('#network_summary').length != 0)  {
+    } else if ($('#dns_auto_text').length != 0)  {
         getAllNetworkInfo();
     }
 });

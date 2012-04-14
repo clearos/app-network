@@ -40,33 +40,38 @@ $this->lang->load('base');
 // Form handler
 ///////////////////////////////////////////////////////////////////////////////
 
+if ($is_automatic) {
+    $is_automatic_warning = TRUE;
+    $edit_button_text = lang('network_override');
+} else {
+    $is_automatic_warning = FALSE;
+    $edit_button_text = lang('base_edit');
+}
+
 if ($form_type === 'edit') {
-    if ($is_automatic) {
-        $read_only = FALSE;
-        $is_automatic_warning = TRUE;
-        $buttons = array(
-            form_submit_update('submit'),
-            anchor_cancel('/app/network/dns')
-        );
+    $form = '/network/dns/edit';
+    $read_only = FALSE;
+    if ($is_wizard) {
+        $buttons = array();
     } else {
-        $read_only = FALSE;
-        $is_automatic_warning = FALSE;
         $buttons = array(
             form_submit_update('submit'),
             anchor_cancel('/app/network/dns')
         );
     }
-} else if ($form_type === 'wizard') {
-    $read_only = FALSE;
-    $is_automatic_warning = FALSE;
-    $buttons = array();
+} else if ($form_type === 'wizarwfsdfasdfasfd') {
+    if ($is_automatic) {
+        $read_only = TRUE;
+        $buttons = array(anchor_custom('/app/network/dns/wizard_edit', lang('network_override')));
+    } else {
+        $read_only = FALSE;
+        $buttons = array();
+    }
 } else {
+    $form = '/network/dns/view';
 	$read_only = TRUE;
-    $is_automatic_warning = FALSE;
-    if ($is_automatic)
-        $buttons = array(anchor_custom('/app/network/dns/edit', lang('network_override')));
-    else
-        $buttons = array(anchor_edit('/app/network/dns/edit'));
+    $is_automatic_warning = FALSE; // Don't show auto warning in view only mode
+    $buttons = array(anchor_custom('/app/network/dns/edit', $edit_button_text));
 }
 
 $dns_count = count($dns);
@@ -105,7 +110,7 @@ if ($is_automatic_warning)
 // Form open
 ///////////////////////////////////////////////////////////////////////////////
 
-echo form_open('network/dns/edit', array('id' => 'dns_form')); 
+echo form_open($form, array('id' => 'dns_form')); 
 echo form_header(lang('network_dns'));
 
 ///////////////////////////////////////////////////////////////////////////////
