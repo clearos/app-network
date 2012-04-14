@@ -1,7 +1,7 @@
 
 Name: app-network
 Epoch: 1
-Version: 1.0.16
+Version: 1.1.0
 Release: 1%{dist}
 Summary: IP Settings
 License: GPLv3
@@ -15,7 +15,7 @@ Requires: app-base
 Provides administrators with the ability to configure the most common network tasks like mode, system hostname, DNS servers and Network Interface Card (NIC) settings.
 
 %package core
-Summary: IP Settings - APIs and install
+Summary: IP Settings - Core
 License: LGPLv3
 Group: ClearOS/Libraries
 Requires: app-base-core
