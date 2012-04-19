@@ -12,7 +12,7 @@ Requires: %{name}-core = 1:%{version}-%{release}
 Requires: app-base
 
 %description
-Provides administrators with the ability to configure the most common network tasks like mode, system hostname, DNS servers and Network Interface Card (NIC) settings.
+The IP Settings app provides the tools to configure the most common network tasks like netowrk mode, system hostname, DNS servers and network interface settings.
 
 %package core
 Summary: IP Settings - Core
@@ -33,7 +33,7 @@ Requires: traceroute
 Requires: wireless-tools
 
 %description core
-Provides administrators with the ability to configure the most common network tasks like mode, system hostname, DNS servers and Network Interface Card (NIC) settings.
+The IP Settings app provides the tools to configure the most common network tasks like netowrk mode, system hostname, DNS servers and network interface settings.
 
 This package provides the core API and libraries.
 
