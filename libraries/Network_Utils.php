@@ -464,10 +464,10 @@ class Network_Utils extends Engine
         $baseip = $matches[1];
         $netmask_or_prefix = $matches[2];
 
-        if (! Network_Utils::validate_prefix($netmask_or_prefix)) {
+        if (Network_Utils::is_valid_prefix($netmask_or_prefix)) {
             // Convert a prefix (/24) to a netmask (/255.255.255.0)
             $netmask = Network_Utils::get_netmask($netmask_or_prefix);
-        } else if (! Network_Utils::validate_netmask($netmask_or_prefix)) {
+        } else if (Network_Utils::is_valid_netmask($netmask_or_prefix)) {
             $netmask = $netmask_or_prefix;
         } else {
             return FALSE;
