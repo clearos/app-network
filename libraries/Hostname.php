@@ -225,7 +225,7 @@ class Hostname extends Engine
 
 
     /**
-     * Returns hostname from configuration file.
+     * Returns hostname from configuration first, then system if not available.
      *
      * @return string hostname
      * @throws Exception
@@ -237,8 +237,15 @@ class Hostname extends Engine
 
         $file = new File(self::FILE_CONFIG);
 
-        $hostname = $file->lookup_value('/^HOSTNAME=/');
-        $hostname = preg_replace('/"/', '', $hostname);
+        try {
+            $hostname = $file->lookup_value('/^HOSTNAME=/');
+            $hostname = preg_replace('/"/', '', $hostname);
+        } catch (File_No_Match_Exception $e) {
+            // Not fatal
+        }
+
+        if (empty($hostname))
+            $hostname = $this->get_actual();
 
         return $hostname;
     }
