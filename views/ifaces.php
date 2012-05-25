@@ -64,7 +64,7 @@ else
 ///////////////////////////////////////////////////////////////////////////////
 
 $anchors = array(
-    // TODO: anchor_custom('/app/network/iface/add_virtual', lang('network_add_virtual_interface'))
+    anchor_custom('/app/network/iface/add_virtual', lang('network_add_virtual_interface'))
 );
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -103,6 +103,15 @@ foreach ($network_interfaces as $interface => $detail) {
         if (($detail['type'] === Iface::TYPE_ETHERNET) || ($detail['type'] === Iface::TYPE_PPPOE)) {
             $buttons = array(
                 anchor_edit('/app/network/iface/edit/' . $interface),
+                anchor_delete('/app/network/iface/delete/' . $interface)
+            );
+
+        // Show edit/delete for supported Ethernet and PPPoE types
+        //--------------------------------------------------------
+
+        } else if ($detail['type'] === Iface::TYPE_VIRTUAL) {
+            $buttons = array(
+                anchor_edit('/app/network/iface/edit_virtual/' . $interface),
                 anchor_delete('/app/network/iface/delete/' . $interface)
             );
 

@@ -72,10 +72,12 @@ class Iface extends ClearOS_Controller
         //---------------
 
         try {
+            $iface_options['filter_virtual'] = FALSE;
+
             $data['mode'] = $mode;
             $data['form_type'] = ($this->session->userdata('wizard')) ? 'wizard' : 'view';
             $data['network_status'] = $this->network_status->get_connection_status();
-            $data['network_interfaces'] = $this->iface_manager->get_interface_details();
+            $data['network_interfaces'] = $this->iface_manager->get_interface_details($iface_options);
             $data['external_interfaces'] = $this->iface_manager->get_external_interfaces();
         } catch (Exception $e) {
             $this->page->view_exception($e);
@@ -102,6 +104,17 @@ class Iface extends ClearOS_Controller
     function add($interface = NULL)
     {
         $this->_item('add', $interface);
+    }
+
+    /**
+     * Add virutal interface view.
+     *
+     * @return view
+     */
+
+    function add_virtual()
+    {
+        $this->_virtual_item('add');
     }
 
     /**
@@ -135,6 +148,19 @@ class Iface extends ClearOS_Controller
     function edit($interface = NULL)
     {
         $this->_item('edit', $interface);
+    }
+
+    /**
+     * Edit virtual interface view.
+     *
+     * @param string $interface interface
+     *
+     * @return view
+     */
+
+    function edit_virtual($interface = NULL)
+    {
+        $this->_virtual_item('edit', $interface);
     }
 
     /**
@@ -356,5 +382,76 @@ class Iface extends ClearOS_Controller
             $options['type'] = MY_Page::TYPE_CONSOLE;
 
         $this->page->view_form('network/iface', $data, lang('network_interface'), $options);
+    }
+
+    /**
+     * Common add/edit/view form handler for virtual interfaces.
+     *
+     * @param string $form_type form type
+     * @param string $interface interface
+     *
+     * @return view
+     */
+
+    function _virtual_item($form_type, $interface)
+    {
+        if ($form_type === 'add')
+            $interface = $this->input->post('iface');
+
+        // Load libraries
+        //---------------
+
+        $this->lang->load('network');
+        $this->load->library('network/Iface', $interface);
+        $this->load->library('network/Iface_Manager');
+
+        // Set validation rules
+        //---------------------
+
+        // $this->form_validation->set_policy('ipaddr', 'network/Iface', 'validate_ip', TRUE);
+        $this->form_validation->set_policy('ipaddr', 'network/Iface', 'validate_ip', TRUE);
+        $this->form_validation->set_policy('netmask', 'network/Iface', 'validate_netmask', TRUE);
+
+        $form_ok = $this->form_validation->run();
+
+        // Handle form submit
+        //-------------------
+
+        if ($this->input->post('submit') && ($form_ok === TRUE)) {
+
+            try {
+                $this->iface->save_virtual_config($this->input->post('ipaddr'), $this->input->post('netmask'));
+                $this->iface->enable();
+
+                $this->page->set_status_updated();
+                redirect('/network/iface');
+            } catch (Exception $e) {
+                $this->page->view_exception($e);
+                return;
+            }
+        }
+
+        // Load the view data 
+        //------------------- 
+
+        try {
+            $data['form_type'] = $form_type;
+            $data['iface'] = $interface;
+            $data['ifaces'] = $this->iface_manager->get_interfaces();
+
+            if ($form_type !== 'add')
+                $data['iface_info'] = $this->iface->get_info();
+        } catch (Exception $e) {
+            $this->page->view_exception($e);
+            return;
+        }
+
+        // Load the views
+        //---------------
+
+        if (clearos_console())
+            $options['type'] = MY_Page::TYPE_CONSOLE;
+
+        $this->page->view_form('network/virtual', $data, lang('network_interface'), $options);
     }
 }
