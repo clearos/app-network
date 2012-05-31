@@ -111,6 +111,13 @@ $(document).ready(function() {
             setGateway();
         });
 
+        if ($('#passphrase').length != 0) {
+            setWirelessFields();
+            $('#mode').change(function() {
+                setWirelessFields();
+            });
+        }
+
     // Summary page
     //-------------
 
@@ -300,6 +307,13 @@ function setInterfaceFields() {
         $('#mtu_field').show();
         $('#pppoe_dns_field').show();
     }
+}
+
+function setWirelessFields() {
+    if ($('#mode').val() === 'WPA-EAP')
+        $('#passphrase_field').hide();
+    else
+        $('#passphrase_field').show();
 }
 
 // vim: ts=4 syntax=javascript

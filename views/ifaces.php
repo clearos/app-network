@@ -100,7 +100,9 @@ foreach ($network_interfaces as $interface => $detail) {
         // Show edit/delete for supported Ethernet and PPPoE types
         //--------------------------------------------------------
 
-        if (($detail['type'] === Iface::TYPE_ETHERNET) || ($detail['type'] === Iface::TYPE_PPPOE)) {
+        if (($detail['type'] === Iface::TYPE_ETHERNET) 
+            || ($detail['type'] === Iface::TYPE_PPPOE)
+            || ($detail['type'] === Iface::TYPE_WIRELESS)) {
             $buttons = array(
                 anchor_edit('/app/network/iface/edit/' . $interface),
                 anchor_delete('/app/network/iface/delete/' . $interface)
@@ -118,10 +120,7 @@ foreach ($network_interfaces as $interface => $detail) {
         // Show view for bridged, bonded, and wireless types
         //--------------------------------------------------
 
-        } else if (($detail['type'] === Iface::TYPE_BONDED)
-            || ($detail['type'] === Iface::TYPE_BRIDGED)
-            || ($detail['type'] === Iface::TYPE_WIRELESS)) 
-        {
+        } else if (($detail['type'] === Iface::TYPE_BONDED) || ($detail['type'] === Iface::TYPE_BRIDGED)) {
             $buttons = array(
                 anchor_view('/app/network/iface/view/' . $interface),
             );
@@ -140,7 +139,8 @@ foreach ($network_interfaces as $interface => $detail) {
         // Show only Ethernet interfaces
         //------------------------------
 
-        if (($detail['type'] === Iface::TYPE_ETHERNET) && !preg_match('/^ppp/', $interface)) {
+        if ((($detail['type'] === Iface::TYPE_ETHERNET) || ($detail['type'] === Iface::TYPE_WIRELESS)) 
+            && !preg_match('/^ppp/', $interface)) {
             $buttons = array(
                 anchor_add('/app/network/iface/add/' . $interface),
             );

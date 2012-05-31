@@ -243,6 +243,9 @@ class Iface extends ClearOS_Controller
         if (clearos_app_installed('dhcp'))
             $this->load->library('dhcp/Dnsmasq');
 
+        if (clearos_library_installed('wireless/Hostapd'))
+            $this->load->library('wireless/Hostapd');
+
         // Set validation rules
         //---------------------
 
@@ -269,6 +272,15 @@ class Iface extends ClearOS_Controller
             $this->form_validation->set_policy('pppoe_dns', 'network/Iface', 'validate_peerdns');
         }
 
+        if ($this->input->post('mode')) {
+            $this->form_validation->set_policy('mode', 'network/Iface', 'validate_wireless_mode', TRUE);
+            $this->form_validation->set_policy('ssid', 'network/Iface', 'validate_wireless_ssid', TRUE);
+            $this->form_validation->set_policy('channel', 'network/Iface', 'validate_wireless_channel', TRUE);
+
+            if ($this->input->post('mode') !== IfaceAPI::WIRELESS_WPA_EAP)
+                $this->form_validation->set_policy('passphrase', 'network/Iface', 'validate_wireless_passphrase', TRUE);
+        }
+
         $form_ok = $this->form_validation->run();
 
         // Handle form submit
@@ -279,6 +291,15 @@ class Iface extends ClearOS_Controller
             $aliases = array();
 
             try {
+                // Wireless options
+                //-----------------
+
+                $wireless = array();
+                $wireless['mode'] = ($this->input->post('mode')) ? $this->input->post('mode') : '';
+                $wireless['ssid'] = ($this->input->post('ssid')) ? $this->input->post('ssid') : '';
+                $wireless['channel'] = ($this->input->post('channel')) ? $this->input->post('channel') : '';
+                $wireless['passphrase'] = ($this->input->post('passphrase')) ? $this->input->post('passphrase') : '';
+
                 // Set interface configuration
                 //----------------------------
 
@@ -286,7 +307,8 @@ class Iface extends ClearOS_Controller
                     $this->iface->save_static_config(
                         $this->input->post('ipaddr'),
                         $this->input->post('netmask'),
-                        $this->input->post('gateway')
+                        $this->input->post('gateway'),
+                        $wireless
                     );
 
                     $this->iface->enable(FALSE);
@@ -296,7 +318,8 @@ class Iface extends ClearOS_Controller
                 } else if ($bootproto == IfaceAPI::BOOTPROTO_DHCP) {
                     $this->iface->save_dhcp_config(
                         $this->input->post('hostname'),
-                        (bool) $this->input->post('dhcp_dns')
+                        (bool) $this->input->post('dhcp_dns'),
+                        $wireless
                     );
 
                     $this->iface->enable(TRUE);
@@ -306,7 +329,8 @@ class Iface extends ClearOS_Controller
                         $this->input->post('username'),
                         $this->input->post('password'),
                         $this->input->post('mtu'),
-                        (bool) $this->input->post('pppoe_dns')
+                        (bool) $this->input->post('pppoe_dns'),
+                        $wireless
                     );
 
                     $this->iface->enable(TRUE);
@@ -356,7 +380,11 @@ class Iface extends ClearOS_Controller
             } else {
                 $data['show_dhcp'] = FALSE;
             }
-            
+
+            if (clearos_library_installed('wireless/Hostapd')) {
+                $data['modes'] = $this->iface->get_supported_wireless_modes();
+                $data['channels'] = $this->iface->get_supported_wireless_channels();
+            }
         } catch (Exception $e) {
             $this->page->view_exception($e);
             return;

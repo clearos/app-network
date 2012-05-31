@@ -128,6 +128,7 @@ class Iface extends Engine
 
     // Misc
     const CONSTANT_ONE_TO_ONE_NAT_START = 200;
+    const CONSTANT_WEP_CLIENT = 'managed';
 
     // Commands
     const COMMAND_ETHTOOL = '/sbin/ethtool';
@@ -162,6 +163,11 @@ class Iface extends Engine
     const TYPE_VIRTUAL = 'Virtual';
     const TYPE_VLAN = 'VLAN';
     const TYPE_WIRELESS = 'Wireless';
+
+    // Wireless types
+    const WIRELESS_WEP_CLIENT = 'WEP';
+    const WIRELESS_WPA_PSK = 'WPA-PSK';
+    const WIRELESS_WPA_EAP = 'WPA-EAP';
 
     // Flags
     const IFF_UP = 0x1;
@@ -288,6 +294,7 @@ class Iface extends Engine
 
         if($iface != NULL) $this->iface = $iface;
 
+        // FIXME
         try {
             $shell = new Shell();
             $retval = $shell->execute(self::COMMAND_IFDOWN, $this->iface, TRUE);
@@ -487,6 +494,27 @@ class Iface extends Engine
             }
         } else {
             $info['configured'] = FALSE;
+        }
+
+        // Wireless extras
+        //----------------
+
+        if ($this->is_configured()) {
+            if (isset($info['ifcfg']['mode']) && ($info['ifcfg']['mode'] === self::CONSTANT_WEP_CLIENT)) {
+                $info['wireless_ssid'] = isset($info['ifcfg']['essid']) ? $info['ifcfg']['essid'] : '';
+                $info['wireless_mode'] = self::WIRELESS_WEP_CLIENT;
+                $info['wireless_channel'] = isset($info['ifcfg']['channel']) ? $info['ifcfg']['channel'] : '';
+                $info['wireless_passphrase'] = isset($info['ifcfg']['key']) ? $info['ifcfg']['key'] : '';
+            } else {
+                if (clearos_library_installed('wireless/Hostapd')) {
+                    clearos_load_library('wireless/Hostapd');
+                    $hostapd = new \clearos\apps\wireless\Hostapd();
+                    $info['wireless_ssid'] = $hostapd->get_ssid();
+                    $info['wireless_mode'] = $hostapd->get_mode();
+                    $info['wireless_channel'] = $hostapd->get_channel();
+                    $info['wireless_passphrase'] = $hostapd->get_wpa_passphrase();
+                }
+            }
         }
 
         return $info;
@@ -794,6 +822,61 @@ class Iface extends Engine
         $role = new Role();
 
         return $role->get_interface_roles($this->iface);
+    }
+
+    /**
+     * Returns supported wireless channels.
+     *
+     * @return array supported wireless channels
+     * @throws Engine_Exception
+     */
+
+    public function get_supported_wireless_channels()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        // Could we scan the network for other APs and flag some as recommend?
+        // If so, add the recommendations on the RHS of hash array
+
+        return array(
+            0 => lang('base_automatic'),
+            1 => '1',
+            2 => '2',
+            3 => '3',
+            4 => '4',
+            5 => '5',
+            6 => '6',
+            7 => '7',
+            8 => '8',
+            9 => '9',
+            10 => '10',
+            11 => '11',
+            12 => '12',
+            13 => '13',
+            14 => '14',
+            15 => '15',
+        );
+    }
+
+    /**
+     * Returns supported wireless modes for the interface.
+     *
+     * @return array supported wireless modes
+     * @throws Engine_Exception
+     */
+
+    public function get_supported_wireless_modes()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $modes = array(self::WIRELESS_WEP_CLIENT => lang('wireless_wep'));
+
+        if (clearos_library_installed('wireless/Hostapd')) {
+            $modes[self::WIRELESS_WPA_PSK] = lang('wireless_wpa_preshared_key');
+            $modes[self::WIRELESS_WPA_EAP] = lang('wireless_wpa_infrastructure');
+        }
+
+        return $modes;
     }
 
     /**
@@ -1376,12 +1459,13 @@ class Iface extends Engine
      * @param string  $password password
      * @param integer $mtu      MTU
      * @param boolean $peerdns  set DNS servers
+     * @param array   $wireless wireless information if wireless
      *
      * @return string New/current PPPoE interface name
      * @throws Engine_Exception
      */
 
-    public function save_pppoe_config($eth, $username, $password, $mtu = NULL, $peerdns = TRUE)
+    public function save_pppoe_config($eth, $username, $password, $mtu = NULL, $peerdns = TRUE, $wireless = NULL)
     {
         clearos_profile(__METHOD__, __LINE__);
 
@@ -1487,6 +1571,9 @@ class Iface extends Engine
             // Not fatal
         }
 
+        if (! empty($wireless))
+            $this->_save_wireless_settings($info, $wireless);
+
         $pppoe->write_config($info);
 
         // Add password to chap-secrets
@@ -1501,14 +1588,15 @@ class Iface extends Engine
     /**
      * Creates a standard ethernet configuration.
      *
-     * @param string  $hostname         optional DHCP hostname (for DHCP only)
-     * @param boolean $peerdns          set to TRUE if you want to use the DHCP peer DNS settings
+     * @param string  $hostname optional DHCP hostname (for DHCP only)
+     * @param boolean $peerdns  set to TRUE if you want to use the DHCP peer DNS settings
+     * @param array   $wireless wireless information if wireless
      *
      * @return void
      * @throws  Engine_Exception
      */
 
-    public function save_dhcp_config($hostname, $peerdns)
+    public function save_dhcp_config($hostname, $peerdns, $wireless = NULL)
     {
         clearos_profile(__METHOD__, __LINE__);
 
@@ -1540,21 +1628,25 @@ class Iface extends Engine
         if (strlen($hostname))
             $info['DHCP_HOSTNAME'] = $hostname;
 
+        if (! empty($wireless))
+            $this->_save_wireless_settings($info, $wireless);
+
         $this->write_config($info);
     }
 
     /**
      * Creates a standard ethernet configuration.
      *
-     * @param string  $ip               IP address (for static only)
-     * @param string  $netmask          netmask (for static only)
-     * @param string  $gateway          gate (for static only)
+     * @param string $ip       IP address (for static only)
+     * @param string $netmask  netmask (for static only)
+     * @param string $gateway  gate (for static only)
+     * @param array  $wireless wireless information if wireless
      *
      * @return void
      * @throws  Engine_Exception
      */
 
-    public function save_static_config($ip, $netmask, $gateway = NULL)
+    public function save_static_config($ip, $netmask, $gateway = NULL, $wireless = NULL)
     {
         clearos_profile(__METHOD__, __LINE__);
 
@@ -1587,6 +1679,9 @@ class Iface extends Engine
 
         if (! empty($gateway))
             $info['GATEWAY'] = $gateway;
+
+        if (! empty($wireless))
+            $this->_save_wireless_settings($info, $wireless);
 
         $this->write_config($info);
     }
@@ -1643,65 +1738,6 @@ class Iface extends Engine
         $this->write_config($info);
 
         return $this->iface;
-    }
-
-    /**
-     * Create a wireless network configuration.
-     *
-     * @param string  $isdhcp  set to TRUE if DHCP
-     * @param string  $ip      IP address (for static only)
-     * @param string  $netmask netmask (for static only)
-     * @param string  $gateway gateway (for static only)
-     * @param string  $essid   ESSID
-     * @param string  $channel channel
-     * @param string  $mode    mode
-     * @param string  $key     key
-     * @param string  $rate    rate
-     * @param boolean $peerdns set to TRUE if you want to use the DHCP peer DNS settings
-     *
-     * @return void
-     * @throws  Engine_Exception, Engine_Exception
-     */
-
-    public function save_wireless_config($isdhcp, $ip, $netmask, $gateway, $essid, $channel, $mode, $key, $rate, $peerdns)
-    {
-        clearos_profile(__METHOD__, __LINE__);
-
-        // TODO: is this still used?
-        return;
-
-        // Disable interface - see maintenance note
-
-        try {
-            $this->disable();
-        } catch (Engine_Exception $e) {
-            // Not fatal
-        }
-
-        $info = array();
-        $info['DEVICE'] = $this->iface;
-        $info['TYPE'] = self::TYPE_WIRELESS;
-        $info['ONBOOT'] = 'yes';
-        $info['USERCTL'] = 'no';
-        $info['ESSID'] = $essid;
-        $info['CHANNEL'] = $channel;
-        $info['MODE'] = $mode;
-        $info['KEY'] = $key;
-        $info['RATE'] = $rate;
-
-        if ($isdhcp) {
-            $info['BOOTPROTO'] = 'dhcp';
-            $info['PEERDNS'] = ($peerdns) ? 'yes' : 'no';
-        } else {
-            $info['BOOTPROTO'] = 'static';
-            $info['IPADDR'] = $ip;
-            $info['NETMASK'] = $netmask;
-
-            if ($gateway)
-                $info['GATEWAY'] = $gateway;
-        }
-
-        $this->write_config($info);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -1884,5 +1920,194 @@ class Iface extends Engine
         // TODO
         // if (! preg_match('/^[a-zA-Z0-9:]+$/', $username))
         //    return lang('network_username_invalid');
+    }
+
+    /**
+     * Validation routine for wireless channels.
+     *
+     * @param integer $channel wireless channel
+     *
+     * @return string error message if wireless channel is invalid
+     */
+
+    public function validate_wireless_channel($channel)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $supported = $this->get_supported_wireless_channels();
+
+        if (! array_key_exists($channel, $supported))
+            return lang('network_wireless_channel_invalid');
+    }
+
+    /**
+     * Validation routine for wireless mode.
+     *
+     * @param integer $mode wireless mode
+     *
+     * @return string error message if wireless mode is invalid
+     */
+
+    public function validate_wireless_mode($mode)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $supported = $this->get_supported_wireless_modes();
+
+        if (! array_key_exists($mode, $supported))
+            return lang('network_wireless_mode_invalid');
+    }
+
+    /**
+     * Validation routine for wireless passphrase.
+     *
+     * @param integer $passphrase wireless passphrase
+     *
+     * @return string error message if wireless passphrase is invalid
+     */
+
+    public function validate_wireless_passphrase($passphrase)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        if (strlen($passphrase) > 32)
+            return lang('network_wireless_passphrase_invalid');
+    }
+
+    /**
+     * Validation routine for wireless SSID.
+     *
+     * @param integer $ssid wireless SSID
+     *
+     * @return string error message if wireless SSID is invalid
+     */
+
+    public function validate_wireless_ssid($ssid)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        if (!preg_match('/^[\w\-_\.]+$/', $ssid))
+            return lang('network_ssid_invalid');
+
+        if (strlen($ssid) > 32)
+            return lang('network_ssid_invalid');
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // P R I V A T E  M E T H O D S
+    ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Creates wireless network configuration.
+     *
+     * Options include:
+     * - ssid
+     * - channel
+     * - mode
+     * - key
+     *
+     * @param array $options wireless configuration options
+     *
+     * @return void
+     * @throws  Engine_Exception, Engine_Exception
+     */
+
+    protected function _get_wireless_configlet($options)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+
+        return $info;
+    }
+
+    /**
+     * Configures extra wireless settings in Hostapd and RADIUS.
+     *
+     * Options include:
+     * - ssid
+     * - channel
+     * - mode
+     * - key
+     *
+     * @param array $options wireless configuration options
+     *
+     * @return void
+     * @throws  Engine_Exception, Engine_Exception
+     */
+
+    protected function _save_hostapd_hooks($options)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+    }
+
+    /**
+     * Saves wireless configuration and hooks.
+     *
+     * Wireless ptions include:
+     * - ssid
+     * - channel
+     * - mode
+     * - key
+     *
+     * @param array $options wireless configuration options
+     *
+     * @return void
+     * @throws  Engine_Exception, Engine_Exception
+     */
+
+    protected function _save_wireless_settings(&$info, $wireless)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        unset($info['MODE']);
+        unset($info['ESSID']);
+        unset($info['CHANNEL']);
+        unset($info['KEY']);
+
+        // Set ifcfg-ethX configuration
+        //-----------------------------
+
+        $info['TYPE'] = self::TYPE_WIRELESS;
+
+        if ($wireless['mode'] === self::WIRELESS_WEP_CLIENT) {
+            $info['MODE'] = self::CONSTANT_WEP_CLIENT;
+            $info['ESSID'] = $wireless['ssid'];
+            $info['KEY'] = $wireless['passphrase'];
+
+            if ($wireless['channel'] != 0)
+                $info['CHANNEL'] = $wireless['channel'];
+        }
+
+        // Save hostapd stuff
+        //-------------------
+
+        if (! clearos_library_installed('wireless/Hostapd'))
+            return;
+
+        clearos_load_library('wireless/Hostapd');
+
+        $hostapd = new \clearos\apps\wireless\Hostapd();
+        $hostapd->set_ssid($wireless['ssid']);
+        $hostapd->set_mode($wireless['mode']);
+        $hostapd->set_interface($this->iface);
+
+        if ($wireless['channel'] != 0)
+            $hostapd->set_channel($wireless['channel']);
+
+        if ($wireless['mode'] === self::WIRELESS_WPA_PSK)
+            $hostapd->set_wpa_passphrase($wireless['passphrase']);
+
+        try {
+            if ($hostapd->get_running_state())
+                $hostapd->restart();
+            else
+                $hostapd->set_running_state(TRUE);
+
+            if (!$hostapd->get_boot_state())
+                $hostapd->set_boot_state(TRUE);
+        } catch (Exception $e) {
+            // Keep going.
+        }
     }
 }

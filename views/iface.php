@@ -101,17 +101,19 @@ echo field_input('speed', $speed, lang('network_speed'), TRUE);
 echo fieldset_footer();
 
 ///////////////////////////////////////////////////////////////////////////////
-// Common header
+// Settings
 ///////////////////////////////////////////////////////////////////////////////
+
+// Common settings
+//----------------
 
 echo fieldset_header(lang('base_settings'));
 echo field_input('interface', $interface, lang('network_interface'), TRUE);
 echo field_dropdown('role', $roles, $iface_info['role'], lang('network_role'), $read_only, array('id' => 'role'));
 echo field_dropdown('bootproto', $bootprotos, $iface_info['ifcfg']['bootproto'], lang('network_connection_type'), $bootproto_read_only);
 
-///////////////////////////////////////////////////////////////////////////////
 // Static
-///////////////////////////////////////////////////////////////////////////////
+//-------
 
 echo field_input('ipaddr', $iface_info['ifcfg']['ipaddr'], lang('network_ip'), $read_only);
 echo field_input('netmask', $iface_info['ifcfg']['netmask'], lang('network_netmask'), $read_only);
@@ -120,27 +122,38 @@ echo field_input('gateway', $iface_info['ifcfg']['gateway'], lang('network_gatew
 if ($show_dhcp)
     echo field_checkbox('enable_dhcp', $enable_dhcp, lang('network_enable_dhcp_server'), $read_only);
 
-///////////////////////////////////////////////////////////////////////////////
 // DHCP
-///////////////////////////////////////////////////////////////////////////////
+//-----
 
 echo field_input('hostname', $iface_info['ifcfg']['dhcp_hostname'], lang('network_hostname'), $read_only);
 echo field_checkbox('dhcp_dns', $dns, lang('network_automatic_dns_servers'), $read_only);
 
-///////////////////////////////////////////////////////////////////////////////
 // PPPoE
-///////////////////////////////////////////////////////////////////////////////
+//------
 
 echo field_input('username', $iface_info['ifcfg']['user'], lang('base_username'), $read_only);
 echo field_input('password', $password, lang('base_password'), $read_only);
 echo field_input('mtu', $iface_info['ifcfg']['mtu'], lang('network_mtu'), $read_only);
 echo field_checkbox('pppoe_dns', $dns, lang('network_automatic_dns_servers'), $read_only);
+echo fieldset_footer();
+
+///////////////////////////////////////////////////////////////////////////////
+// Wireless
+///////////////////////////////////////////////////////////////////////////////
+
+if ($iface_info['type'] === Iface::TYPE_WIRELESS) {
+    echo fieldset_header(lang('network_wireless'));
+    echo field_dropdown('mode', $modes, $iface_info['wireless_mode'], lang('wireless_mode'), $read_only);
+    echo field_input('ssid', $iface_info['wireless_ssid'], lang('wireless_ssid'), $read_only);
+    echo field_password('passphrase', $iface_info['wireless_passphrase'], lang('wireless_passphrase'), $read_only);
+    echo field_dropdown('channel', $channels, $iface_info['wireless_channel'], lang('wireless_channel'), $read_only);
+    echo fieldset_footer();
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Common footer
 ///////////////////////////////////////////////////////////////////////////////
 
-echo fieldset_footer();
 echo field_button_set($buttons);
 
 ///////////////////////////////////////////////////////////////////////////////
