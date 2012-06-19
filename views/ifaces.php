@@ -63,9 +63,10 @@ else
 // Anchors 
 ///////////////////////////////////////////////////////////////////////////////
 
-$anchors = array(
-    anchor_custom('/app/network/iface/add_virtual', lang('network_add_virtual_interface'))
-);
+if ($form_type === 'wizard')
+    $anchors = array();
+else
+    $anchors = array(anchor_custom('/app/network/iface/add_virtual', lang('network_add_virtual_interface')));
 
 ///////////////////////////////////////////////////////////////////////////////
 // Items
