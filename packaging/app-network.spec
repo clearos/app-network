@@ -1,7 +1,7 @@
 
 Name: app-network
 Epoch: 1
-Version: 1.1.4
+Version: 1.2.2
 Release: 1%{dist}
 Summary: IP Settings
 License: GPLv3
@@ -45,6 +45,7 @@ This package provides the core API and libraries.
 mkdir -p -m 755 %{buildroot}/usr/clearos/apps/network
 cp -r * %{buildroot}/usr/clearos/apps/network/
 
+install -d -m 0755 %{buildroot}/etc/clearos/network.d
 install -d -m 0755 %{buildroot}/var/clearos/network
 install -d -m 0755 %{buildroot}/var/clearos/network/backup
 install -D -m 0755 packaging/dhclient-exit-hooks %{buildroot}/etc/dhcp/dhclient-exit-hooks
@@ -91,6 +92,7 @@ exit 0
 %exclude /usr/clearos/apps/network/packaging
 %exclude /usr/clearos/apps/network/tests
 %dir /usr/clearos/apps/network
+%dir /etc/clearos/network.d
 %dir /var/clearos/network
 %dir /var/clearos/network/backup
 /usr/clearos/apps/network/deploy

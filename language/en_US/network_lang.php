@@ -156,3 +156,5 @@ $lang['network_wireless_channel_invalid'] = 'Wireless channel is invalid.';
 $lang['network_wireless_mode_invalid'] = 'Wireless mode is invalid.';
 $lang['network_wireless_passphrase_invalid'] = 'Wireless passphrase is invalid.';
 $lang['network_ssid_invalid'] = 'SSID is invalid.';
+$lang['network_add_upstream_proxy'] = 'Add Upstream Proxy';
+$lang['network_proxy_server_invalid'] = 'Proxy server is invalid.';
