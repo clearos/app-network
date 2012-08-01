@@ -1469,6 +1469,8 @@ class Iface extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
+        // FIXME: remove wireless param - not supported
+
         Validation_Exception::is_valid($this->validate_interface($this->iface));
         Validation_Exception::is_valid($this->validate_interface($eth));
         Validation_Exception::is_valid($this->validate_username($username));
@@ -1570,9 +1572,6 @@ class Iface extends Engine
         } catch (Engine_Exception $e) {
             // Not fatal
         }
-
-        if (! empty($wireless))
-            $this->_save_wireless_settings($info, $wireless);
 
         $pppoe->write_config($info);
 
