@@ -2059,6 +2059,9 @@ class Iface extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
+        // FIXME: revisit wireless 
+        return;
+
         unset($info['MODE']);
         unset($info['ESSID']);
         unset($info['CHANNEL']);

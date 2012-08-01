@@ -141,6 +141,9 @@ echo fieldset_footer();
 // Wireless
 ///////////////////////////////////////////////////////////////////////////////
 
+/*
+FIXME: disable wireless for now
+
 if ($iface_info['type'] === Iface::TYPE_WIRELESS) {
     echo fieldset_header(lang('network_wireless'));
     echo field_dropdown('mode', $modes, $iface_info['wireless_mode'], lang('wireless_mode'), $read_only);
@@ -149,6 +152,7 @@ if ($iface_info['type'] === Iface::TYPE_WIRELESS) {
     echo field_dropdown('channel', $channels, $iface_info['wireless_channel'], lang('wireless_channel'), $read_only);
     echo fieldset_footer();
 }
+*/
 
 ///////////////////////////////////////////////////////////////////////////////
 // Common footer
