@@ -164,11 +164,13 @@ class Routes extends Engine
 
         if (! empty($output)) {
             foreach ($output as $line) {
-                if (preg_match('/^default/', $line)) {
-                    $parts = explode(' ', $line);
-                    if ($parts[4]) {
-                        $routeinfo[$parts[4]] = $parts[2];
-                    }
+                $matches = array();
+
+                // TODO: IPv6 support
+                if (preg_match('/^default\s+dev\s+([\w]*)\s+/', $line, $matches)) {
+                    $routeinfo[$matches[1]] = '0.0.0.0';
+                } else if (preg_match('/^default\s+via\s+([0-9\.]*).*dev\s+([\w+]*)/', $line, $matches)) {
+                    $routeinfo[$matches[2]] = $matches[1];
                 }
             }
         }
