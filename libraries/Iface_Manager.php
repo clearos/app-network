@@ -496,6 +496,22 @@ class Iface_Manager extends Engine
             if ($info['role'] != Role::ROLE_EXTERNAL)
                 continue;
 
+            // Skip interfaces used 'indirectly' (e.g. PPPoE, bonded interfaces)
+            if (isset($info['master']))
+                continue;
+
+            // Skip 1-to-1 NAT interfaces
+            if (isset($info['one-to-one-nat']) && $info['one-to-one-nat'])
+                continue;
+
+            // Skip non-configurable interfaces
+            if (! $info['configurable'])
+                continue;
+
+            // Skip virtual interfaces
+            if (isset($info['virtual']) && $info['virtual'])
+                continue;
+
             $ifaces[] = $eth;   
         }
 
