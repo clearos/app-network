@@ -1,8 +1,7 @@
-
-
 <?php
+$lang['network_address'] = 'Network Address';
 $lang['network_add_upstream_proxy'] = 'Add Upstream Proxy';
-$lang['network_add_virtual_interface'] = 'Add Virtual Interface';
+$lang['network_add_upstream_proxy'] = 'Add Upstream Proxy';
 $lang['network_allow_connections'] = 'Allow Connections';
 $lang['network_app_description'] = 'The IP Settings app provides the tools to configure the most common network tasks like netowrk mode, system hostname, DNS servers and network interface settings.';
 $lang['network_app_name'] = 'IP Settings';
