@@ -82,3 +82,21 @@ if [ -z "$CHECK" ]; then
     echo "NOZEROCONF=\"yes\"" >> /etc/sysconfig/network
 fi
 
+# Disable IPv6 by default
+#------------------------
+
+CHECK=`grep "^net.ipv6.conf.all.disable_ipv6[[:space:]]*=" /etc/sysctl.conf`
+
+if [ -z "$CHECK" ]; then
+    logger -p local6.notice -t installer "app-network-core - disabling IPv6 interfaces"
+    echo "" >> /etc/sysctl.conf
+    echo "# IPv6 policy" >> /etc/sysctl.conf
+    echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/sysctl.conf
+fi
+
+CHECK=`grep "^net.ipv6.conf.default.disable_ipv6[[:space:]]*=" /etc/sysctl.conf`
+
+if [ -z "$CHECK" ]; then
+    logger -p local6.notice -t installer "app-network-core - setting IPv6 default policy"
+    echo "net.ipv6.conf.default.disable_ipv6 = 1" >> /etc/sysctl.conf
+fi
