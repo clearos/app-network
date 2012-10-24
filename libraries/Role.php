@@ -331,7 +331,7 @@ class Role extends Engine
      * previous role (if any).
      *
      * @param string $interface interface name
-     * @param string $role   interface role
+     * @param string $role      interface role
      *
      * @return void
      * @throws Engine_Exception

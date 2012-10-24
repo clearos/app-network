@@ -160,9 +160,6 @@ foreach ($network_interfaces as $interface => $detail) {
         // Skip all other unsupported types
         //---------------------------------
 
-        // Skip all other unsupported types
-        //---------------------------------
-
         } else {
             continue;
         }

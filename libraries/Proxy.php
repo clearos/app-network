@@ -180,9 +180,10 @@ class Proxy extends Engine
     /**
      * Sets a configuration parameter.
      *
-     * @parameter string $key key
-     * @parameter string $value value
+     * @param string $key   key
+     * @param string $value value
      *
+     * @return void
      * @throws Engine_Exception
      */
 

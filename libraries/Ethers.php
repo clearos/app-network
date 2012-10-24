@@ -161,14 +161,11 @@ class Ethers extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        if (Network_Utils::is_valid_mac($mac) === FALSE) {
-            throw new Validation_Exception(
-                lang('network_mac_address_invalid'), CLEAROS_ERROR);
-        }
-        if (Network_Utils::is_valid_ip($ip) === FALSE) {
-            throw new Validation_Exception(
-                lang('network_ip_invalid'), CLEAROS_ERROR);
-        }
+        if (Network_Utils::is_valid_mac($mac) === FALSE)
+            throw new Validation_Exception(lang('network_mac_address_invalid'));
+
+        if (Network_Utils::is_valid_ip($ip) === FALSE)
+            throw new Validation_Exception(lang('network_ip_invalid'));
 
         $file = new File(self::FILE_CONFIG);
         $contents = $file->get_contents_as_array();
@@ -197,10 +194,8 @@ class Ethers extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        if (Network_Utils::is_valid_mac($mac) === FALSE) {
-            throw new Validation_Exception(
-                lang('network_mac_address_invalid'), CLEAROS_ERROR);
-        }
+        if (Network_Utils::is_valid_mac($mac) === FALSE)
+            throw new Validation_Exception(lang('network_mac_address_invalid'));
 
         $file = new File(self::FILE_CONFIG);
         $contents = $file->get_contents_as_array();
@@ -233,20 +228,16 @@ class Ethers extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        if (Network_Utils::is_valid_mac($mac) === FALSE) {
-            throw new Validation_Exception(
-                lang('network_mac_address_invalid'), CLEAROS_ERROR);
-        }
+        if (Network_Utils::is_valid_mac($mac) === FALSE)
+            throw new Validation_Exception(lang('network_mac_address_invalid'));
 
         $ethers = $this->get_ethers();
 
         if (! isset($ethers[$mac]))
             throw new Ethers_Not_Found_Exception($mac, CLEAROS_ERROR);
 
-        if (Network_Utils::is_valid_hostname($ethers[$mac]) === FALSE) {
-            throw new Validation_Exception(
-                lang('network_hostname_invalid'), CLEAROS_ERROR);
-        }
+        if (Network_Utils::is_valid_hostname($ethers[$mac]) === FALSE)
+            throw new Validation_Exception(lang('network_hostname_invalid'));
 
         return $ethers[$mac];
     }
@@ -264,19 +255,18 @@ class Ethers extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        if (Network_Utils::is_valid_hostname($hostname) === FALSE) {
-            throw new Validation_Exception(
-                lang('network_hostname_invalid'), CLEAROS_ERROR);
-        }
+        if (Network_Utils::is_valid_hostname($hostname) === FALSE)
+            throw new Validation_Exception(lang('network_hostname_invalid'));
 
         $mac = NULL;
         $ethers = $this->get_ethers();
         foreach ($ethers as $key => $value) {
-            if (strcasecmp($hostname, $value) != 0) continue;
-            if (Network_Utils::is_valid_mac($key) === FALSE) {
-                throw new Validation_Exception(
-                    lang('network_mac_address_invalid'), CLEAROS_ERROR);
-            }
+            if (strcasecmp($hostname, $value) != 0)
+                continue;
+
+            if (Network_Utils::is_valid_mac($key) === FALSE)
+                throw new Validation_Exception(lang('network_mac_address_invalid'));
+
             $mac = $key;
             break;
         }
@@ -314,14 +304,12 @@ class Ethers extends Engine
                 continue;
             $parts = preg_split('/[\s]+/', $line);
             try {
-                if (Network_Utils::is_valid_mac($parts[0]) === FALSE) {
-                    throw new Validation_Exception(
-                        lang('network_mac_address_invalid'), CLEAROS_ERROR);
-                }
-                if (Network_Utils::is_valid_hostname($parts[1]) === FALSE) {
-                    throw new Validation_Exception(
-                        lang('network_hostname_invalid'), CLEAROS_ERROR);
-                }
+                if (Network_Utils::is_valid_mac($parts[0]) === FALSE)
+                    throw new Validation_Exception(lang('network_mac_address_invalid'));
+
+                if (Network_Utils::is_valid_hostname($parts[1]) === FALSE)
+                    throw new Validation_Exception(lang('network_hostname_invalid'));
+
                 $ethers[$parts[0]] = $parts[1];
             } catch (Validation_Exception $e) {
             }

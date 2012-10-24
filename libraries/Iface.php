@@ -116,7 +116,7 @@ clearos_load_library('base/Validation_Exception');
  * @subpackage Libraries
  * @author     ClearFoundation <developer@clearfoundation.com>
  * @copyright  2002-2011 ClearFoundation
- *role @license    http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License version 3 or later
+ * @license    http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License version 3 or later
  * @link       http://www.clearfoundation.com/docs/developer/apps/network/
  */
 
@@ -404,7 +404,7 @@ class Iface extends Engine
         }
 
         $handle = @ifconfig_init();
-        ifconfig_debug($handle, false);
+        ifconfig_debug($handle, FALSE);
 
         $info = array();
 
@@ -971,23 +971,6 @@ class Iface extends Engine
     }
 
     /**
-     * Returns type text.
-     *
-     * @deprecated
-     * @see get_type_text
-     * @return string type text
-     */
-
-    public function get_type_name()
-    {
-        clearos_profile(__METHOD__, __LINE__);
-
-        Validation_Exception::is_valid($this->validate_interface($this->iface));
-
-        return $this->get_type_text();
-    }
-
-    /**
      * Returns the type of interface as a readable string for end users.
      *
      * @return  string  type of interface
@@ -1069,7 +1052,9 @@ class Iface extends Engine
         // Obtain vendor ID number
         $path = $device_link . (($is_usb) ? '/../idVendor' : '/vendor');
 
-	if (!file_exists($path)) return '';
+        if (!file_exists($path))
+            return '';
+
         if (!($fh = fopen($path, 'r')))
             return '';
 
@@ -1412,7 +1397,8 @@ class Iface extends Engine
         // Set some default based on behavior of network scripts
         if ((isset($netinfo['bootproto']) 
             && (($netinfo['bootproto'] == self::BOOTPROTO_PPPOE) || ($netinfo['bootproto'] == self::BOOTPROTO_DHCP)))
-            && (!isset($netinfo['peerdns'])))
+            && (!isset($netinfo['peerdns']))
+        )
             $netinfo['peerdns'] = TRUE;
 
         return $netinfo;
@@ -1459,7 +1445,6 @@ class Iface extends Engine
      * @param string  $password password
      * @param integer $mtu      MTU
      * @param boolean $peerdns  set DNS servers
-     * @param array   $wireless wireless information if wireless
      *
      * @return string New/current PPPoE interface name
      * @throws Engine_Exception
@@ -2047,7 +2032,8 @@ class Iface extends Engine
      * - mode
      * - key
      *
-     * @param array $options wireless configuration options
+     * @param array &$info    configuration file options
+     * @param array $wireless specified wireless options
      *
      * @return void
      * @throws  Engine_Exception, Engine_Exception

@@ -130,9 +130,9 @@ class Hostname extends Engine
      * hostname on startup.  This method will add an entry into the /etc/hosts
      * file to get around this "feature".
      *
-     * @param $force boolean force an update even if hostname is valid in DNS
+     * @param boolean $force force an update even if hostname is valid in DNS
      *
-     * @returns void
+     * @return void
      */
 
     public function auto_fix($force = FALSE)
@@ -281,6 +281,8 @@ class Hostname extends Engine
      *
      * In order to support certain apps (e.g. Certificate Manager), an Internet 
      * hostname needs to be specified.
+     *
+     * @return string Internet hostname
      */
 
     public function get_internet_hostname()

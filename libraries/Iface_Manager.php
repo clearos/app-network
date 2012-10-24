@@ -132,7 +132,7 @@ class Iface_Manager extends Engine
      * - filter_tun: filters out tunnel (OpenVPN) interfaces (default: TRUE)
      * - filter_virtual: filters out virtual interfaces (default: TRUE)
      *
-     * @param array $filter filter options
+     * @param array $options filter options
      *
      * @return array list of network devices (using ifconfig.so)
      * @throws Engine_Exception
