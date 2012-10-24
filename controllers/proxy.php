@@ -149,6 +149,6 @@ class Proxy extends ClearOS_Controller
         if (clearos_console())
             $options['type'] = MY_Page::TYPE_CONSOLE;
 
-        $this->page->view_form('network/proxy', $data, lang('network_proxy'), $options);
+        $this->page->view_form('network/proxy', $data, lang('network_upstream_proxy'), $options);
     }
 }
