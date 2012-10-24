@@ -1465,11 +1465,9 @@ class Iface extends Engine
      * @throws Engine_Exception
      */
 
-    public function save_pppoe_config($eth, $username, $password, $mtu = NULL, $peerdns = TRUE, $wireless = NULL)
+    public function save_pppoe_config($eth, $username, $password, $mtu = NULL, $peerdns = TRUE)
     {
         clearos_profile(__METHOD__, __LINE__);
-
-        // FIXME: remove wireless param - not supported
 
         Validation_Exception::is_valid($this->validate_interface($this->iface));
         Validation_Exception::is_valid($this->validate_interface($eth));
@@ -1627,7 +1625,7 @@ class Iface extends Engine
         if (strlen($hostname))
             $info['DHCP_HOSTNAME'] = $hostname;
 
-        if (! empty($wireless))
+        if (! empty($wireless['mode']))
             $this->_save_wireless_settings($info, $wireless);
 
         $this->write_config($info);
@@ -1679,7 +1677,7 @@ class Iface extends Engine
         if (! empty($gateway))
             $info['GATEWAY'] = $gateway;
 
-        if (! empty($wireless))
+        if (! empty($wireless['mode']))
             $this->_save_wireless_settings($info, $wireless);
 
         $this->write_config($info);
@@ -2059,9 +2057,6 @@ class Iface extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        // FIXME: revisit wireless 
-        return;
-
         unset($info['MODE']);
         unset($info['ESSID']);
         unset($info['CHANNEL']);
@@ -2079,6 +2074,8 @@ class Iface extends Engine
 
             if ($wireless['channel'] != 0)
                 $info['CHANNEL'] = $wireless['channel'];
+
+            return;
         }
 
         // Save hostapd stuff
