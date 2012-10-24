@@ -137,14 +137,28 @@ foreach ($network_interfaces as $interface => $detail) {
     //------------------------------------------
 
     } else {
-        // Show only Ethernet interfaces
-        //------------------------------
+        // Show Ethernet interfaces
+        //-------------------------
 
-        if ((($detail['type'] === Iface::TYPE_ETHERNET) || ($detail['type'] === Iface::TYPE_WIRELESS)) 
-            && !preg_match('/^ppp/', $interface)) {
+        if (($detail['type'] === Iface::TYPE_ETHERNET) && !preg_match('/^ppp/', $interface)) {
             $buttons = array(
                 anchor_add('/app/network/iface/add/' . $interface),
             );
+
+        // Show wireless interfaces, but only actions if app-wireless installed
+        //---------------------------------------------------------------------
+
+        } else if ($detail['type'] === Iface::TYPE_WIRELESS) {
+            if ($wireless_installed) {
+                $buttons = array(
+                    anchor_add('/app/network/iface/add/' . $interface),
+                );
+            } else {
+                $buttons = array();
+            }
+
+        // Skip all other unsupported types
+        //---------------------------------
 
         // Skip all other unsupported types
         //---------------------------------

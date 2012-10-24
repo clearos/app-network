@@ -79,6 +79,7 @@ class Iface extends ClearOS_Controller
             $data['network_status'] = $this->network_status->get_connection_status();
             $data['network_interfaces'] = $this->iface_manager->get_interface_details($iface_options);
             $data['external_interfaces'] = $this->iface_manager->get_external_interfaces();
+            $data['wireless_installed'] = clearos_library_installed('wireless/Hostapd');
         } catch (Exception $e) {
             $this->page->view_exception($e);
             return;
