@@ -1,7 +1,6 @@
 <?php
 $lang['network_address'] = 'Network Address';
 $lang['network_add_upstream_proxy'] = 'Add Upstream Proxy';
-$lang['network_add_upstream_proxy'] = 'Add Upstream Proxy';
 $lang['network_add_virtual_interface'] = 'Add Virtual Interface';
 $lang['network_allow_connections'] = 'Allow Connections';
 $lang['network_app_description'] = 'The IP Settings app provides the tools to configure the most common network tasks like netowrk mode, system hostname, DNS servers and network interface settings.';
@@ -23,6 +22,7 @@ $lang['network_connection_status'] = 'Connection Status';
 $lang['network_connection_type'] = 'Connection Type';
 $lang['network_default_domain'] = 'Default Domain';
 $lang['network_destination'] = 'Destination';
+$lang['network_destination_port'] = 'Destination Port';
 $lang['network_detected'] = 'Detected';
 $lang['network_device'] = 'Device';
 $lang['network_dhcp_server_did_not_respond'] = 'DHCP server did not respond.';
@@ -127,6 +127,8 @@ $lang['network_role_invalid'] = 'Role is invalid.';
 $lang['network_role'] = 'Role';
 $lang['network_settings_help'] = 'Your system can be configured as a gateway or a standalone server.';
 $lang['network_settings'] = 'Settings';
+$lang['network_source'] = 'Source';
+$lang['network_source_port'] = 'Source Port';
 $lang['network_speed'] = 'Speed';
 $lang['network_ssid_invalid'] = 'SSID is invalid.';
 $lang['network_standalone_or_gateway'] = 'Standalone or Gateway';
