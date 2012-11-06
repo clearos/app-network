@@ -140,80 +140,9 @@ class Iface_Manager extends Engine
 
     public function get_interfaces($options = NULL)
     {
-        clearos_profile(__METHOD__, __LINE__);
+        $details = $this->_get_interface_details($options);
 
-        $options['filter_imq'] = isset($options['filter_imq']) ? $options['filter_imq'] : TRUE;
-        $options['filter_ppp'] = isset($options['filter_ppp']) ? $options['filter_ppp'] : FALSE;
-        $options['filter_loopback'] = isset($options['filter_loopback']) ? $options['filter_loopback'] : TRUE;
-        $options['filter_pptp'] = isset($options['filter_pptp']) ? $options['filter_pptp'] : TRUE;
-        $options['filter_sit'] = isset($options['filter_sit']) ? $options['filter_sit'] : TRUE;
-        $options['filter_tun'] = isset($options['filter_tun']) ? $options['filter_tun'] : TRUE;
-        $options['filter_virtual'] = isset($options['filter_virtual']) ? $options['filter_virtual'] : TRUE;
-
-        if (! extension_loaded('ifconfig')) {
-            if (!@dl('ifconfig.so'))
-                throw new Engine_Exception(lang('network_network_error_occurred'));
-        }
-
-        $handle = @ifconfig_init();
-        $list = @ifconfig_list($handle);
-        $list = array_unique($list);
-        sort($list);
-
-        $rawlist = array();
-
-        // Running interfaces
-        //-------------------
-
-        foreach ($list as $device) {
-            $flags = @ifconfig_flags($handle, $device);
-            $rawlist[] = $device;
-        }
-
-        // Configured interfaces
-        //----------------------
-
-        $matches = array();
-        $folder = new Folder(self::PATH_NET_CONFIG);
-        $listing = $folder->get_listing();
-
-        foreach ($listing as $netconfig) {
-            if (preg_match('/^ifcfg-(.*)/', $netconfig, $matches))
-                $rawlist[] = $matches[1];
-        }
-
-        // Purge unwanted interfaces
-        //--------------------------
-
-        $rawlist = array_unique($rawlist);
-        $interfaces = array();
-
-        foreach ($rawlist as $iface) {
-            if ($options['filter_imq'] && preg_match('/^imq/', $iface))
-                continue;
-
-            if ($options['filter_loopback'] && $iface == 'lo')
-                continue;
-
-            if ($options['filter_ppp'] && preg_match('/^ppp/', $iface))
-                continue;
-
-            if ($options['filter_pptp'] && preg_match('/^pptp/', $iface))
-                continue;
-
-            if ($options['filter_sit'] && preg_match('/^sit/', $iface))
-                continue;
-
-            if ($options['filter_tun'] && preg_match('/^tun/', $iface))
-                continue;
-
-            if ($options['filter_virtual'] && preg_match('/:/', $iface))
-                continue;
-
-            $interfaces[] = $iface;
-        }
-
-        return $interfaces;
+        return array_keys($details);
     }
 
     /**
@@ -270,72 +199,7 @@ class Iface_Manager extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        $options['filter_1to1_nat'] = isset($options['filter_1to1_nat']) ? $options['filter_1to1_nat'] : TRUE;
-        $options['filter_non_configurable'] = isset($options['filter_non_configurable']) ? $options['filter_non_configurable'] : TRUE;
-        $options['filter_slave'] = isset($options['filter_slave']) ? $options['filter_slave'] : TRUE;
-
-        if ($this->is_loaded)
-            return $this->ethinfo;
-
-        $slaveif = array();
-        $ethlist = $this->get_interfaces($options);
-
-        foreach ($ethlist as $eth) {
-
-            $interface = new Iface($eth);
-            $ifdetails = $interface->get_info();
-
-            // Filter options
-            //---------------
-
-            if ($options['filter_non_configurable'] && isset($ifdetails['configurable']) && !$ifdetails['configurable'])
-                continue;
-
-            if ($options['filter_slave'] && isset($ifdetails['master']) && $ifdetails['master'])
-                continue;
-
-            if ($options['filter_1to1_nat'] && isset($ifdetails['one-to-one-nat']) && $ifdetails['one-to-one-nat'])
-                continue;
-
-            // Core configuration
-            //-------------------
-
-            foreach ($ifdetails as $key => $value)
-                $ethinfo[$eth][$key] = $value;
-
-            // Flag network interfaces used by PPPoE
-            //--------------------------------------
-
-            if (isset($ethinfo[$eth]['ifcfg']['eth'])) {
-                $pppoeif = $ethinfo[$eth]['ifcfg']['eth'];
-                $ethinfo[$pppoeif]['master'] = $eth;
-                $slaveif[$eth] = $pppoeif;
-            }
-
-            // Interface role
-            //---------------
-
-            try {
-                $role = new Role();
-                $role_code = $role->get_interface_role($eth);
-                $role_name = $role->get_interface_role_text($eth);
-
-                $ethinfo[$eth]['role'] = $role_code;
-                $ethinfo[$eth]['roletext'] = $role_name;
-            } catch (Exception $e) {
-                // keep going
-            }
-        }
-
-        foreach ($slaveif as $master => $slave) {
-            $ethinfo[$slave]['role'] = $ethinfo[$master]['role'];
-            $ethinfo[$slave]['roletext'] = $ethinfo[$master]['roletext'];
-        }
-
-        $this->ethinfo = $ethinfo;
-        $this->is_loaded = TRUE;
-
-        return $ethinfo;
+        return $this->_get_interface_details($options);
     }
 
     /**
@@ -516,5 +380,171 @@ class Iface_Manager extends Engine
         }
 
         return $ifaces;
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////
+    // P R I V A T E  M E T H O D S
+    ///////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Returns interface details.
+     *
+     * See get_interface_details.
+     *
+     * @param array $options filter options
+     *
+     * @return array interface details
+     */
+
+    protected function _get_interface_details($options = NULL)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        if ($this->is_loaded)
+            return $this->ethinfo;
+
+        $options['filter_imq'] = isset($options['filter_imq']) ? $options['filter_imq'] : TRUE;
+        $options['filter_ppp'] = isset($options['filter_ppp']) ? $options['filter_ppp'] : FALSE;
+        $options['filter_loopback'] = isset($options['filter_loopback']) ? $options['filter_loopback'] : TRUE;
+        $options['filter_pptp'] = isset($options['filter_pptp']) ? $options['filter_pptp'] : TRUE;
+        $options['filter_sit'] = isset($options['filter_sit']) ? $options['filter_sit'] : TRUE;
+        $options['filter_tun'] = isset($options['filter_tun']) ? $options['filter_tun'] : TRUE;
+        $options['filter_virtual'] = isset($options['filter_virtual']) ? $options['filter_virtual'] : TRUE;
+        $options['filter_1to1_nat'] = isset($options['filter_1to1_nat']) ? $options['filter_1to1_nat'] : TRUE;
+        $options['filter_non_configurable'] = isset($options['filter_non_configurable']) ? $options['filter_non_configurable'] : TRUE;
+        $options['filter_slave'] = isset($options['filter_slave']) ? $options['filter_slave'] : TRUE;
+
+        if (! extension_loaded('ifconfig')) {
+            if (!@dl('ifconfig.so'))
+                throw new Engine_Exception(lang('network_network_error_occurred'));
+        }
+
+        $handle = @ifconfig_init();
+        $list = @ifconfig_list($handle);
+        $list = array_unique($list);
+        sort($list);
+
+        $rawlist = array();
+
+        // Running interfaces
+        //-------------------
+
+        foreach ($list as $device) {
+            $flags = @ifconfig_flags($handle, $device);
+            $rawlist[] = $device;
+        }
+
+        // Configured interfaces
+        //----------------------
+
+        $matches = array();
+        $folder = new Folder(self::PATH_NET_CONFIG);
+        $listing = $folder->get_listing();
+
+        foreach ($listing as $netconfig) {
+            if (preg_match('/^ifcfg-(.*)/', $netconfig, $matches))
+                $rawlist[] = $matches[1];
+        }
+
+        // Purge unwanted interfaces
+        //--------------------------
+
+        $rawlist = array_unique($rawlist);
+        $interfaces = array();
+
+        foreach ($rawlist as $iface) {
+            if ($options['filter_imq'] && preg_match('/^imq/', $iface))
+                continue;
+
+            if ($options['filter_loopback'] && $iface == 'lo')
+                continue;
+
+            if ($options['filter_ppp'] && preg_match('/^ppp/', $iface))
+                continue;
+
+            if ($options['filter_pptp'] && preg_match('/^pptp/', $iface))
+                continue;
+
+            if ($options['filter_sit'] && preg_match('/^sit/', $iface))
+                continue;
+
+            if ($options['filter_tun'] && preg_match('/^tun/', $iface))
+                continue;
+
+            if ($options['filter_virtual'] && preg_match('/:/', $iface))
+                continue;
+
+            $interfaces[] = $iface;
+        }
+
+        $slaveif = array();
+
+        // Now go through the configuration
+        //---------------------------------
+
+        foreach ($interfaces as $eth) {
+
+            $interface = new Iface($eth);
+            $ifdetails = $interface->get_info();
+
+            // Core configuration
+            //-------------------
+
+            foreach ($ifdetails as $key => $value)
+                $ethinfo[$eth][$key] = $value;
+
+            // Flag network interfaces used by PPPoE
+            //--------------------------------------
+
+            if (isset($ethinfo[$eth]['ifcfg']['eth'])) {
+                $pppoeif = $ethinfo[$eth]['ifcfg']['eth'];
+                $ethinfo[$pppoeif]['master'] = $eth;
+                $slaveif[$eth] = $pppoeif;
+            }
+
+            // Filter options
+            //---------------
+
+            if ($options['filter_non_configurable'] && isset($ethinfo[$eth]['configurable']) && !$ethinfo[$eth]['configurable'])
+                continue;
+
+
+            if ($options['filter_1to1_nat'] && isset($ethinfo[$eth]['one-to-one-nat']) && $ethinfo[$eth]['one-to-one-nat'])
+                continue;
+
+            // Interface role
+            //---------------
+
+            try {
+                $role = new Role();
+                $role_code = $role->get_interface_role($eth);
+                $role_name = $role->get_interface_role_text($eth);
+
+                $ethinfo[$eth]['role'] = $role_code;
+                $ethinfo[$eth]['roletext'] = $role_name;
+            } catch (Exception $e) {
+                // keep going
+            }
+        }
+
+        // Go through interfaces to handle PPPoE slaves and roles
+        //-------------------------------------------------------
+
+        foreach ($slaveif as $master => $slave) {
+            if ($options['filter_slave']) {
+                unset($ethinfo[$slave]);
+            } else {
+                $ethinfo[$slave]['role'] = $ethinfo[$master]['role'];
+                $ethinfo[$slave]['roletext'] = $ethinfo[$master]['roletext'];
+            }
+        }
+
+        // Done
+        //-----
+
+        $this->ethinfo = $ethinfo;
+        $this->is_loaded = TRUE;
+
+        return $ethinfo;
     }
 }
