@@ -151,7 +151,10 @@ class Network_Stats extends Engine
                 $rx_diff = $details['rx_bytes'] - $previous_stats['stats'][$iface]['rx_bytes'];
                 $tx_diff = $details['tx_bytes'] - $previous_stats['stats'][$iface]['tx_bytes'];
 
-                if (($time_diff > 0) && ($time_diff < 4000)) {
+                // Only calculate the difference if the last check was within the last hour-ish
+                // On reboots or resets, rx/tx can be negative -- check these results.
+
+                if (($time_diff > 0) && ($time_diff < 4000) && ($rx_diff > 0) && ($tx_diff > 0)) {
                     $stats[$iface]['rx_rate'] = round($rx_diff / $time_diff);
                     $stats[$iface]['tx_rate'] = round($tx_diff / $time_diff);
                 } else {
