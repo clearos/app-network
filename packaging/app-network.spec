@@ -1,7 +1,7 @@
 
 Name: app-network
 Epoch: 1
-Version: 1.4.2
+Version: 1.4.3
 Release: 1%{dist}
 Summary: IP Settings
 License: GPLv3
@@ -12,7 +12,7 @@ Requires: %{name}-core = 1:%{version}-%{release}
 Requires: app-base
 
 %description
-The IP Settings app provides the tools to configure the most common network tasks like netowrk mode, system hostname, DNS servers and network interface settings.
+The IP Settings app provides the tools to configure the most common network tasks like network mode, system hostname, DNS servers and network interface settings.
 
 %package core
 Summary: IP Settings - Core
@@ -33,7 +33,7 @@ Requires: traceroute
 Requires: wireless-tools
 
 %description core
-The IP Settings app provides the tools to configure the most common network tasks like netowrk mode, system hostname, DNS servers and network interface settings.
+The IP Settings app provides the tools to configure the most common network tasks like network mode, system hostname, DNS servers and network interface settings.
 
 This package provides the core API and libraries.
 
