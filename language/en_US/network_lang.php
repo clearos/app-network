@@ -117,6 +117,7 @@ $lang['network_network_mode_wizard_description'] = 'Let\'s get your network up a
 $lang['network_no_dns_servers_warning'] = 'No DNS servers are configured.';
 $lang['network_override'] = 'Override';
 $lang['network_port'] = 'Port';
+$lang['network_port_invalid'] = 'Port is invalid.';
 $lang['network_pppoe_authentication_failed'] = 'PPPoE authentication failed.';
 $lang['network_pppoe_server_not_found'] = 'PPPoE server not found.';
 $lang['network_prefix_invalid'] = 'Prefix is invalid';
