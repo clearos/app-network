@@ -204,7 +204,7 @@ class Hosts extends Engine
      * @throws Exception, Validation_Exception
      */
 
-    public function edit_entry($ip, $hostname, $aliases = array())
+    public function edit_entry($ip, $hostname, $aliases = NULL)
     {
         clearos_profile(__METHOD__, __LINE__);
 
@@ -219,6 +219,14 @@ class Hosts extends Engine
 
         if (! $this->entry_exists($ip))
             throw new Validation_Exception(lang('network_entry_not_found'));
+
+        // Keep existing aliases if NULL
+        //------------------------------
+
+        if (is_null($aliases)) {
+            $entry = $this->get_entry($ip);
+            $aliases = $entry['aliases'];
+        }
 
         // Update
         //-------
