@@ -74,6 +74,7 @@ $app['controllers']['domain']['inline_help'] = array(
 /////////////////////////////////////////////////////////////////////////////
 
 $app['core_requires'] = array(
+    'app-base-core >= 1:1.4.7',
     'avahi',
     'bind-utils',
     'bridge-utils',

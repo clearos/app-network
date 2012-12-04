@@ -19,6 +19,7 @@ Summary: IP Settings - Core
 License: LGPLv3
 Group: ClearOS/Libraries
 Requires: app-base-core
+Requires: app-base-core >= 1:1.4.7
 Requires: avahi
 Requires: bind-utils
 Requires: bridge-utils
