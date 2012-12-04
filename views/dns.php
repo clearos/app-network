@@ -59,14 +59,6 @@ if ($form_type === 'edit') {
             anchor_cancel('/app/network/dns')
         );
     }
-} else if ($form_type === 'wizarwfsdfasdfasfd') {
-    if ($is_automatic) {
-        $read_only = TRUE;
-        $buttons = array(anchor_custom('/app/network/dns/wizard_edit', lang('network_override')));
-    } else {
-        $read_only = FALSE;
-        $buttons = array();
-    }
 } else {
     $form = '/network/dns/view';
 	$read_only = TRUE;
