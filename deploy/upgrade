@@ -102,6 +102,11 @@ if [ -n "$CHECK" ]; then
     /sbin/service postfix restart >/dev/null 2>&1
 fi
 
+# Run network configuration event
+#--------------------------------
+
+/var/clearos/events/network_configuration/network_resolver
+
 # Reload clearsyncd
 #------------------
 

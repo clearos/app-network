@@ -117,4 +117,12 @@ $app['core_file_manifest'] = array(
         'config' => TRUE,
         'config_params' => 'noreplace',
     ),
+    'network_resolver2'=> array(
+        'target' => '/var/clearos/events/network_peerdns/network_resolver',
+        'mode' => '0755'
+    ),
+    'network_resolver'=> array(
+        'target' => '/var/clearos/events/network_configuration/network_resolver',
+        'mode' => '0755'
+    ),
 );

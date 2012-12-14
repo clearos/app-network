@@ -341,7 +341,13 @@ class Resolver extends Engine
             $samba = new \clearos\apps\samba_directory\Samba_Directory();
             $samba_dns_running = $samba->get_dns_state();
             $domain = strtolower($samba->get_realm());
-            $dns_server = '192.168.55.6'; // FIXME
+
+            $ifaces = new Iface_Manager();
+            $trusted_ip = $ifaces->get_most_trusted_ips();
+            if (empty($trusted_ip[0]))
+                $dns_server = self::PUBLIC_DNS1;
+            else
+                $dns_server = $trusted_ip[0];
         }
 
         if (clearos_library_installed('dns/Dnsmasq')) {

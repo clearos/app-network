@@ -60,6 +60,8 @@ install -D -m 0644 packaging/filewatch-network-hostname.conf %{buildroot}/etc/cl
 install -D -m 0644 packaging/filewatch-network-peerdns-event.conf %{buildroot}/etc/clearsync.d/filewatch-network-peerdns-event.conf
 install -D -m 0644 packaging/filewatch-network.conf %{buildroot}/etc/clearsync.d/filewatch-network.conf
 install -D -m 0644 packaging/network.conf %{buildroot}/etc/clearos/network.conf
+install -D -m 0755 packaging/network_resolver %{buildroot}/var/clearos/events/network_configuration/network_resolver
+install -D -m 0755 packaging/network_resolver2 %{buildroot}/var/clearos/events/network_peerdns/network_resolver
 
 %post
 logger -p local6.notice -t installer 'app-network - installing'
@@ -114,3 +116,5 @@ exit 0
 /etc/clearsync.d/filewatch-network-peerdns-event.conf
 /etc/clearsync.d/filewatch-network.conf
 %config(noreplace) /etc/clearos/network.conf
+/var/clearos/events/network_configuration/network_resolver
+/var/clearos/events/network_peerdns/network_resolver
