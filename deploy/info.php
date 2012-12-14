@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'network';
-$app['version'] = '1.4.7';
+$app['version'] = '1.4.8';
 $app['release'] = '1';
 $app['vendor'] = 'ClearFoundation';
 $app['packager'] = 'ClearFoundation';
@@ -75,15 +75,17 @@ $app['controllers']['domain']['inline_help'] = array(
 
 $app['core_requires'] = array(
     'app-base-core >= 1:1.4.7',
+    'app-events-core',
     'avahi',
     'bind-utils',
     'bridge-utils',
     'csplugin-filewatch',
-    'dhclient',
+    'dhclient >= 12:4.1.1-31.P1.v6.1',
     'ethtool',
+    'initscripts >= 9.03.31-3',
     'net-tools',
     'ppp',
-    'rp-pppoe',
+    'rp-pppoe >= 3.10-8.1',
     'syswatch',
     'traceroute',
     'wireless-tools',
@@ -93,6 +95,8 @@ $app['core_directory_manifest'] = array(
     '/etc/clearos/network.d' => array(),
     '/var/clearos/network' => array(),
     '/var/clearos/network/backup' => array(),
+    '/var/clearos/events/network_configuration' => array(),
+    '/var/clearos/events/network_peerdns' => array(),
 );
 
 $app['core_file_manifest'] = array(
@@ -103,6 +107,8 @@ $app['core_file_manifest'] = array(
     'filewatch-network.conf' => array('target' => '/etc/clearsync.d/filewatch-network.conf'),
     'filewatch-network-hostname.conf' => array('target' => '/etc/clearsync.d/filewatch-network-hostname.conf'),
     'filewatch-network-connected.conf' => array('target' => '/etc/clearsync.d/filewatch-network-connected.conf'),
+    'filewatch-network-configuration-event.conf' => array('target' => '/etc/clearsync.d/filewatch-network-configuration-event.conf'),
+    'filewatch-network-peerdns-event.conf' => array('target' => '/etc/clearsync.d/filewatch-network-peerdns-event.conf'),
     'network.conf' => array(
         'target' => '/etc/clearos/network.conf',
         'mode' => '0644',

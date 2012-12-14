@@ -1,7 +1,7 @@
 
 Name: app-network
 Epoch: 1
-Version: 1.4.7
+Version: 1.4.8
 Release: 1%{dist}
 Summary: IP Settings
 License: GPLv3
@@ -20,15 +20,17 @@ License: LGPLv3
 Group: ClearOS/Libraries
 Requires: app-base-core
 Requires: app-base-core >= 1:1.4.7
+Requires: app-events-core
 Requires: avahi
 Requires: bind-utils
 Requires: bridge-utils
 Requires: csplugin-filewatch
-Requires: dhclient
+Requires: dhclient >= 12:4.1.1-31.P1.v6.1
 Requires: ethtool
+Requires: initscripts >= 9.03.31-3
 Requires: net-tools
 Requires: ppp
-Requires: rp-pppoe
+Requires: rp-pppoe >= 3.10-8.1
 Requires: syswatch
 Requires: traceroute
 Requires: wireless-tools
@@ -47,11 +49,15 @@ mkdir -p -m 755 %{buildroot}/usr/clearos/apps/network
 cp -r * %{buildroot}/usr/clearos/apps/network/
 
 install -d -m 0755 %{buildroot}/etc/clearos/network.d
+install -d -m 0755 %{buildroot}/var/clearos/events/network_configuration
+install -d -m 0755 %{buildroot}/var/clearos/events/network_peerdns
 install -d -m 0755 %{buildroot}/var/clearos/network
 install -d -m 0755 %{buildroot}/var/clearos/network/backup
 install -D -m 0755 packaging/dhclient-exit-hooks %{buildroot}/etc/dhcp/dhclient-exit-hooks
+install -D -m 0644 packaging/filewatch-network-configuration-event.conf %{buildroot}/etc/clearsync.d/filewatch-network-configuration-event.conf
 install -D -m 0644 packaging/filewatch-network-connected.conf %{buildroot}/etc/clearsync.d/filewatch-network-connected.conf
 install -D -m 0644 packaging/filewatch-network-hostname.conf %{buildroot}/etc/clearsync.d/filewatch-network-hostname.conf
+install -D -m 0644 packaging/filewatch-network-peerdns-event.conf %{buildroot}/etc/clearsync.d/filewatch-network-peerdns-event.conf
 install -D -m 0644 packaging/filewatch-network.conf %{buildroot}/etc/clearsync.d/filewatch-network.conf
 install -D -m 0644 packaging/network.conf %{buildroot}/etc/clearos/network.conf
 
@@ -94,13 +100,17 @@ exit 0
 %exclude /usr/clearos/apps/network/tests
 %dir /usr/clearos/apps/network
 %dir /etc/clearos/network.d
+%dir /var/clearos/events/network_configuration
+%dir /var/clearos/events/network_peerdns
 %dir /var/clearos/network
 %dir /var/clearos/network/backup
 /usr/clearos/apps/network/deploy
 /usr/clearos/apps/network/language
 /usr/clearos/apps/network/libraries
 /etc/dhcp/dhclient-exit-hooks
+/etc/clearsync.d/filewatch-network-configuration-event.conf
 /etc/clearsync.d/filewatch-network-connected.conf
 /etc/clearsync.d/filewatch-network-hostname.conf
+/etc/clearsync.d/filewatch-network-peerdns-event.conf
 /etc/clearsync.d/filewatch-network.conf
 %config(noreplace) /etc/clearos/network.conf

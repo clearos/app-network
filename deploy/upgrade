@@ -101,3 +101,8 @@ if [ -n "$CHECK" ]; then
     # FIXME: remove on or after 6.4
     /sbin/service postfix restart >/dev/null 2>&1
 fi
+
+# Reload clearsyncd
+#------------------
+
+/sbin/service clearsyncd condrestart >/dev/null 2>&1
