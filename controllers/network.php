@@ -68,7 +68,7 @@ class Network extends ClearOS_Controller
 
         $views = array('network/settings', 'network/dns', 'network/iface');
         
-        $this->page->view_forms($views, lang('network_network'), $options);
+        $this->page->view_controllers($views, lang('network_network'), $options);
     }
 
     /**
