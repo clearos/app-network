@@ -344,10 +344,21 @@ class Resolver extends Engine
 
             $ifaces = new Iface_Manager();
             $trusted_ip = $ifaces->get_most_trusted_ips();
+
             if (empty($trusted_ip[0]))
                 $dns_server = self::PUBLIC_DNS1;
             else
                 $dns_server = $trusted_ip[0];
+
+            // TODO: Clean this up at some point - forwarder should be dnsmasq
+            // Adjust forwarder in smb.conf for now
+
+            clearos_load_library('samba_common/Samba');
+
+            $forwarders = $this->get_nameservers();
+
+            $samba_common = new \clearos\apps\samba_common\Samba();
+            $samba_common->set_dns_forwarder($forwarders[0]);
         }
 
         if (clearos_library_installed('dns/Dnsmasq')) {
