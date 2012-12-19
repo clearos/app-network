@@ -106,6 +106,7 @@ class Iface_Manager extends Engine
 
     protected $is_loaded = FALSE;
     protected $ethinfo = array();
+    protected $ifconfig_ctx = NULL;
 
     ///////////////////////////////////////////////////////////////////////////////
     // M E T H O D S
@@ -118,6 +119,13 @@ class Iface_Manager extends Engine
     public function __construct()
     {
         clearos_profile(__METHOD__, __LINE__);
+
+        if (! extension_loaded('ifconfig')) {
+            if (!@dl('ifconfig.so'))
+                throw new Engine_Exception(lang('network_network_error_occurred'));
+        }
+
+        $this->ifconfig_ctx = @ifconfig_init();
     }
 
     /**
@@ -156,17 +164,11 @@ class Iface_Manager extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        if (!extension_loaded('ifconfig')) {
-            if (!@dl('ifconfig.so'))
-                throw new Engine_Exception(lang('network_network_error_occurred'));
-        }
-
         $count = 0;
-        $handle = @ifconfig_init();
-        $list = @ifconfig_list($handle);
+        $list = @ifconfig_list($this->ifconfig_ctx);
 
         foreach ($list as $device) {
-            $flags = @ifconfig_flags($handle, $device);
+            $flags = @ifconfig_flags($this->ifconfig_ctx, $device);
 
             if (($flags & IFF_NOARP)) continue;
             if (($flags & IFF_LOOPBACK)) continue;
@@ -414,13 +416,7 @@ class Iface_Manager extends Engine
         $options['filter_non_configurable'] = isset($options['filter_non_configurable']) ? $options['filter_non_configurable'] : TRUE;
         $options['filter_slave'] = isset($options['filter_slave']) ? $options['filter_slave'] : TRUE;
 
-        if (! extension_loaded('ifconfig')) {
-            if (!@dl('ifconfig.so'))
-                throw new Engine_Exception(lang('network_network_error_occurred'));
-        }
-
-        $handle = @ifconfig_init();
-        $list = @ifconfig_list($handle);
+        $list = @ifconfig_list($this->ifconfig_ctx);
         $list = array_unique($list);
         sort($list);
 
@@ -430,7 +426,7 @@ class Iface_Manager extends Engine
         //-------------------
 
         foreach ($list as $device) {
-            $flags = @ifconfig_flags($handle, $device);
+            $flags = @ifconfig_flags($this->ifconfig_ctx, $device);
             $rawlist[] = $device;
         }
 
