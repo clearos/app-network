@@ -374,10 +374,14 @@ class Resolver extends Engine
         $resolv_lines .= "# See http://www.clearcenter.com/support/documentation/clearos_guides/resolver\n";
 
         if ($samba_dns_running) {
-            $resolv_lines .= "domain $domain\n";
+            if (! empty($domain))
+                $resolv_lines .= "domain $domain\n";
+
             $resolv_lines .= "nameserver $dns_server\n";
         } else if ($dnsmasq_running) {
-            $resolv_lines .= "domain $domain\n";
+            if (! empty($domain))
+                $resolv_lines .= "domain $domain\n";
+
             $resolv_lines .= "nameserver 127.0.0.1\n";
         } else {
             try {
