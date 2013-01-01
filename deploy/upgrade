@@ -102,8 +102,13 @@ if [ -n "$CHECK" ]; then
     /sbin/service postfix restart >/dev/null 2>&1
 fi
 
-# Run network configuration event
-#--------------------------------
+# Run network resolver event to implement resolver changes
+#---------------------------------------------------------
+
+if ( [ ! -e /etc/resolv-peerdns.conf ] && [ -e /etc/resolv.conf ] ); then
+    logger -p local6.notice -t installer "app-network-core - creating resolv-peerdns.conf"
+    grep -v '^;' /etc/resolv.conf > /etc/resolv-peerdns.conf
+fi
 
 /var/clearos/events/network_configuration/network_resolver
 
