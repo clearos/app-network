@@ -42,7 +42,7 @@ $this->lang->load('base');
 
 if ($is_automatic) {
     $is_automatic_warning = TRUE;
-    $edit_button_text = lang('network_override');
+    $edit_button_text = lang('network_temporary_override');
 } else {
     $is_automatic_warning = FALSE;
     $edit_button_text = lang('base_edit');
@@ -96,7 +96,7 @@ if (!($form_type === 'wizard') && !$read_only) {
 }
 
 if ($is_automatic_warning)
-    echo infobox_highlight(lang('network_dns_automatically_configured'), lang('network_dns_automatically_configured_message'));
+    echo infobox_warning(lang('network_dns_automatically_configured'), lang('network_dns_automatically_configured_message'));
 
 ///////////////////////////////////////////////////////////////////////////////
 // Form open
