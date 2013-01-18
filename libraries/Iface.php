@@ -1804,7 +1804,7 @@ class Iface extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        if (! preg_match('/^[a-zA-Z0-9:]+$/', $interface))
+        if (! preg_match('/^[a-zA-Z0-9:\.]+$/', $interface))
             return lang('network_network_interface_invalid' . $interface);
     }
 
