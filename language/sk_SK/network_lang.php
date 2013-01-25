@@ -138,6 +138,7 @@ $lang['network_source_port'] = 'Source Port';
 $lang['network_speed'] = 'Speed';
 $lang['network_ssid_invalid'] = 'SSID is invalid.';
 $lang['network_standalone_or_gateway'] = 'Standalone or Gateway';
+$lang['network_temporary_override'] = 'Temporary Override';
 $lang['network_too_many_dns_servers_warning'] = 'We do not recommend configuring more than 3 DNS servers.';
 $lang['network_transmitted'] = 'Transmitted';
 $lang['network_type'] = 'Type';
