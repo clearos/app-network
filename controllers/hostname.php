@@ -67,6 +67,7 @@ class Hostname extends ClearOS_Controller
         // Load libraries
         //---------------
 
+        $this->load->library('network/Domain');
         $this->load->library('network/Network');
         $this->load->library('network/Hostname');
 
@@ -100,6 +101,20 @@ class Hostname extends ClearOS_Controller
             $data['form_type'] = 'edit';
             $data['hostname'] = $this->hostname->get();
             $data['internet_hostname'] = $this->hostname->get_internet_hostname();
+
+            // If the default is detected, provide an intelligent default
+            if ($data['hostname'] == 'system.domain.lan') {
+                $mode = $this->network->get_mode();
+                $domain = $this->domain->get_default();
+
+                if ($mode === Network::MODE_GATEWAY)
+                    $prefix = 'gateway';
+                else
+                    $prefix = 'server';
+
+                $data['hostname'] = $prefix . '.' . $domain;
+                $data['internet_hostname'] = $data['hostname'];
+            }
         } catch (Exception $e) {
             $this->page->view_exception($e);
             return;
