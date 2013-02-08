@@ -415,6 +415,7 @@ class Iface_Manager extends Engine
         $options['filter_1to1_nat'] = isset($options['filter_1to1_nat']) ? $options['filter_1to1_nat'] : TRUE;
         $options['filter_non_configurable'] = isset($options['filter_non_configurable']) ? $options['filter_non_configurable'] : TRUE;
         $options['filter_slave'] = isset($options['filter_slave']) ? $options['filter_slave'] : TRUE;
+        $options['filter_wireless_mon'] = isset($options['filter_wireless_mon']) ? $options['filter_wireless_mon'] : TRUE;
 
         $list = @ifconfig_list($this->ifconfig_ctx);
         $list = array_unique($list);
@@ -465,6 +466,9 @@ class Iface_Manager extends Engine
                 continue;
 
             if ($options['filter_tun'] && preg_match('/^tun/', $iface))
+                continue;
+
+            if ($options['filter_wireless_mon'] && preg_match('/^mon/', $iface))
                 continue;
 
             if ($options['filter_virtual'] && preg_match('/:/', $iface))
