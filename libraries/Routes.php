@@ -167,7 +167,19 @@ class Routes extends Engine
                 $matches = array();
 
                 // TODO: IPv6 support
-                if (preg_match('/^default\s+dev\s+([\w]*)\s+/', $line, $matches)) {
+                if (preg_match('/^default\s+dev\s+(ppp[0-9]*)\s+/', $line, $matches)) {
+                    $shell->execute(self::COMMAND_IP, 'addr show dev ' . $matches[1]);
+                    $ppp_output = $shell->get_output();
+                    $ppp_matches = array();
+
+                    foreach ($ppp_output as $ppp_line) {
+                        if (preg_match('/\s*inet\s+([0-9\.]*)\s+peer\s+([0-9\.]*).*/', $ppp_line, $ppp_matches))
+                            $routeinfo[$matches[1]] = $ppp_matches[2];
+                    }
+
+                    if (empty($routeinfo[$matches[1]]))
+                        $routeinfo[$matches[1]] = '0.0.0.0';
+                } else if (preg_match('/^default\s+dev\s+([\w]*)\s+/', $line, $matches)) {
                     $routeinfo[$matches[1]] = '0.0.0.0';
                 } else if (preg_match('/^default\s+via\s+([0-9\.]*).*dev\s+([\w+]*)/', $line, $matches)) {
                     $routeinfo[$matches[2]] = $matches[1];
