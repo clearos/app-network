@@ -104,7 +104,7 @@ class Network_Check extends Engine
      * @throws Engine_Exception
      */
 
-    public function incoming_check($app, $protocol, $check);
+    public function incoming_check($app, $protocol, $check)
     {
         clearos_profile(__METHOD__, __LINE__);
 
