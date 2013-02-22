@@ -68,6 +68,7 @@ clearos_load_library('network/Network_Utils');
 // Exceptions
 //-----------
 
+use \Exception as Exception;
 use \clearos\apps\base\File_No_Match_Exception as File_No_Match_Exception;
 use \clearos\apps\base\Validation_Exception as Validation_Exception;
 
