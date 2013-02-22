@@ -57,11 +57,11 @@ clearos_load_language('network');
 
 use \clearos\apps\base\Engine as Engine;
 use \clearos\apps\base\File as File;
-use \clearos\apps\network\Iface_Manager as Iface_Manager;
+use \clearos\apps\base\Shell as Shell;
 
 clearos_load_library('base/Engine');
 clearos_load_library('base/File');
-clearos_load_library('network/Iface_Manager');
+clearos_load_library('base/Shell');
 
 // Exceptions
 //-----------
@@ -93,11 +93,13 @@ class Network_Status extends Engine
     ///////////////////////////////////////////////////////////////////////////
 
     const STATUS_ONLINE = 'online';
+    const STATUS_ONLINE_NO_DNS = 'online_no_dns';
     const STATUS_OFFLINE = 'offline';
     const STATUS_UNKNOWN = 'unknown';
 
     // TODO: move to syswatch
     const FILE_STATE = '/var/lib/syswatch/state';
+    const COMMAND_PING = '/bin/ping';
 
     ///////////////////////////////////////////////////////////////////////////////
     // V A R I A B L E S
@@ -106,6 +108,8 @@ class Network_Status extends Engine
     protected $ifs_in_use = array();
     protected $ifs_working = array();
     protected $is_state_loaded = FALSE;
+    protected $ping_hosts = array();
+    protected $ping_ips = array();
 
     ///////////////////////////////////////////////////////////////////////////
     // M E T H O D S
@@ -118,6 +122,16 @@ class Network_Status extends Engine
     public function __construct() 
     {
         clearos_profile(__METHOD__, __LINE__);
+
+        $this->ping_hosts = array(
+            'www.google.com.',
+            'google-public-dns-a.google.com.',
+        );
+
+        $this->ping_ips = array(
+            '8.8.8.8',
+            '69.90.141.1',
+        );
     }
 
     /**
@@ -183,6 +197,37 @@ class Network_Status extends Engine
         } catch (Network_Status_Unknown_Exception $e) {
             return self::STATUS_UNKNOWN;
         }
+    }
+
+    /**
+     * Returns live status of connection to Internet.
+     *
+     * @return integer status of Internet connection
+     * @throws Engine_Exception
+     */
+
+    public function get_live_connection_status()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $shell = new Shell();
+        $options['validate_exit_code'] = FALSE;
+
+        foreach ($this->ping_hosts as $host) {
+            $retval = $shell->execute(self::COMMAND_PING, '-c 1 -w 7 ' . $host, FALSE, $options);
+            clearos_profile(__METHOD__, __LINE__, 'ping host retval ' . $retval);
+            if ($retval === 0)
+                return self::STATUS_ONLINE;
+        }
+
+        foreach ($this->ping_ips as $ip) {
+            $retval = $shell->execute(self::COMMAND_PING, '-c 1 -w 7 ' . $ip, FALSE, $options);
+            clearos_profile(__METHOD__, __LINE__, 'ping ip retval ' . $retval);
+            if ($retval === 0)
+                return self::STATUS_ONLINE_NO_DNS;
+        }
+
+        return self::STATUS_OFFLINE;
     }
 
     ///////////////////////////////////////////////////////////////////////////

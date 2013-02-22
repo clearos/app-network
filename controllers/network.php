@@ -91,7 +91,7 @@ class Network extends ClearOS_Controller
 
         $data['network'] = $this->iface_manager->get_interface_details();
         $data['dns_servers'] = $this->resolver->get_nameservers();
-        $data['connection_status'] = $this->network_status->get_connection_status();
+        $data['live_status'] = $this->network_status->get_live_connection_status();
 
         header('Cache-Control: no-cache, must-revalidate');
         header('Content-type: application/json');

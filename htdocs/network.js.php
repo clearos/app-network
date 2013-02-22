@@ -7,7 +7,7 @@
  * @package    Network
  * @subpackage Ajax
  * @author     ClearFoundation <developer@clearfoundation.com>
- * @copyright  2011 ClearFoundation
+ * @copyright  2011-2013 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
  * @link       http://www.clearfoundation.com/docs/developer/apps/network/
  */
@@ -61,8 +61,9 @@ $(document).ready(function() {
     lang_megabits_per_second = '<?php echo lang("base_megabits_per_second"); ?>';
     lang_no_external = '<?php echo lang("network_lang_one_external_interface_required"); ?>';
     lang_connected = '<?php echo lang("network_lang_connection_to_the_internet_is_online"); ?>';
-    lang_not_connected = '<?php echo lang("network_lang_connection_to_the_internet_not_available"); ?>';
+    lang_not_connected = '<?php echo lang("network_lang_unable_to_connect_to_the_internet"); ?>';
     lang_waiting = '<?php echo lang("base_waiting"); ?>';
+    icon_warning = '<span class="theme-icon-warning"> </span>&nbsp; ';
 
     // Defaults
     //---------
@@ -121,7 +122,8 @@ $(document).ready(function() {
     // Summary page
     //-------------
 
-    } else if ($('#dns_auto_text').length != 0)  {
+    } else if ($('#network_status_box').length != 0)  {
+        $('#network_status').html('<span class="theme-loading-normal">...</span>');
         getAllNetworkInfo();
     }
 });
@@ -138,10 +140,10 @@ function getAllNetworkInfo() {
         dataType: 'json',
         success : function(payload) {
             showAllNetworkInfo(payload);
-            window.setTimeout(getAllNetworkInfo, 1000);
+            window.setTimeout(getAllNetworkInfo, 3000);
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
-            window.setTimeout(getAllNetworkInfo, 1000);
+            window.setTimeout(getAllNetworkInfo, 3000);
         }
     });
 }
@@ -221,20 +223,24 @@ function showAllNetworkInfo(payload) {
     // Network status
     //---------------
 
-    /*
     var network_status_message = '';
 
     if (external) {
         external_message = '';
-        network_status_message = (payload['connection_status']) ? lang_connected : lang_no_connection;
+console.log(payload);
+        if (payload['live_status'] == 'online')
+            network_status_message = lang_connected;
+        else if (payload['live_status'] == 'online_no_dns')
+            network_status_message = icon_warning + 'No DNS dude'; // FIXME
+        else
+            network_status_message = icon_warning + lang_not_connected;
     } else {
-        external_message = lang_no_external;
+        external_message = icon_warning + lang_no_external;
         network_status_message = '';
     }
 
     $('#no_external_warning').html(external_message);
     $('#network_status').html(network_status_message);
-    */
 }
 
 /**
