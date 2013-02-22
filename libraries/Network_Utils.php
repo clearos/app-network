@@ -242,11 +242,14 @@ class Network_Utils extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        if (preg_match('/^([0-9a-zA-Z\.\-_]+)$/', $domain)) {
+        if (preg_match('/\.\./', $domain)) {
+            return FALSE; // Double period check
+        } else if (preg_match('/^([0-9a-zA-Z\.\-_]+)$/', $domain)) {
             if (!$allow_tld && (substr_count($domain, ".") == 0))
                 return FALSE;
-        } else
+        } else {
             return FALSE;
+        }
 
         return TRUE;
     }
