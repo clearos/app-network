@@ -122,8 +122,10 @@ $(document).ready(function() {
     // Summary page
     //-------------
 
-    } else if ($('#network_status_box').length != 0)  {
+    } else if ($('#network_status_box').length != 0) {
         $('#network_status').html('<span class="theme-loading-normal">...</span>');
+        getAllNetworkInfo();
+    } else if ($('#dns_auto_text').length != 0) {
         getAllNetworkInfo();
     }
 });
