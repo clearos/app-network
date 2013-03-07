@@ -68,7 +68,6 @@ $(document).ready(function() {
     // Defaults
     //---------
 
-    $('#dns_auto_field').hide();
     $('#dns0_field').hide();
     $('#dns1_field').hide();
 
@@ -201,7 +200,7 @@ function showAllNetworkInfo(payload) {
     //-------------------
 
     if (payload['dns_servers'].length == 0) {
-        $('#dns_auto_text').html('<div class="theme-loading-small">' + lang_waiting + '</div>');
+        $('#dns_auto_text').html('<span class="theme-loading-small">' + lang_waiting + '</span>');
         $('#dns_auto_field').show();
         $('#dns0_field').hide();
         $('#dns1_field').hide();

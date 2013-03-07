@@ -99,18 +99,16 @@ if ($is_automatic_warning)
     echo infobox_warning(lang('network_dns_automatically_configured'), lang('network_dns_automatically_configured_message'));
 
 ///////////////////////////////////////////////////////////////////////////////
-// Form open
+// Form
 ///////////////////////////////////////////////////////////////////////////////
 
 echo form_open($form, array('id' => 'dns_form')); 
 echo form_header(lang('network_dns'));
 
-///////////////////////////////////////////////////////////////////////////////
-// Form fields and buttons
-///////////////////////////////////////////////////////////////////////////////
-
 if (($read_only) && $is_automatic)
-    echo field_view(lang('network_dns_servers'), '', 'dns_auto');
+    echo field_view(lang('network_dns_servers'), "<span class='theme-loading-small'>" . lang('base_waiting') . "</span>", 'dns_auto');
+
+$field_options['hide_field'] = TRUE;
 
 for ($inx = 1; $inx < $dns_fields + 1; $inx++) {
     $dns_server = isset($dns[$inx-1]) ? $dns[$inx-1] : '';
@@ -120,17 +118,13 @@ for ($inx = 1; $inx < $dns_fields + 1; $inx++) {
     // echo field_input('dns[' . $inx . ']', $dns_server, lang('network_dns_server') . " #" . $inx, $read_only);
 
     if (($read_only) && $is_automatic)
-        echo field_view(lang('network_dns_server') . " #" . $inx, $dns_server, 'dns' . ($inx-1));
+        echo field_view(lang('network_dns_server') . " #" . $inx, $dns_server, 'dns' . ($inx-1), NULL, $field_options);
     else
         echo field_input('dns[' . $inx . ']', $dns_server, lang('network_dns_server') . " #" . $inx, $read_only);
 }
 
 if (! empty($buttons))
     echo field_button_set($buttons);
-
-///////////////////////////////////////////////////////////////////////////////
-// Form close
-///////////////////////////////////////////////////////////////////////////////
 
 echo form_footer();
 echo form_close();
