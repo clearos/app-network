@@ -294,7 +294,6 @@ class Iface extends Engine
 
         if($iface != NULL) $this->iface = $iface;
 
-        // FIXME
         try {
             $shell = new Shell();
             $retval = $shell->execute(self::COMMAND_IFDOWN, $this->iface, TRUE);
