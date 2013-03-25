@@ -108,7 +108,7 @@ class Resolver extends Engine
 
     const FILE_PEERDNS = '/etc/resolv-peerdns.conf';
     const FILE_RESOLV = '/etc/resolv.conf';
-    const CONST_TEST_HOST = 'sdn1.clearsdn.com';
+    const CONST_TEST_HOST = 'www.google.com';
     const PUBLIC_DNS1 = '8.8.8.8';
     const PUBLIC_DNS2 = '8.8.4.4';
 
@@ -262,21 +262,21 @@ class Resolver extends Engine
      * @param string  $domain  domain name to look-up
      * @param integer $timeout number of seconds until we time-out
      *
-     * @return array DNS test results
+     * @return boolean result
      * @throws Engine_Exception, Validation_Exception
      */
 
-    public function test_lookup($domain = self::CONST_TEST_HOST, $timeout = 10)
+    public function test_lookup($domain = self::CONST_TEST_HOST, $timeout = 5)
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        $result = array();
         $shell = new Shell();
+        $options['validate_exit_code'] = FALSE;
 
-        $servers = $this->get_nameserverss();
+        $servers = $this->get_nameservers();
 
         foreach ($servers as $server) {
-            if ($shell->execute('/usr/bin/dig', "@$server $domain +time=$timeout") == 0)
+            if ($shell->execute('/usr/bin/dig', "@$server $domain +time=$timeout", FALSE, $options) == 0)
                 return TRUE;
         }
 

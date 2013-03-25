@@ -98,6 +98,9 @@ if (!($form_type === 'wizard') && !$read_only) {
 if ($is_automatic_warning)
     echo infobox_warning(lang('network_dns_automatically_configured'), lang('network_dns_automatically_configured_message'));
 
+if (! $dns_okay)
+    echo infobox_warning(lang('base_warning'), lang('network_dns_lookup_failed'));
+
 ///////////////////////////////////////////////////////////////////////////////
 // Form
 ///////////////////////////////////////////////////////////////////////////////

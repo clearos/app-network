@@ -58,10 +58,14 @@ clearos_load_language('network');
 use \clearos\apps\base\Engine as Engine;
 use \clearos\apps\base\File as File;
 use \clearos\apps\base\Shell as Shell;
+use \clearos\apps\network\Resolver as Resolver;
+use \clearos\apps\network\Routes as Routes;
 
 clearos_load_library('base/Engine');
 clearos_load_library('base/File');
 clearos_load_library('base/Shell');
+clearos_load_library('network/Resolver');
+clearos_load_library('network/Routes');
 
 // Exceptions
 //-----------
@@ -214,17 +218,66 @@ class Network_Status extends Engine
         $options['validate_exit_code'] = FALSE;
 
         foreach ($this->ping_hosts as $host) {
-            $retval = $shell->execute(self::COMMAND_PING, '-c 1 -w 7 ' . $host, FALSE, $options);
-            clearos_profile(__METHOD__, __LINE__, 'ping host retval ' . $retval);
+            $retval = $shell->execute(self::COMMAND_PING, '-c 1 -w 5 ' . $host, FALSE, $options);
+            clearos_profile(__METHOD__, __LINE__, 'network status ping host retval ' . $retval);
             if ($retval === 0)
                 return self::STATUS_ONLINE;
         }
 
         foreach ($this->ping_ips as $ip) {
-            $retval = $shell->execute(self::COMMAND_PING, '-c 1 -w 7 ' . $ip, FALSE, $options);
-            clearos_profile(__METHOD__, __LINE__, 'ping ip retval ' . $retval);
+            $retval = $shell->execute(self::COMMAND_PING, '-c 1 -w 5 ' . $ip, FALSE, $options);
+            clearos_profile(__METHOD__, __LINE__, 'network status ping ip retval ' . $retval);
             if ($retval === 0)
                 return self::STATUS_ONLINE_NO_DNS;
+        }
+
+        return self::STATUS_OFFLINE;
+    }
+
+    /**
+     * Returns live status of DNS requests.
+     *
+     * @return integer status of DNS requests
+     * @throws Engine_Exception
+     */
+
+    public function get_live_dns_status()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $resolver = new Resolver();
+
+        $dns_okay = $resolver->test_lookup(Resolver::CONST_TEST_HOST, 5);
+        clearos_profile(__METHOD__, __LINE__, 'network status dns test ' . $dns_okay);
+
+        if ($dns_okay)
+            return self::STATUS_ONLINE;
+        else
+            return self::STATUS_OFFLINE;
+    }
+
+    /**
+     * Returns live status of connection to the gateway.
+     *
+     * @return integer status of gateway connection
+     * @throws Engine_Exception
+     */
+
+    public function get_live_gateway_status()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $shell = new Shell();
+        $options['validate_exit_code'] = FALSE;
+
+        $routes = new Routes();
+        $gateway = $routes->get_default();
+
+        if (! empty($gateway)) {
+            $retval = $shell->execute(self::COMMAND_PING, '-c 1 -w 5 ' . $gateway, FALSE, $options);
+            clearos_profile(__METHOD__, __LINE__, 'network status ping gateway retval ' . $retval);
+            if ($retval === 0)
+                return self::STATUS_ONLINE;
         }
 
         return self::STATUS_OFFLINE;

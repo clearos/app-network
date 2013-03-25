@@ -83,7 +83,6 @@ class Network extends ClearOS_Controller
         //---------------
 
         $this->load->library('network/Iface_Manager');
-        $this->load->library('network/Network_Status');
         $this->load->library('network/Resolver');
 
         // Dump JSON information
@@ -91,7 +90,30 @@ class Network extends ClearOS_Controller
 
         $data['network'] = $this->iface_manager->get_interface_details();
         $data['dns_servers'] = $this->resolver->get_nameservers();
-        $data['live_status'] = $this->network_status->get_live_connection_status();
+
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Content-type: application/json');
+        echo json_encode($data);
+    }
+
+    /**
+     * Returns DNS status information.
+     *
+     * @return JSON DNS status information
+     */
+
+    function get_dns_status_info()
+    {
+        // Load libraries
+        //---------------
+
+        $this->load->library('network/Network_Status');
+
+        // Dump JSON information
+        //----------------------
+
+        sleep(3);
+        $data['dns_status'] = $this->network_status->get_live_dns_status();
 
         header('Cache-Control: no-cache, must-revalidate');
         header('Content-type: application/json');
@@ -142,5 +164,29 @@ class Network extends ClearOS_Controller
         header('Cache-Control: no-cache, must-revalidate');
         header('Content-type: application/json');
         echo json_encode($status);
+    }
+
+    /**
+     * Network information.
+     *
+     * @return JSON network information
+     */
+
+    function get_network_status_info()
+    {
+        // Load libraries
+        //---------------
+
+        $this->load->library('network/Network_Status');
+
+        // Dump JSON information
+        //----------------------
+
+        $data['gateway_status'] = $this->network_status->get_live_gateway_status();
+        $data['connection_status'] = $this->network_status->get_live_connection_status();
+
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Content-type: application/json');
+        echo json_encode($data);
     }
 }

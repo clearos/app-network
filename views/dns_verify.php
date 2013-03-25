@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Network report view.
+ * Network DNS server view.
  *
  * @category   ClearOS
  * @package    Network
  * @subpackage Views
  * @author     ClearFoundation <developer@clearfoundation.com>
- * @copyright  2013 ClearFoundation
+ * @copyright  2011 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
  * @link       http://www.clearfoundation.com/docs/developer/apps/network/
  */
@@ -34,13 +34,13 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 $this->lang->load('network');
+$this->lang->load('base');
 
-///////////////////////////////////////////////////////////////////////////////
-// Form
-///////////////////////////////////////////////////////////////////////////////
+echo infobox_highlight(
+    lang('network_performing_dns_test'), 
+    '<span id="dns_test_message"><span class="theme-loading-small">' . lang('network_testing_dns_lookups') . '</span></span>'
+);
 
-echo sidebar_header(lang('network_network_status'));
-echo sidebar_value('<span class="theme-loading-small">&nbsp;</span>', lang('network_gateway_status'), array('id' => 'gateway_status'));
-echo sidebar_value('<span class="theme-loading-small">&nbsp;</span>', lang('network_internet_status'), array('id' => 'network_status'));
-echo sidebar_value('<span class="theme-loading-small">&nbsp;</span>', lang('network_dns_lookup'), array('id' => 'dns_status'));
-echo sidebar_footer();
+echo "<p align='center' id='dns_edit_anchor' style='display:none;'>";
+echo anchor_custom('/app/network/dns', lang('network_review_dns_server_settings'));
+echo "</p>";

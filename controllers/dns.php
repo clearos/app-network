@@ -89,9 +89,31 @@ class DNS extends ClearOS_Controller
      * @return view
      */
 
-    function edit()
+    function edit($verify = NULL)
     {
-        $this->_view_edit('edit');
+        if ($verify)
+            $this->verify();
+        else
+            $this->_view_edit('edit');
+    }
+
+    /**
+     * General DNS verify view.
+     *
+     * @return view
+     */
+
+    function verify()
+    {
+        // Load libraries
+        //---------------
+
+        $this->load->library('network/Resolver');
+
+        // Load views
+        //-----------
+
+        $this->page->view_form('network/dns_verify', $data, lang('network_dns'));
     }
 
     /**
@@ -151,6 +173,8 @@ class DNS extends ClearOS_Controller
         // Handle form submit
         //-------------------
 
+        $data['dns_okay'] = TRUE;
+
         if (($this->input->post('dns') && $form_ok)) {
             try {
                 $this->resolver->set_nameservers($this->input->post('dns'));
@@ -158,7 +182,7 @@ class DNS extends ClearOS_Controller
                 $this->page->set_status_updated();
 
                 if ($this->session->userdata('wizard_redirect'))
-                    redirect($this->session->userdata('wizard_redirect'));
+                    redirect('/network/dns/edit/verify');
                 else
                     redirect('/network/dns');
             } catch (Engine_Exception $e) {

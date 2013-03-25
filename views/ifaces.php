@@ -194,3 +194,10 @@ echo summary_table(
     $items,
     array('id' => 'network_summary')
 );
+
+///////////////////////////////////////////////////////////////////////////////
+// External interface warning
+///////////////////////////////////////////////////////////////////////////////
+
+if (count($external_interfaces) == 0)
+    echo infobox_warning(lang('base_warning'), lang('network_lang_one_external_interface_required'));

@@ -59,11 +59,11 @@ $(document).ready(function() {
     lang_no = '<?php echo lang("base_no"); ?>';
     lang_unknown = '<?php echo lang("base_unknown"); ?>';
     lang_megabits_per_second = '<?php echo lang("base_megabits_per_second"); ?>';
-    lang_no_external = '<?php echo lang("network_lang_one_external_interface_required"); ?>';
-    lang_connected = '<?php echo lang("network_lang_connection_to_the_internet_is_online"); ?>';
-    lang_not_connected = '<?php echo lang("network_lang_unable_to_connect_to_the_internet"); ?>';
+    lang_offline = '<?php echo lang("network_offline"); ?>';
     lang_waiting = '<?php echo lang("base_waiting"); ?>';
-    icon_warning = '<span class="theme-icon-warning"> </span>&nbsp; ';
+    lang_connected = '<?php echo lang("network_connected"); ?>';
+    lang_dns_failed = '<?php echo lang("network_dns_lookup_failed"); ?>';
+    lang_dns_passed = '<?php echo lang("network_dns_lookup_passed"); ?>';
 
     // Defaults
     //---------
@@ -74,7 +74,9 @@ $(document).ready(function() {
     // Wizard next button handling
     //----------------------------
 
-    if (($(location).attr('href').match('.*\/iface\/edit') != null) || $(location).attr('href').match('.*\/iface\/add') != null) {
+    if (($(location).attr('href').match('.*\/iface\/edit') != null) 
+        || ($(location).attr('href').match('.*\/iface\/add') != null)
+        || ($(location).attr('href').match('.*\/dns\/edit\/verify') != null)) {
         $('#theme_wizard_nav_next').hide();
         $('#theme_wizard_nav_previous').hide();
     }
@@ -86,10 +88,12 @@ $(document).ready(function() {
             $('form#mode_form').submit();
         else if ($(location).attr('href').match('.*\/domain$') != null)
             $('form#domain_form').submit();
+        else if ($(location).attr('href').match('.*\/dns\/edit\/verify') != null)
+            window.location = '/app/base/wizard/next_step';
         else if ($(location).attr('href').match('.*\/dns\/edit') != null)
             $('form#dns_form').submit();
         else if ($(location).attr('href').match('.*\/dns') != null)
-            window.location = '/app/base/wizard/next_step';
+            window.location = '/app/network/dns/edit/verify';
         else if ($(location).attr('href').match('.*\/iface') != null)
             window.location = '/app/base/wizard/next_step';
     });
@@ -117,14 +121,20 @@ $(document).ready(function() {
                 setWirelessFields();
             });
         }
+    }
 
-    // Summary page
-    //-------------
+    // Sidebar report
+    //---------------
 
-    } else if ($('#network_status_box').length != 0) {
-        $('#network_status').html('<span class="theme-loading-normal">...</span>');
-        getAllNetworkInfo();
-    } else if ($('#dns_auto_text').length != 0) {
+    if ($('#network_status_label').length != 0) {
+        getNetworkStatusInfo();
+        getDnsStatusInfo();
+    }
+
+    // DNS details and interfaces
+    //---------------------------
+
+    if ($('#dns_auto_text').length != 0) {
         getAllNetworkInfo();
     }
 });
@@ -145,6 +155,45 @@ function getAllNetworkInfo() {
         },
         error: function (XMLHttpRequest, textStatus, errorThrown) {
             window.setTimeout(getAllNetworkInfo, 3000);
+        }
+    });
+}
+
+/**
+ * Ajax call for network status information.
+ */
+
+function getDnsStatusInfo() {
+
+    $.ajax({
+        url: '/app/network/get_dns_status_info',
+        method: 'GET',
+        dataType: 'json',
+        success : function(payload) {
+            showDnsStatusInfo(payload);
+            window.setTimeout(getDnsStatusInfo, 3000);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            window.setTimeout(getDnsStatusInfo, 3000);
+        }
+    });
+}
+
+/**
+ * Ajax call for network status information.
+ */
+
+function getNetworkStatusInfo() {
+    $.ajax({
+        url: '/app/network/get_network_status_info',
+        method: 'GET',
+        dataType: 'json',
+        success : function(payload) {
+            showNetworkStatusInfo(payload);
+            window.setTimeout(getNetworkStatusInfo, 3000);
+        },
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            window.setTimeout(getNetworkStatusInfo, 3000);
         }
     });
 }
@@ -175,7 +224,6 @@ function getInterfaceInfo() {
  */
 
 function showAllNetworkInfo(payload) {
-    var external = false;
 
     // Network interface details
     //--------------------------
@@ -184,11 +232,8 @@ function showAllNetworkInfo(payload) {
         var link_text = (payload['network'][iface].link) ? lang_yes : lang_no;
         var ip_text = '';
 
-        if (payload['network'][iface].configured) {
+        if (payload['network'][iface].configured)
             ip_text = (payload['network'][iface].address) ? payload['network'][iface].address : '<div class="theme-loading-small"></div>';
-            if (payload['network'][iface].role == 'EXTIF')
-                external = true;
-        }
 
         $('#role_' + iface).html(payload['network'][iface].roletext);
         $('#bootproto_' + iface).html(payload['network'][iface].bootprototext);
@@ -220,28 +265,66 @@ function showAllNetworkInfo(payload) {
         var dns_html_index = dns_index + 1;
         $('#dns' + dns_index + '_text').html(payload['dns_servers'][dns_index]);
     }
+}
 
-    // Network status
-    //---------------
+/**
+ * Shows DNS status information.
+ */
 
-    var network_status_message = '';
+function showDnsStatusInfo(payload) {
 
-    if (external) {
-        external_message = '';
-console.log(payload);
-        if (payload['live_status'] == 'online')
-            network_status_message = lang_connected;
-        else if (payload['live_status'] == 'online_no_dns')
-            network_status_message = icon_warning + 'No DNS dude'; // FIXME
-        else
-            network_status_message = icon_warning + lang_not_connected;
+    var dns_status_message = '';
+
+    if (payload['dns_status'] == 'online') {
+        dns_status_message = '<span class=\'theme-text-good-status\'>' + lang_connected + '</span>';
+
+        if ($('#theme_wizard_nav_next').length != 0) {
+            $('#dns_test_message').html(lang_dns_passed);
+            $('#dns_test_message').removeClass('theme-text-bad-status');
+
+            $('#theme_wizard_nav_next').show();
+            $('#theme_wizard_nav_previous').show();
+            $('#dns_edit_anchor').hide();
+        }
     } else {
-        external_message = icon_warning + lang_no_external;
-        network_status_message = '';
+        dns_status_message = '<span class=\'theme-text-bad-status\'>' + lang_offline + '</span>';
+
+        if ($('#theme_wizard_nav_next').length != 0) {
+            $('#dns_test_message').html(lang_dns_failed);
+            $('#dns_test_message').addClass('theme-text-bad-status');
+
+            $('#theme_wizard_nav_next').hide();
+            $('#theme_wizard_nav_previous').hide();
+            $('#dns_edit_anchor').show();
+        }
     }
 
-    $('#no_external_warning').html(external_message);
-    $('#network_status').html(network_status_message);
+    $('#dns_status_text').html(dns_status_message);
+}
+
+/**
+ * Shows network status information.
+ */
+
+function showNetworkStatusInfo(payload) {
+
+    var connection_status_message = '';
+    var gateway_status_message = '';
+
+    if (payload['connection_status'] == 'online')
+        connection_status_message = '<span class=\'theme-text-good-status\'>' + lang_connected + '</span>';
+    else if (payload['connection_status'] == 'online_no_dns')
+        connection_status_message = '<span class=\'theme-text-good-status\'>' + lang_connected + '</span>';
+    else
+        connection_status_message = '<span class=\'theme-text-bad-status\'>' + lang_offline + '</span>';
+
+    if (payload['gateway_status'] == 'online')
+        gateway_status_message = '<span class=\'theme-text-good-status\'>' + lang_connected + '</span>';
+    else
+        gateway_status_message = '<span class=\'theme-text-bad-status\'>' + lang_offline + '</span>';
+
+    $('#network_status_text').html(connection_status_message);
+    $('#gateway_status_text').html(gateway_status_message);
 }
 
 /**

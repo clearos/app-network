@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Network report view.
+ * Network status report.
  *
- * @category   ClearOS
+ * @category   Apps
  * @package    Network
- * @subpackage Views
+ * @subpackage Controllers
  * @author     ClearFoundation <developer@clearfoundation.com>
  * @copyright  2013 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
@@ -25,22 +25,52 @@
 // GNU General Public License for more details.
 //
 // You should have received a copy of the GNU General Public License
-// along with this program.  If not, see <http://www.gnu.org/licenses/>.  
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 ///////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
-// Load dependencies
+// C L A S S
 ///////////////////////////////////////////////////////////////////////////////
 
-$this->lang->load('network');
+/**
+ * Network status report.
+ *
+ * @category   Apps
+ * @package    Network
+ * @subpackage Controllers
+ * @author     ClearFoundation <developer@clearfoundation.com>
+ * @copyright  2013 ClearFoundation
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
+ * @link       http://www.clearfoundation.com/docs/developer/apps/network/
+ */
 
-///////////////////////////////////////////////////////////////////////////////
-// Form
-///////////////////////////////////////////////////////////////////////////////
+class Report extends ClearOS_Controller
+{
+    /**
+     * Network status sidebar.
+     *
+     * @return view
+     */
 
-echo sidebar_header(lang('network_network_status'));
-echo sidebar_value('<span class="theme-loading-small">&nbsp;</span>', lang('network_gateway_status'), array('id' => 'gateway_status'));
-echo sidebar_value('<span class="theme-loading-small">&nbsp;</span>', lang('network_internet_status'), array('id' => 'network_status'));
-echo sidebar_value('<span class="theme-loading-small">&nbsp;</span>', lang('network_dns_lookup'), array('id' => 'dns_status'));
-echo sidebar_footer();
+    function sidebar()
+    {
+        // Only show sidebar on some pages
+        //--------------------------------
+
+        $uri = $this->uri->uri_string();
+
+        if (! (($uri === 'network/iface') || ($uri === 'network') || preg_match('/^network\/dns/', $uri)))
+            return;
+
+        // Load dependencies
+        //------------------
+
+        $this->lang->load('network');
+
+        // Load views
+        //-----------
+
+        $this->page->view_form('report', array(), lang('network_network_status'));
+    }
+}
