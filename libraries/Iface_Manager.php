@@ -129,6 +129,41 @@ class Iface_Manager extends Engine
     }
 
     /**
+     * Cleans MAC addresses.
+     *
+     * The ifcfg-ethX files embed the MAC address.  When the configured MAC 
+     * does not match the hardware MAC, the network interface will not work.
+     * I'm sure there's a good reason for this, but it's problematic on 
+     * backup/restore.
+     *
+     * @return void
+     * @throws Engine_Exception
+     */
+
+    public function clean_macs()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $ifaces = $this->get_interface_details();
+
+        foreach ($ifaces as $iface_name => $details) {
+            if (($details['type'] === Iface::TYPE_ETHERNET) || ($details['type'] === Iface::TYPE_WIRELESS)) {
+                if (!empty($details['configured'])) {
+                    if (empty($details['ifcfg']['hwaddr'])) {
+                        clearos_log('network', 'adding MAC address to network configuration: ' . $iface_name);
+                        $iface = new Iface($iface_name);
+                        $iface->set_mac();
+                    } else if ($details['ifcfg']['hwaddr'] != $details['hwaddress']) {
+                        clearos_log('network', 'fixing MAC address in network configuration: ' . $iface_name);
+                        $iface = new Iface($iface_name);
+                        $iface->set_mac();
+                    }
+                } 
+            }
+        }
+    }
+
+    /**
      * Returns array of interfaces (real and dynamic).
      *
      * Filter options:

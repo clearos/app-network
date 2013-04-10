@@ -103,7 +103,7 @@ class Hostname extends ClearOS_Controller
             $data['internet_hostname'] = $this->hostname->get_internet_hostname();
 
             // If the default is detected, provide an intelligent default
-            if ($data['hostname'] == 'system.domain.lan') {
+            if (($data['hostname'] == 'system.domain.lan') || ($data['hostname'] == 'localhost.localdomain')) {
                 $mode = $this->network->get_mode();
                 $domain = $this->domain->get_default();
 
