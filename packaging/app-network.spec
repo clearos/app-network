@@ -1,7 +1,7 @@
 
 Name: app-network
 Epoch: 1
-Version: 1.4.34
+Version: 1.4.35
 Release: 1%{dist}
 Summary: IP Settings
 License: GPLv3
@@ -62,6 +62,8 @@ install -D -m 0644 packaging/filewatch-network.conf %{buildroot}/etc/clearsync.d
 install -D -m 0644 packaging/network.conf %{buildroot}/etc/clearos/network.conf
 install -D -m 0755 packaging/network_resolver %{buildroot}/var/clearos/events/network_configuration/network_resolver
 install -D -m 0755 packaging/network_resolver2 %{buildroot}/var/clearos/events/network_peerdns/network_resolver
+
+rm -rf %{buildroot}/usr/clearos/apps/network/libraries_zendguard
 
 %post
 logger -p local6.notice -t installer 'app-network - installing'
