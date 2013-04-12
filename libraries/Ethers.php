@@ -173,7 +173,7 @@ class Ethers extends Engine
         // Already exists?
         foreach ($contents as $key => $line) {
             if (preg_match("/$mac/", $line))
-                throw new Ethers_Already_Exists_Exception($mac, CLEAROS_ERROR);
+                throw new Ethers_Already_Exists_Exception($mac, CLEAROS_WARNING);
         }
 
         // Add
@@ -212,7 +212,7 @@ class Ethers extends Engine
         if ($write_out)
             $file->dump_contents_from_array($contents);
         else
-            throw new Ethers_Not_Found_Exception($mac, CLEAROS_ERROR);
+            throw new Ethers_Not_Found_Exception($mac, CLEAROS_WARNING);
     }
 
     /**
@@ -234,7 +234,7 @@ class Ethers extends Engine
         $ethers = $this->get_ethers();
 
         if (! isset($ethers[$mac]))
-            throw new Ethers_Not_Found_Exception($mac, CLEAROS_ERROR);
+            throw new Ethers_Not_Found_Exception($mac, CLEAROS_WARNING);
 
         if (Network_Utils::is_valid_hostname($ethers[$mac]) === FALSE)
             throw new Validation_Exception(lang('network_hostname_invalid'));
@@ -271,7 +271,7 @@ class Ethers extends Engine
             break;
         }
         if ($mac === NULL)
-            throw new Ethers_Not_Found_Exception($hostname, CLEAROS_ERROR);
+            throw new Ethers_Not_Found_Exception($hostname, CLEAROS_WARNING);
     }
 
     /**
@@ -353,7 +353,7 @@ class Ethers extends Engine
         if ($write_out)
             $file->dump_contents_from_array($contents);
         else
-            throw new Ethers_Not_Found_Exception($mac, CLEAROS_ERROR);
+            throw new Ethers_Not_Found_Exception($mac, CLEAROS_WARNING);
     }
 
     ///////////////////////////////////////////////////////////////////////////////
