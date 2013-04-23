@@ -267,6 +267,12 @@ class Network_Status extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
+        // KLUDGE: Amazon EC2 does not allow pings to the gateway,
+        // so always return online if we're running in Amazon.
+        // Reference: http://aws.amazon.com/vpc/faqs/#S10
+        if (file_exists('/usr/clearos/apps/amazon_ec2'))
+            return self::STATUS_ONLINE;
+
         $shell = new Shell();
         $options['validate_exit_code'] = FALSE;
 
