@@ -63,10 +63,14 @@ else
 // Anchors 
 ///////////////////////////////////////////////////////////////////////////////
 
-if ($form_type === 'wizard')
+if ($form_type === 'wizard') {
     $anchors = array();
-else
-    $anchors = array(anchor_custom('/app/network/iface/add_virtual', lang('network_add_virtual_interface')));
+} else {
+    $anchors = array(
+        anchor_custom('/app/network/iface/add_vlan', lang('network_add_vlan_interface')),
+        anchor_custom('/app/network/iface/add_virtual', lang('network_add_virtual_interface'))
+    );
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Items
@@ -109,12 +113,21 @@ foreach ($network_interfaces as $interface => $detail) {
                 anchor_delete('/app/network/iface/delete/' . $interface)
             );
 
-        // Show edit/delete for supported Ethernet and PPPoE types
-        //--------------------------------------------------------
+        // Virtual interfaces
+        //-------------------
 
         } else if ($detail['type'] === Iface::TYPE_VIRTUAL) {
             $buttons = array(
                 anchor_edit('/app/network/iface/edit_virtual/' . $interface),
+                anchor_delete('/app/network/iface/delete/' . $interface)
+            );
+
+        // VLAN interfaces
+        //----------------
+
+        } else if ($detail['type'] === Iface::TYPE_VLAN) {
+            $buttons = array(
+                anchor_edit('/app/network/iface/edit_vlan/' . $interface),
                 anchor_delete('/app/network/iface/delete/' . $interface)
             );
 

@@ -2,6 +2,7 @@
 
 $lang['network_add_upstream_proxy'] = 'Add Upstream Proxy';
 $lang['network_add_virtual_interface'] = 'Add Virtual Interface';
+$lang['network_add_vlan_interface'] = 'Add VLAN Interface';
 $lang['network_address'] = 'Network Address';
 $lang['network_allow_connections'] = 'Allow Connections';
 $lang['network_app_description'] = 'The IP Settings app provides the tools to configure the most common network tasks like network mode, system hostname, DNS servers and network interface settings.';
@@ -164,6 +165,8 @@ $lang['network_upstream_proxy'] = 'Upstream Proxy';
 $lang['network_username_invalid'] = 'Username is invalid';
 $lang['network_validate_unusual_gateway_setting'] = 'Your network settings include the following unusual gateway configuration.  Click on help for more information.';
 $lang['network_vendor'] = 'Vendor';
+$lang['network_vlan_id'] = 'VLAN ID';
+$lang['network_vlan_id_invalid'] = 'VLAN ID is invalid.';
 $lang['network_wins_server'] = 'WINS Server';
 $lang['network_wins_server_invalid'] = 'WINS server is invalid.';
 $lang['network_wireless'] = 'Wireless';

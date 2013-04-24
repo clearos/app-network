@@ -455,6 +455,12 @@ class Iface extends Engine
             // Keep going?
         }
 
+        // VLAN ID
+        //--------
+
+        if ($info['type'] === self::TYPE_VLAN)
+            $info['vlan_id'] = preg_replace('/.*\./', '', $this->iface);
+
         // Role info
         //----------
 
@@ -1721,6 +1727,50 @@ class Iface extends Engine
         return $this->iface;
     }
 
+    /**
+     * Creates a VLAN ethernet configuration.
+     *
+     * @param intenger $vlan_id VLAN ID
+     * @param string   $ip      IP address
+     * @param string   $netmask netmask
+     *
+     * @return string name of VLAN interface
+     * @throws Engine_Exception, Engine_Exception
+     */
+
+    public function save_vlan_config($vlan_id, $ip, $netmask)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        Validation_Exception::is_valid($this->validate_interface($this->iface));
+        Validation_Exception::is_valid($this->validate_vlan_id($vlan_id));
+        Validation_Exception::is_valid($this->validate_ip($ip));
+        Validation_Exception::is_valid($this->validate_netmask($netmask));
+
+        if (!preg_match('/\.\d+$/', $this->iface))
+            $this->iface = $this->iface . '.' . $vlan_id;
+
+        // Disable interface - see maintenance note
+        try {
+            $this->disable();
+        } catch (Engine_Exception $e) {
+            // Not fatal
+        }
+
+        $info = array();
+        $info['DEVICE'] = $this->iface;
+        $info['TYPE'] = self::TYPE_VLAN;
+        $info['ONBOOT'] = 'yes';
+        $info['USERCTL'] = 'no';
+        $info['BOOTPROTO'] = 'static';
+        $info['IPADDR'] = $ip;
+        $info['NETMASK'] = $netmask;
+        $info['VLAN'] = 'yes';
+        $this->write_config($info);
+
+        return $this->iface;
+    }
+
     ///////////////////////////////////////////////////////////////////////////
     // V A L I D A T I O N   R O U T I N E S
     ///////////////////////////////////////////////////////////////////////////
@@ -1901,6 +1951,22 @@ class Iface extends Engine
         // TODO
         // if (! preg_match('/^[a-zA-Z0-9:]+$/', $username))
         //    return lang('network_username_invalid');
+    }
+
+    /**
+     * Validation routine for VLAN ID.
+     *
+     * @param string $vlan_id VLAN ID
+     *
+     * @return string error message if VLAN ID is invalid
+     */
+
+    public function validate_vlan_id($vlan_id)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        if (!preg_match('/^\d+$/', $vlan_id) || ($vlan_id < 0) || ($vlan_id > 4095))
+            return lang('network_vlan_id_invalid');
     }
 
     /**
