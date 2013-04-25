@@ -62,24 +62,6 @@ class DNS extends ClearOS_Controller
 
     function index()
     {
-        // Load libraries
-        //---------------
-
-        $this->load->library('network/Resolver');
-
-        // Handle wizard mode
-        //-------------------
-
-        // if wizard mode and automatic DNS is disabled, go straight to edit mode
-        $is_wizard = ($this->session->userdata('wizard')) ? TRUE : FALSE;
-        $is_automatic = $this->resolver->is_automatically_configured();
-
-        if ($is_wizard && !$is_automatic)
-            redirect('/network/dns/edit');
-
-        // Load views
-        //-----------
-
         $this->_view_edit('view');
     }
 
@@ -142,6 +124,19 @@ class DNS extends ClearOS_Controller
 
         $this->load->library('network/Resolver');
 
+        // Handle wizard mode
+        //-------------------
+
+        $is_automatic = $this->resolver->is_automatically_configured();
+
+        // if wizard mode and automatic DNS is disabled, go straight to edit mode
+        if ($form_type === 'view') {
+            $is_wizard = ($this->session->userdata('wizard')) ? TRUE : FALSE;
+
+            if ($is_wizard && !$is_automatic)
+                redirect('/network/dns/edit');
+        }
+
         // Set validation rules
         //---------------------
          
@@ -156,7 +151,7 @@ class DNS extends ClearOS_Controller
         // Extra validation
         //-----------------
 
-        if ($form_ok && !$this->resolver->is_automatically_configured()) {
+        if ($form_ok && !$is_automatic) {
             $dns_empty = TRUE;
 
             foreach ($dns as $server) {
@@ -197,7 +192,7 @@ class DNS extends ClearOS_Controller
         try {
             $data['form_type'] = $form_type;
             $data['is_wizard'] = ($this->session->userdata('wizard')) ? TRUE : FALSE;
-            $data['is_automatic'] = $this->resolver->is_automatically_configured();
+            $data['is_automatic'] = $is_automatic;
             $data['dns'] = $this->resolver->get_nameservers();
         } catch (Exception $e) {
             $this->page->view_exception($e);

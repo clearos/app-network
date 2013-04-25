@@ -190,6 +190,8 @@ class Iface extends Engine
     const IFF_DORMANT = 0x20000;
 
     protected $iface = NULL;
+    protected $is_configured = NULL;
+    protected $config = NULL;
 
     ///////////////////////////////////////////////////////////////////////////////
     // M E T H O D S
@@ -522,6 +524,7 @@ class Iface extends Engine
             }
         }
 
+clearos_profile(__METHOD__, __LINE__, 'get_info end ' . $this->iface);
         return $info;
     }
 
@@ -1252,12 +1255,14 @@ class Iface extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
+        if (!is_null($this->is_configured))
+            return $this->is_configured;
+
         $file = new File(self::PATH_SYSCONF . '/network-scripts/ifcfg-' . $this->iface);
 
-        if ($file->exists())
-            return TRUE;
-        else
-            return FALSE;
+        $this->is_configured = ($file->exists()) ? TRUE : FALSE;
+
+        return $this->is_configured;
     }
 
     /**
@@ -1315,6 +1320,8 @@ class Iface extends Engine
         } catch (File_No_Match_Exception $e) {
             $file->add_lines("HWADDR=\"$mac\"\n");
         }
+
+        $this->config = NULL;
     }
 
     /**
@@ -1343,6 +1350,8 @@ class Iface extends Engine
         } catch (File_No_Match_Exception $e) {
             $file->add_lines("MTU=\"$mtu\"\n");
         }
+
+        $this->config = NULL;
     }
 
     /**
@@ -1356,9 +1365,14 @@ class Iface extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
+        if (!is_null($this->config))
+            return $this->config;
+
         Validation_Exception::is_valid($this->validate_interface($this->iface));
 
-        $file = new File(self::PATH_SYSCONF . '/network-scripts/ifcfg-' . $this->iface);
+        $options['skip_size_check'] = TRUE;
+
+        $file = new File(self::PATH_SYSCONF . '/network-scripts/ifcfg-' . $this->iface, TRUE, FALSE, $options);
 
         if (! $file->exists())
             return NULL;
@@ -1404,7 +1418,10 @@ class Iface extends Engine
             && (($netinfo['bootproto'] == self::BOOTPROTO_PPPOE) || ($netinfo['bootproto'] == self::BOOTPROTO_DHCP)))
             && (!isset($netinfo['peerdns']))
         )
-            $netinfo['peerdns'] = TRUE;
+
+        $netinfo['peerdns'] = TRUE;
+
+        $this->config = $netinfo;
 
         return $netinfo;
     }
@@ -1523,6 +1540,7 @@ class Iface extends Engine
         }
 
         $ethernet->write_config($ethinfo);
+        $this->config = NULL;
 
         // Write PPPoE config
         //-------------------
@@ -1562,6 +1580,7 @@ class Iface extends Engine
         }
 
         $pppoe->write_config($info);
+        $this->config = NULL;
 
         // Add password to chap-secrets
         //-----------------------------
@@ -1619,6 +1638,7 @@ class Iface extends Engine
             $this->_save_wireless_settings($info, $wireless);
 
         $this->write_config($info);
+        $this->config = NULL;
     }
 
     /**
@@ -1671,6 +1691,7 @@ class Iface extends Engine
             $this->_save_wireless_settings($info, $wireless);
 
         $this->write_config($info);
+        $this->config = NULL;
     }
 
     /**
@@ -1723,6 +1744,7 @@ class Iface extends Engine
         $info['IPADDR'] = $ip;
         $info['NETMASK'] = $netmask;
         $this->write_config($info);
+        $this->config = NULL;
 
         return $this->iface;
     }
@@ -1767,6 +1789,7 @@ class Iface extends Engine
         $info['NETMASK'] = $netmask;
         $info['VLAN'] = 'yes';
         $this->write_config($info);
+        $this->config = NULL;
 
         return $this->iface;
     }
