@@ -76,7 +76,9 @@ if ($form_type === 'wizard') {
 // Items
 ///////////////////////////////////////////////////////////////////////////////
 
+$types = array();
 $items = array();
+$items_grouped = array();
 
 foreach ($network_interfaces as $interface => $detail) {
 
@@ -194,18 +196,31 @@ foreach ($network_interfaces as $interface => $detail) {
     );
 
     $items[] = $item;
+
+    $types[$detail['type']] = TRUE;
+    array_unshift($item['details'], $detail['type']);
+
+    $items_grouped[] = $item;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 // Summary table
 ///////////////////////////////////////////////////////////////////////////////
 
+$options['id'] = 'network_summary';
+
+if (count($types) > 1) {
+    $options['grouping'] = TRUE;
+    $items = $items_grouped;
+    array_unshift($headers, lang('network_type'));
+}
+
 echo summary_table(
     $title,
     $anchors,
     $headers,
     $items,
-    array('id' => 'network_summary')
+    $options
 );
 
 ///////////////////////////////////////////////////////////////////////////////

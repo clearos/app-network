@@ -264,7 +264,6 @@ class Iface extends ClearOS_Controller
         $this->load->library('network/Iface', $interface);
         $this->load->library('network/Iface_Manager');
         $this->load->library('network/Role');
-        $this->load->library('network/Routes');
 
         if (clearos_app_installed('dhcp'))
             $this->load->library('dhcp/Dnsmasq');
@@ -314,8 +313,6 @@ class Iface extends ClearOS_Controller
 
         if ($this->input->post('submit') && ($form_ok === TRUE)) {
 
-            $aliases = array();
-
             try {
                 // Wireless options
                 //-----------------
@@ -337,6 +334,7 @@ class Iface extends ClearOS_Controller
                         $wireless
                     );
 
+                    $this->_update_routing($interface, $role);
                     $this->iface->enable(FALSE);
 
                     if (clearos_app_installed('dhcp') && ($this->input->post('enable_dhcp')))
@@ -348,6 +346,7 @@ class Iface extends ClearOS_Controller
                         $wireless
                     );
 
+                    $this->_update_routing($interface, $role);
                     $this->iface->enable(TRUE);
                 } else if ($bootproto == IfaceAPI::BOOTPROTO_PPPOE) {
                     $interface = $this->iface->save_pppoe_config(
@@ -359,24 +358,9 @@ class Iface extends ClearOS_Controller
                         $wireless
                     );
 
+                    $this->_update_routing($interface, $role);
                     $this->iface->enable(TRUE);
                 }
-
-                // Set routing
-                //------------
-
-                $current_route = $this->routes->get_gateway_device();
-
-                if ($role === Role::ROLE_EXTERNAL) {
-                    $this->routes->set_gateway_device($interface);
-                } else if ($interface == $current_route) {
-                    $this->routes->delete_gateway_device();
-                }
-
-                // Set interface role
-                //-------------------
-
-                $this->role->set_interface_role($interface, $role);
 
                 // Return to summary page with status message
                 //-------------------------------------------
@@ -436,6 +420,41 @@ class Iface extends ClearOS_Controller
             $options['type'] = MY_Page::TYPE_CONSOLE;
 
         $this->page->view_form('network/iface', $data, lang('network_interface'), $options);
+    }
+
+    /**
+     * Updates routing information
+     *
+     */
+
+    function _update_routing($interface, $role)
+    {
+        // Load libraries
+        //---------------
+
+        $this->load->library('network/Routes');
+
+        try {
+            // Set routing
+            //------------
+
+            $current_route = $this->routes->get_gateway_device();
+
+            if ($role === Role::ROLE_EXTERNAL) {
+                $this->routes->set_gateway_device($interface);
+            } else if ($interface == $current_route) {
+                $this->routes->delete_gateway_device();
+                // FIXME: should try to restore route if possible
+            }
+
+            // Set interface role
+            //-------------------
+
+            $this->role->set_interface_role($interface, $role);
+        } catch (\Exception $e) {
+            $this->page->view_exception($e);
+            return;
+        }
     }
 
     /**
@@ -528,13 +547,32 @@ class Iface extends ClearOS_Controller
         $this->lang->load('network');
         $this->load->library('network/Iface', $interface);
         $this->load->library('network/Iface_Manager');
+        $this->load->library('network/Role');
+
+        if (clearos_app_installed('dhcp'))
+            $this->load->library('dhcp/Dnsmasq');
 
         // Set validation rules
         //---------------------
 
+        $bootproto = $this->input->post('bootproto');
+        $role = $this->input->post('role');
+
+        $this->form_validation->set_policy('role', 'network/Role', 'validate_role', TRUE);
+        $this->form_validation->set_policy('bootproto', 'network/Iface', 'validate_boot_protocol', TRUE);
         $this->form_validation->set_policy('vlan_id', 'network/Iface', 'validate_vlan_id', TRUE);
-        $this->form_validation->set_policy('ipaddr', 'network/Iface', 'validate_ip', TRUE);
-        $this->form_validation->set_policy('netmask', 'network/Iface', 'validate_netmask', TRUE);
+
+        if ($bootproto == IfaceAPI::BOOTPROTO_STATIC) {
+            $this->form_validation->set_policy('ipaddr', 'network/Iface', 'validate_ip', TRUE);
+            $this->form_validation->set_policy('netmask', 'network/Iface', 'validate_netmask', TRUE);
+            if ($role == Role::ROLE_EXTERNAL)
+                $this->form_validation->set_policy('gateway', 'network/Iface', 'validate_gateway', TRUE);
+            else if (clearos_app_installed('dhcp'))
+                $this->form_validation->set_policy('enable_dhcp', 'dhcp/Dnsmasq', 'validate_dhcp_state');
+        } else if ($bootproto == IfaceAPI::BOOTPROTO_DHCP)  {
+            $this->form_validation->set_policy('hostname', 'network/Iface', 'validate_hostname');
+            $this->form_validation->set_policy('dhcp_dns', 'network/Iface', 'validate_peerdns');
+        }
 
         $form_ok = $this->form_validation->run();
 
@@ -542,14 +580,36 @@ class Iface extends ClearOS_Controller
         //-------------------
 
         if ($this->input->post('submit') && ($form_ok === TRUE)) {
+            if ($form_type === 'add')
+                $interface = $this->input->post('iface') . '.' . $this->input->post('vlan_id');
 
             try {
-                $this->iface->save_vlan_config(
-                    $this->input->post('vlan_id'),
-                    $this->input->post('ipaddr'),
-                    $this->input->post('netmask')
-                );
-                $this->iface->enable();
+                if ($bootproto == IfaceAPI::BOOTPROTO_STATIC) {
+                    $this->iface->save_vlan_static_config(
+                        $this->input->post('vlan_id'),
+                        $this->input->post('ipaddr'),
+                        $this->input->post('netmask'),
+                        $this->input->post('gateway')
+                    );
+
+                    $this->_update_routing($interface, $role);
+                    $this->iface->enable(FALSE);
+
+                    if (clearos_app_installed('dhcp') && ($this->input->post('enable_dhcp')))
+                        $this->dnsmasq->add_subnet_default($interface);
+                } else if ($bootproto == IfaceAPI::BOOTPROTO_DHCP) {
+                    $this->iface->save_vlan_dhcp_config(
+                        $this->input->post('vlan_id'),
+                        $this->input->post('hostname'),
+                        (bool) $this->input->post('dhcp_dns')
+                    );
+                
+                    $this->_update_routing($interface, $role);
+                    $this->iface->enable(TRUE);
+                }
+
+                // Return to summary page with status message
+                //-------------------------------------------
 
                 $this->page->set_status_updated();
                 redirect('/network/iface');
@@ -563,16 +623,38 @@ class Iface extends ClearOS_Controller
         //------------------- 
 
         try {
+            $options['filter_pppoe'] = TRUE;
+
             $data['form_type'] = $form_type;
             $data['iface'] = $interface;
             $data['ifaces'] = $this->iface_manager->get_interfaces();
+            $data['roles'] = $this->iface->get_supported_roles();
+            $data['bootprotos'] = $this->iface->get_supported_bootprotos($options);
 
             if ($form_type !== 'add')
                 $data['iface_info'] = $this->iface->get_info();
+
+            // Default to enable on unconfigured interfaces
+            if (clearos_app_installed('dhcp') && ($form_type === 'add')) {
+                $data['show_dhcp'] = TRUE;
+                $data['enable_dhcp'] = TRUE;
+            } else {
+                $data['show_dhcp'] = FALSE;
+            }
         } catch (Exception $e) {
             $this->page->view_exception($e);
             return;
         }
+
+        // Set defaults
+        if (!$data['iface_info']['configured'])
+            $data['iface_info']['role'] = Role::ROLE_LAN;
+
+        if (empty($data['iface_info']['ifcfg']['bootproto']))
+            $data['iface_info']['ifcfg']['bootproto'] = \clearos\apps\network\Iface::BOOTPROTO_STATIC;
+
+        if (empty($data['iface_info']['ifcfg']['netmask']))
+            $data['iface_info']['ifcfg']['netmask'] = '255.255.255.0';
 
         // Load the views
         //---------------

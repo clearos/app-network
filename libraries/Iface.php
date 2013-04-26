@@ -801,19 +801,28 @@ clearos_profile(__METHOD__, __LINE__, 'get_info end ' . $this->iface);
     /**
      * Returns supported bootprotos for the interface.
      *
+     * The options['filter_pppoe'] will filter out the PPPoE protocol.
+     * PPPoE does not make much sense in many situations.  Shakes fist.
+     *
+     * @param array $options options
+     *
      * @return array supported bootprotos
      * @throws Engine_Exception
      */
 
-    public function get_supported_bootprotos()
+    public function get_supported_bootprotos($options = NULL)
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        return array(
+        $bootprotos = array(
             self::BOOTPROTO_DHCP => lang('network_bootproto_dhcp'),
             self::BOOTPROTO_STATIC => lang('network_bootproto_static'),
-            self::BOOTPROTO_PPPOE => lang('network_bootproto_pppoe'),
         );
+
+        if (empty($options['filter_pppoe']) || !$options['filter_pppoe'])
+            $bootprotos[self::BOOTPROTO_PPPOE] = lang('network_bootproto_pppoe');
+
+        return $bootprotos;
     }
 
     /**
@@ -1590,7 +1599,6 @@ clearos_profile(__METHOD__, __LINE__, 'get_info end ' . $this->iface);
         return $eth;
     }
 
-
     /**
      * Creates a standard ethernet configuration.
      *
@@ -1646,7 +1654,7 @@ clearos_profile(__METHOD__, __LINE__, 'get_info end ' . $this->iface);
      *
      * @param string $ip       IP address (for static only)
      * @param string $netmask  netmask (for static only)
-     * @param string $gateway  gate (for static only)
+     * @param string $gateway  gateway (for static only)
      * @param array  $wireless wireless information if wireless
      *
      * @return void
@@ -1750,17 +1758,67 @@ clearos_profile(__METHOD__, __LINE__, 'get_info end ' . $this->iface);
     }
 
     /**
+     * Creates a standard VLAN DHCP configuration.
+     *
+     * @param string  $hostname optional DHCP hostname (for DHCP only)
+     * @param boolean $peerdns  set to TRUE if you want to use the DHCP peer DNS settings
+     *
+     * @return void
+     * @throws  Engine_Exception
+     */
+
+    public function save_vlan_dhcp_config($vlan_id, $hostname, $peerdns)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        Validation_Exception::is_valid($this->validate_interface($this->iface));
+        Validation_Exception::is_valid($this->validate_vlan_id($vlan_id));
+        Validation_Exception::is_valid($this->validate_peerdns($peerdns));
+
+        if (! empty($hostname))
+            Validation_Exception::is_valid($this->validate_hostname($hostname));
+
+        if (!preg_match('/\.\d+$/', $this->iface))
+            $this->iface = $this->iface . '.' . $vlan_id;
+
+        // Disable interface - see maintenance note
+        try {
+            $this->disable();
+        } catch (Engine_Exception $e) {
+            // Not fatal
+        }
+
+        $info = array();
+        $info['DEVICE'] = $this->iface;
+        $info['TYPE'] = self::TYPE_VLAN;
+        $info['ONBOOT'] = 'yes';
+        $info['USERCTL'] = 'no';
+        $info['BOOTPROTO'] = 'dhcp';
+        $info['PEERDNS'] = ($peerdns) ? 'yes' : 'no';
+        $info['VLAN'] = 'yes';
+
+        if (strlen($hostname))
+            $info['DHCP_HOSTNAME'] = $hostname;
+
+        $this->write_config($info);
+        $this->config = NULL;
+
+        return $this->iface;
+    }
+
+    /**
      * Creates a VLAN ethernet configuration.
      *
      * @param intenger $vlan_id VLAN ID
      * @param string   $ip      IP address
      * @param string   $netmask netmask
+     * @param string   $gateway  gateway (for static only)
      *
      * @return string name of VLAN interface
      * @throws Engine_Exception, Engine_Exception
      */
 
-    public function save_vlan_config($vlan_id, $ip, $netmask)
+    public function save_vlan_static_config($vlan_id, $ip, $netmask, $gateway = NULL)
     {
         clearos_profile(__METHOD__, __LINE__);
 
@@ -1768,6 +1826,9 @@ clearos_profile(__METHOD__, __LINE__, 'get_info end ' . $this->iface);
         Validation_Exception::is_valid($this->validate_vlan_id($vlan_id));
         Validation_Exception::is_valid($this->validate_ip($ip));
         Validation_Exception::is_valid($this->validate_netmask($netmask));
+
+        if (! empty($gateway))
+            Validation_Exception::is_valid($this->validate_gateway($gateway));
 
         if (!preg_match('/\.\d+$/', $this->iface))
             $this->iface = $this->iface . '.' . $vlan_id;
@@ -1788,6 +1849,10 @@ clearos_profile(__METHOD__, __LINE__, 'get_info end ' . $this->iface);
         $info['IPADDR'] = $ip;
         $info['NETMASK'] = $netmask;
         $info['VLAN'] = 'yes';
+
+        if (! empty($gateway))
+            $info['GATEWAY'] = $gateway;
+
         $this->write_config($info);
         $this->config = NULL;
 

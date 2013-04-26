@@ -447,7 +447,7 @@ class Iface_Manager extends Engine
         $options['filter_sit'] = isset($options['filter_sit']) ? $options['filter_sit'] : TRUE;
         $options['filter_tun'] = isset($options['filter_tun']) ? $options['filter_tun'] : TRUE;
         $options['filter_virtual'] = isset($options['filter_virtual']) ? $options['filter_virtual'] : TRUE;
-        $options['filter_vlan'] = isset($options['filter_vlan']) ? $options['filter_vlan'] : TRUE;
+        $options['filter_vlan'] = isset($options['filter_vlan']) ? $options['filter_vlan'] : FALSE;
         $options['filter_1to1_nat'] = isset($options['filter_1to1_nat']) ? $options['filter_1to1_nat'] : TRUE;
         $options['filter_non_configurable'] = isset($options['filter_non_configurable']) ? $options['filter_non_configurable'] : TRUE;
         $options['filter_slave'] = isset($options['filter_slave']) ? $options['filter_slave'] : TRUE;

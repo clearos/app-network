@@ -73,6 +73,9 @@ if ($form_type === 'edit') {
 echo form_open($form_path);
 echo form_header(lang('network_interface'));
 
+// Common settings
+//----------------
+
 if ($iface_read_only) {
     echo field_input('iface', $iface, lang('network_interface'), TRUE);
     echo field_input('vlan_id', $iface_info['vlan_id'], lang('network_vlan_id'), TRUE);
@@ -81,8 +84,24 @@ if ($iface_read_only) {
     echo field_input('vlan_id', $iface_info['vlan_id'], lang('network_vlan_id'), $read_only);
 }
 
+echo field_dropdown('role', $roles, $iface_info['role'], lang('network_role'), $read_only, array('id' => 'role'));
+echo field_dropdown('bootproto', $bootprotos, $iface_info['ifcfg']['bootproto'], lang('network_connection_type'), $bootproto_read_only);
+
+// Static
+//-------
+
 echo field_input('ipaddr', $iface_info['ifcfg']['ipaddr'], lang('network_ip'), $read_only);
 echo field_input('netmask', $iface_info['ifcfg']['netmask'], lang('network_netmask'), $read_only);
+echo field_input('gateway', $iface_info['ifcfg']['gateway'], lang('network_gateway'), $read_only);
+
+if ($show_dhcp)
+    echo field_checkbox('enable_dhcp', $enable_dhcp, lang('network_enable_dhcp_server'), $read_only);
+
+// DHCP
+//-----
+
+echo field_input('hostname', $iface_info['ifcfg']['dhcp_hostname'], lang('network_hostname'), $read_only);
+echo field_checkbox('dhcp_dns', $dns, lang('network_automatic_dns_servers'), $read_only);
 
 echo field_button_set($buttons);
 

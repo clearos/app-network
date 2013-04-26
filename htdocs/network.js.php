@@ -134,9 +134,8 @@ $(document).ready(function() {
     // DNS details and interfaces
     //---------------------------
 
-    if ($('#dns_auto_text').length != 0) {
+    if (($('#dns_auto_text').length != 0) || ($('#network_summary').length != 0))
         getAllNetworkInfo();
-    }
 });
 
 /**
@@ -233,12 +232,15 @@ function showAllNetworkInfo(payload) {
         var ip_text = '';
 
         if (payload['network'][iface].configured)
-            ip_text = (payload['network'][iface].address) ? payload['network'][iface].address : '<div class="theme-loading-small"></div>';
+             ip_text = (payload['network'][iface].address) ? payload['network'][iface].address : '<div class="theme-loading-small"></div>';
 
-        $('#role_' + iface).html(payload['network'][iface].roletext);
-        $('#bootproto_' + iface).html(payload['network'][iface].bootprototext);
-        $('#ip_' + iface).html(ip_text);
-        $('#link_' + iface).html(link_text);
+        // Funky - jQuery selectors need . and : escaped.  Should probably just create a global function
+        iface_select = iface.replace(/(:|\.)/g,'\\$1');
+
+        $('#role_' + iface_select).html(payload['network'][iface].roletext);
+        $('#bootproto_' + iface_select).html(payload['network'][iface].bootprototext);
+        $('#ip_' + iface_select).html(ip_text);
+        $('#link_' + iface_select).html(link_text);
     }
 
     // DNS server details

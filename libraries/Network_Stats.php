@@ -189,7 +189,7 @@ class Network_Stats extends Engine
 
         foreach ($lines as $line) {
             $matches = array();
-            if (preg_match('/^\s*([a-zA-Z0-9]+):\s*(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/', $line, $matches)) {
+            if (preg_match('/^\s*([a-zA-Z0-9\.]+):\s*(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)\s+(\d+)/', $line, $matches)) {
                 // Skip imq and loopback interfaces
                 if (!preg_match('/^imq/', $matches[1]) && !preg_match('/^lo$/', $matches[1])) {
                     $stats[$matches[1]]['rx_bytes'] = $matches[2];

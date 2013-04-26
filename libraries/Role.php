@@ -246,8 +246,9 @@ class Role extends Engine
         }
 
         $iface = preg_replace("/\"/", "", $iface);
+        $iface_list = preg_split('/\s+/', $iface);
 
-        if (preg_match("/$ifname/", $iface))
+        if (in_array($ifname, $iface_list))
             return $key;
 
         $key = Role::ROLE_EXTERNAL;
@@ -261,7 +262,9 @@ class Role extends Engine
         }
 
         $iface = preg_replace("/\"/", "", $iface);
-        if (preg_match("/$ifname/", $iface))
+        $iface_list = preg_split('/\s+/', $iface);
+
+        if (in_array($ifname, $iface_list))
             return $key;
 
         $key = Role::ROLE_HOT_LAN;
@@ -275,8 +278,9 @@ class Role extends Engine
         }
 
         $iface = preg_replace("/\"/", "", $iface);
+        $iface_list = preg_split('/\s+/', $iface);
 
-        if (preg_match("/$ifname/", $iface))
+        if (in_array($ifname, $iface_list))
             return $key;
 
         return Role::ROLE_LAN;
