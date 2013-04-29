@@ -167,6 +167,7 @@ class Iface_Manager extends Engine
      * Returns array of interfaces (real and dynamic).
      *
      * Filter options:
+     * - filter_ibvpn: filters out ibVPN tunnels (default: TRUE)
      * - filter_imq: filters out IMQ interfaces (default: TRUE)
      * - filter_ppp: filters out PPP interfaces (default: FALSE)
      * - filter_loopback: filter out loopback interface (default: TRUE)
@@ -440,6 +441,7 @@ class Iface_Manager extends Engine
         if ($this->is_loaded)
             return $this->ethinfo;
 
+        $options['filter_ibvpn'] = isset($options['filter_ibvpn']) ? $options['filter_ibvpn'] : TRUE;
         $options['filter_imq'] = isset($options['filter_imq']) ? $options['filter_imq'] : TRUE;
         $options['filter_ppp'] = isset($options['filter_ppp']) ? $options['filter_ppp'] : FALSE;
         $options['filter_loopback'] = isset($options['filter_loopback']) ? $options['filter_loopback'] : TRUE;
@@ -502,6 +504,9 @@ class Iface_Manager extends Engine
                 continue;
 
             if ($options['filter_tun'] && preg_match('/^tun/', $iface))
+                continue;
+
+            if ($options['filter_ibvpn'] && preg_match('/^ibvpn/', $iface))
                 continue;
 
             if ($options['filter_wireless_mon'] && preg_match('/^mon/', $iface))
