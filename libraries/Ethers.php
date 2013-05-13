@@ -272,6 +272,8 @@ class Ethers extends Engine
         }
         if ($mac === NULL)
             throw new Ethers_Not_Found_Exception($hostname, CLEAROS_WARNING);
+
+        return $mac;
     }
 
     /**
@@ -299,6 +301,8 @@ class Ethers extends Engine
 
         $ethers = array();
         foreach ($contents as $line) {
+            // skip blank lines
+            if (strlen(trim($line)) == 0) continue;
             // skip comment lines
             if (preg_match('/^[\s]*#/', $line))
                 continue;
@@ -360,3 +364,5 @@ class Ethers extends Engine
     // P R I V A T E   M E T H O D S
     ///////////////////////////////////////////////////////////////////////////////
 }
+
+// vi: expandtab shiftwidth=4 softtabstop=4 tabstop=4
