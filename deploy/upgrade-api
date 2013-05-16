@@ -56,10 +56,13 @@ clearos_load_library('network/Iface_Manager');
 
 $iface_manager = new Iface_Manager();
 
-$ifaces = $iface_manager->get_interface_details();
+$options['filter_ppp'] = TRUE;
+$options['filter_vlan'] = TRUE;
+
+$ifaces = $iface_manager->get_interface_details($options);
 
 foreach ($ifaces as $iface_name => $details) {
-    if (!empty($details['configured']) && empty($details['ifcfg']['hwaddr']) && !preg_match("/ppp/", $iface_name)) {
+    if (!empty($details['configured']) && empty($details['ifcfg']['hwaddr'])) {
         clearos_log('installer', 'adding MAC address to network configuration: ' . $iface_name);
         $iface = new Iface($iface_name);
         $iface->set_mac();
