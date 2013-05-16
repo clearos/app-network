@@ -507,9 +507,11 @@ class Iface extends ClearOS_Controller
         //------------------- 
 
         try {
+            $iface_options['filter_vlan'] = TRUE;
+
             $data['form_type'] = $form_type;
             $data['iface'] = $interface;
-            $data['ifaces'] = $this->iface_manager->get_interfaces();
+            $data['ifaces'] = $this->iface_manager->get_interfaces($iface_options);
 
             if ($form_type !== 'add')
                 $data['iface_info'] = $this->iface->get_info();
@@ -624,10 +626,11 @@ class Iface extends ClearOS_Controller
 
         try {
             $options['filter_pppoe'] = TRUE;
+            $iface_options['filter_vlan'] = TRUE;
 
             $data['form_type'] = $form_type;
             $data['iface'] = $interface;
-            $data['ifaces'] = $this->iface_manager->get_interfaces();
+            $data['ifaces'] = $this->iface_manager->get_interfaces($iface_options);
             $data['roles'] = $this->iface->get_supported_roles();
             $data['bootprotos'] = $this->iface->get_supported_bootprotos($options);
 
