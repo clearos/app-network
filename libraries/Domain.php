@@ -3,9 +3,9 @@
 /**
  * Domain class.
  *
- * @category   Apps
- * @package    Network
- * @subpackage Libraries
+ * @category   apps
+ * @package    network
+ * @subpackage libraries
  * @author     ClearFoundation <developer@clearfoundation.com>
  * @copyright  2012 ClearFoundation
  * @license    http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License version 3 or later
@@ -82,9 +82,9 @@ clearos_load_library('base/Validation_Exception');
 /**
  * Domain class.
  *
- * @category   Apps
- * @package    Network
- * @subpackage Libraries
+ * @category   apps
+ * @package    network
+ * @subpackage libraries
  * @author     ClearFoundation <developer@clearfoundation.com>
  * @copyright  2012 ClearFoundation
  * @license    http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License version 3 or later

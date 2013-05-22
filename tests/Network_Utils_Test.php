@@ -3,9 +3,9 @@
 /**
  * Network utility test class.
  *
- * @category   Apps
- * @package    Base
- * @subpackage Tests
+ * @category   apps
+ * @package    network
+ * @subpackage tests
  * @author     ClearFoundation <developer@clearfoundation.com>
  * @copyright  2011 ClearFoundation
  * @license    http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License version 3 or later
@@ -35,9 +35,9 @@ require_once '../libraries/Network_Utils.php';
 /**
  * Network utility test class.
  *
- * @category   Apps
- * @package    Base
- * @subpackage Tests
+ * @category   apps
+ * @package    network
+ * @subpackage tests
  * @author     ClearFoundation <developer@clearfoundation.com>
  * @copyright  2003-2011 ClearFoundation
  * @license    http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License version 3 or later

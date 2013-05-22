@@ -3,9 +3,9 @@
 /**
  * Network check controller.
  *
- * @category   Apps
- * @package    Network
- * @subpackage Controllers
+ * @category   apps
+ * @package    network
+ * @subpackage controllers
  * @author     ClearFoundation <developer@clearfoundation.com>
  * @copyright  2012 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
@@ -42,9 +42,9 @@ use \clearos\apps\firewall\Firewall as Firewall;
 /**
  * Network check controller.
  *
- * @category   Apps
- * @package    Network
- * @subpackage Controllers
+ * @category   apps
+ * @package    network
+ * @subpackage controllers
  * @author     ClearFoundation <developer@clearfoundation.com>
  * @copyright  2012 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later

@@ -3,9 +3,9 @@
 /**
  * Network ajax helper.
  *
- * @category   Apps
- * @package    Network
- * @subpackage Ajax
+ * @category   apps
+ * @package    network
+ * @subpackage javascript
  * @author     ClearFoundation <developer@clearfoundation.com>
  * @copyright  2011-2013 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later

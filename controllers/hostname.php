@@ -5,9 +5,9 @@
  *
  * This controller is only used during the install wizard.
  *
- * @category   Apps
- * @package    Network
- * @subpackage Controllers
+ * @category   apps
+ * @package    network
+ * @subpackage controllers
  * @author     ClearFoundation <developer@clearfoundation.com>
  * @copyright  2012 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
@@ -45,9 +45,9 @@ use \clearos\apps\network\Network as Network;
 /**
  * Hostname controller.
  *
- * @category   Apps
- * @package    Network
- * @subpackage Controllers
+ * @category   apps
+ * @package    network
+ * @subpackage controllers
  * @author     ClearFoundation <developer@clearfoundation.com>
  * @copyright  2012 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
