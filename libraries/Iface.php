@@ -1324,10 +1324,10 @@ clearos_profile(__METHOD__, __LINE__, 'get_info end ' . $this->iface);
             $mac = $this->get_live_mac();
 
         try {
-            $file->lookup_value('/^HWADDR\s*=\s*/');
-            $file->replace_lines('/^HWADDR\s*=.*$/', "HWADDR=\"$mac\"\n", 1);
+            $file->lookup_value('/^MACADDR\s*=\s*/');
+            $file->replace_lines('/^MACADDR\s*=.*$/', "MACADDR=\"$mac\"\n", 1);
         } catch (File_No_Match_Exception $e) {
-            $file->add_lines("HWADDR=\"$mac\"\n");
+            $file->add_lines("MACADDR=\"$mac\"\n");
         }
 
         $this->config = NULL;
@@ -1540,7 +1540,6 @@ clearos_profile(__METHOD__, __LINE__, 'get_info end ' . $this->iface);
         $ethinfo['DEVICE'] = $physdev;
         $ethinfo['BOOTPROTO'] = 'none';
         $ethinfo['ONBOOT'] = 'no';
-        $ethinfo['HWADDR'] = $liveinfo['hwaddress'];
 
         try {
             $ethernet->disable(); // See maintenance note
@@ -1635,7 +1634,6 @@ clearos_profile(__METHOD__, __LINE__, 'get_info end ' . $this->iface);
         $info['TYPE'] = self::TYPE_ETHERNET;
         $info['ONBOOT'] = 'yes';
         $info['USERCTL'] = 'no';
-        $info['HWADDR'] = $hwaddress;
         $info['BOOTPROTO'] = 'dhcp';
         $info['PEERDNS'] = ($peerdns) ? 'yes' : 'no';
 
@@ -1687,7 +1685,6 @@ clearos_profile(__METHOD__, __LINE__, 'get_info end ' . $this->iface);
         $info['TYPE'] = self::TYPE_ETHERNET;
         $info['ONBOOT'] = 'yes';
         $info['USERCTL'] = 'no';
-        $info['HWADDR'] = $hwaddress;
         $info['BOOTPROTO'] = 'static';
         $info['IPADDR'] = $ip;
         $info['NETMASK'] = $netmask;

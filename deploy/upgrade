@@ -47,10 +47,6 @@ for CONFIG in $CONFIGS; do
     fi
 done
 
-# Re-enable when API is ready
-#----------------------------
-/usr/clearos/apps/network/deploy/upgrade-api
-
 # ip-up.local changes
 #--------------------
 
