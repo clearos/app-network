@@ -1299,41 +1299,6 @@ clearos_profile(__METHOD__, __LINE__, 'get_info end ' . $this->iface);
     }
 
     /**
-     * Sets MAC address.
-     *
-     * If MAC address is empty, the MAC address for live network interface is configured.
-     *
-     * @param string $mac MAC address
-     *
-     * @return void
-     * @throws Engine_Exception
-     */
-
-    public function set_mac($mac = NULL)
-    {
-        clearos_profile(__METHOD__, __LINE__);
-
-        Validation_Exception::is_valid($this->validate_interface($this->iface));
-
-        $file = new File(self::PATH_SYSCONF . '/network-scripts/ifcfg-' . $this->iface);
-
-        if (! $file->exists())
-            return;
-
-        if (is_null($mac))
-            $mac = $this->get_live_mac();
-
-        try {
-            $file->lookup_value('/^MACADDR\s*=\s*/');
-            $file->replace_lines('/^MACADDR\s*=.*$/', "MACADDR=\"$mac\"\n", 1);
-        } catch (File_No_Match_Exception $e) {
-            $file->add_lines("MACADDR=\"$mac\"\n");
-        }
-
-        $this->config = NULL;
-    }
-
-    /**
      * Sets network MTU.
      *
      * @param integer $mtu interface network MTU

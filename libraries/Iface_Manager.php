@@ -57,12 +57,14 @@ clearos_load_language('network');
 //--------
 
 use \clearos\apps\base\Engine as Engine;
+use \clearos\apps\base\File as File;
 use \clearos\apps\base\Folder as Folder;
 use \clearos\apps\network\Iface as Iface;
 use \clearos\apps\network\Network as Network;
 use \clearos\apps\network\Role as Role;
 
 clearos_load_library('base/Engine');
+clearos_load_library('base/File');
 clearos_load_library('base/Folder');
 clearos_load_library('network/Iface');
 clearos_load_library('network/Network');
@@ -147,19 +149,13 @@ class Iface_Manager extends Engine
         $ifaces = $this->get_interface_details();
 
         foreach ($ifaces as $iface_name => $details) {
-            if (($details['type'] === Iface::TYPE_ETHERNET) || ($details['type'] === Iface::TYPE_WIRELESS)) {
-                if (!empty($details['configured'])) {
-                    if (empty($details['ifcfg']['hwaddr'])) {
-                        clearos_log('network', 'adding MAC address to network configuration: ' . $iface_name);
-                        $iface = new Iface($iface_name);
-                        $iface->set_mac();
-                    } else if ($details['ifcfg']['hwaddr'] != $details['hwaddress']) {
-                        clearos_log('network', 'fixing MAC address in network configuration: ' . $iface_name);
-                        $iface = new Iface($iface_name);
-                        $iface->set_mac();
-                    }
-                } 
-            }
+            if (!empty($details['configured']) && isset($details['ifcfg']['hwaddr'])) {
+                $file = new File('/etc/sysconfig/network-scripts/ifcfg-' . $iface_name);
+                if ($file->exists()) {
+                    clearos_log('network', 'removing old MAC address in network configuration: ' . $iface_name);
+                    $file->delete_lines('/^HWADDR=/');
+                }
+            } 
         }
     }
 
