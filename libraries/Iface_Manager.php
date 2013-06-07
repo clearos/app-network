@@ -525,6 +525,16 @@ class Iface_Manager extends Engine
         foreach ($interfaces as $eth) {
 
             $interface = new Iface($eth);
+
+            // Check is_configurable filter before expensive get_info() call below
+            //--------------------------------------------------------------------
+            
+            if ($options['filter_non_configurable'] && !$interface->is_configurable())
+                continue;
+
+            // Grab interface information
+            //---------------------------
+
             $ifdetails = $interface->get_info();
 
             // Core configuration
@@ -545,12 +555,10 @@ class Iface_Manager extends Engine
             // Filter options
             //---------------
 
-            if ($options['filter_non_configurable'] && isset($ethinfo[$eth]['configurable']) && !$ethinfo[$eth]['configurable'])
+            if ($options['filter_1to1_nat'] && isset($ethinfo[$eth]['one-to-one-nat']) && $ethinfo[$eth]['one-to-one-nat']) {
+                unset($ethinfo[$eth]);
                 continue;
-
-
-            if ($options['filter_1to1_nat'] && isset($ethinfo[$eth]['one-to-one-nat']) && $ethinfo[$eth]['one-to-one-nat'])
-                continue;
+            }
 
             // Interface role
             //---------------
