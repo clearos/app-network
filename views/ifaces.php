@@ -66,10 +66,12 @@ else
 if ($form_type === 'wizard') {
     $anchors = array();
 } else {
-    $anchors = array(
-        anchor_custom('/app/network/iface/add_vlan', lang('network_add_vlan_interface')),
-        anchor_custom('/app/network/iface/add_virtual', lang('network_add_virtual_interface'))
-    );
+    $anchors = array();
+
+    if (file_exists('/usr/clearos/apps/home_reports'))
+        $anchors[] = anchor_custom('/app/network/iface/add_vlan', lang('network_add_vlan_interface'));
+
+    $anchors[] = anchor_custom('/app/network/iface/add_virtual', lang('network_add_virtual_interface'));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
