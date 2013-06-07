@@ -68,6 +68,13 @@ if [ -e /etc/sysconfig/network-scripts/ifcfg-ppp0 ]; then
     fi
 fi
 
+# Clean MAC addresses
+#--------------------
+
+if ( [ -e /usr/clearos/apps/amazon_ec2 ] || [ -e /usr/clearos/apps/home_reports ] ); then
+    /usr/clearos/apps/network/deploy/clean-macs
+fi
+
 # Disable IPv6 by default
 #------------------------
 # FIXME: move to "install" on or after 6.4 rebuild
