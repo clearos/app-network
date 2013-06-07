@@ -1903,7 +1903,7 @@ clearos_profile(__METHOD__, __LINE__, 'get_info end ' . $this->iface);
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        if (! preg_match('/^[a-zA-Z0-9:\.]+$/', $interface))
+        if (! preg_match('/^[a-zA-Z0-9:\._]+$/', $interface))
             return lang('network_network_interface_invalid' . $interface);
     }
 
