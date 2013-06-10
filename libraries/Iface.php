@@ -524,7 +524,6 @@ class Iface extends Engine
             }
         }
 
-clearos_profile(__METHOD__, __LINE__, 'get_info end ' . $this->iface);
         return $info;
     }
 
