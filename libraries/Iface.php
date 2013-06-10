@@ -1154,13 +1154,9 @@ class Iface extends Engine
         }
 
         if ($details['device'] == NULL) {
-            if (!$is_usb) {
+            if (!$is_usb) 
                 fclose($fh);
-                throw new Engine_Exception(lang('network_network_error_occurred'));
-            }
 
-            // For USB devices, this isn't an error
-            // XXX: Probably isn't for PCI devices either?
             return $details;
         }
 
