@@ -136,7 +136,10 @@ class Network extends ClearOS_Controller
         // Dump JSON information
         //----------------------
 
-        $network = $this->iface->get_info();
+        if ($this->iface->validate_interface($iface))
+            $network = array();
+        else
+            $network = $this->iface->get_info();
 
         header('Cache-Control: no-cache, must-revalidate');
         header('Content-type: application/json');
