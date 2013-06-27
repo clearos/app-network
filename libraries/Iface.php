@@ -1094,7 +1094,7 @@ class Iface extends Engine
 
         if (!$is_usb) {
             // Obtain (optional) sub-vendor ID number (PCI devices only)
-            if (($fh = fopen("$device_link/subsystem_vendor", 'r'))) {
+            if (($fh = @fopen("$device_link/subsystem_vendor", 'r'))) {
                 fscanf($fh, '%x', $id_sub_vendor);
                 fclose($fh);
 
@@ -1103,7 +1103,7 @@ class Iface extends Engine
             }
 
             // Obtain (optional) sub-device ID number (PCI devices only)
-            if (($fh = fopen("$device_link/subsystem_device", 'r'))) {
+            if (($fh = @fopen("$device_link/subsystem_device", 'r'))) {
                 fscanf($fh, '%x', $id_sub_device);
                 fclose($fh);
 
