@@ -453,9 +453,9 @@ class Network_Utils extends Engine
 
         $mac = strtoupper($mac);
 
-        $separators = ($allow_dash) ? ':' : '-:';
+        $separators = ($allow_dash) ? '-:' : ':';
 
-        if (! preg_match("/^(?:[[:xdigit:]]{2}([$separators]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/", $mac))
+        if (! preg_match("/^(?:[[:xdigit:]]{2}([$separators]))(?:[[:xdigit:]]{2}\\1){4}[[:xdigit:]]{2}$/", $mac))
             return FALSE;
 
         return TRUE;
