@@ -1341,7 +1341,7 @@ class Iface extends Engine
 
         $options['skip_size_check'] = TRUE;
 
-        $file = new File(self::PATH_SYSCONF . '/network-scripts/ifcfg-' . $this->iface, TRUE, FALSE, $options);
+        $file = new File(self::PATH_SYSCONF . '/network-scripts/ifcfg-' . $this->iface, FALSE, FALSE, $options);
 
         if (! $file->exists())
             return NULL;
@@ -1415,7 +1415,9 @@ class Iface extends Engine
         if ($file->exists())
             $file->delete();
 
-        $file->create('root', 'root', '0600');
+        $mode = ($netinfo['TYPE'] === self::TYPE_WIRELESS) ? '0600' : '0644';
+
+        $file->create('root', 'root', $mode);
 
         foreach ($netinfo as $key => $value) {
             // The underlying network scripts do not like quotes on DEVICE

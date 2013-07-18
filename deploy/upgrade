@@ -45,6 +45,13 @@ for CONFIG in $CONFIGS; do
         logger -p local6.notice -t installer "app-network - fixing quotations in $CONFIG"
         sed -i -e "s/DEVICE=\"\(.*\)\"/DEVICE=\1/" $CONFIG
     fi
+
+    CHECK=`grep -i "^TYPE=.*wireless" $CONFIG 2>/dev/null`
+    if [ -z "$CHECK" ]; then
+        chmod 644 $CONFIG
+    else
+        chmod 600 $CONFIG
+    fi
 done
 
 # ip-up.local changes
