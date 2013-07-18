@@ -67,11 +67,7 @@ if ($form_type === 'wizard') {
     $anchors = array();
 } else {
     $anchors = array();
-
-    // FIXME: temporary for field trials
-    if (file_exists('/usr/clearos/apps/home_reports') || file_exists('/etc/clearos/network.d/vlan'))
-        $anchors[] = anchor_custom('/app/network/iface/add_vlan', lang('network_add_vlan_interface'));
-
+    $anchors[] = anchor_custom('/app/network/iface/add_vlan', lang('network_add_vlan_interface'));
     $anchors[] = anchor_custom('/app/network/iface/add_virtual', lang('network_add_virtual_interface'));
 }
 
