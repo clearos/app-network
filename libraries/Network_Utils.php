@@ -203,6 +203,37 @@ class Network_Utils extends Engine
     }
 
     /**
+     * Checks if IP address is on given network.
+     *
+     * @param string $ip      IP address
+     * @param string $network network
+     *
+     * @return boolean TRUE if IP is on given network
+     * @throws Validation_Exception
+     */
+
+    public static function ip_on_network($ip, $network)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        if (Network_Utils::is_valid_ip($ip) === FALSE)
+            throw new Validation_Exception(lang('network_ip_invalid'));
+
+        $network_base = preg_replace('/\/.*/', '', $network);
+        $network_netmask = Network_Utils::get_netmask(preg_replace('/.*\//', '', $network));
+        $broadcast = Network_Utils::get_broadcast_address($network_base, $network_netmask);
+
+        $bin_ip = ip2long($ip);
+        $bin_network = ip2long($network_base);
+        $bin_broadcast = ip2long($broadcast);
+
+        if (($bin_ip < $bin_network) || ($bin_ip > $bin_broadcast))
+            return FALSE;
+
+        return TRUE;
+    }
+
+    /**
      * Checks if IP address is in private range.
      *
      * @param string $ip IP address
