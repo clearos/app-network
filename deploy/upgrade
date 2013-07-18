@@ -78,9 +78,7 @@ fi
 # Clean MAC addresses
 #--------------------
 
-if ( [ -e /usr/clearos/apps/amazon_ec2 ] || [ -e /usr/clearos/apps/home_reports ] ); then
-    /usr/clearos/apps/network/deploy/clean-macs
-fi
+/usr/clearos/apps/network/deploy/clean-macs
 
 # Disable IPv6 by default
 #------------------------
