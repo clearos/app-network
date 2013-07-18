@@ -735,6 +735,35 @@ class Iface extends Engine
     }
 
     /**
+     * Returns the network address.
+     *
+     * @return string network address
+     * @throws Engine_Exception, Engine_Exception
+     */
+
+    public function get_network()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        Validation_Exception::is_valid($this->validate_interface($this->iface));
+
+        $ip = $this->get_live_ip();
+
+        if (empty($ip))
+            return '';
+
+        $netmask = $this->get_live_netmask();
+
+        if (empty($netmask))
+            return '';
+
+        $network = Network_Utils::get_network_address($ip, $netmask);
+        $prefix = Network_Utils::get_prefix($netmask);
+
+        return $network . '/' . $prefix;
+    }
+
+    /**
      * Returns the interface speed.
      *
      * This method may not be supported in all network card drivers.

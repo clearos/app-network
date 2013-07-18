@@ -284,11 +284,13 @@ class Iface_Manager extends Engine
      * In gateway mode, this will return a list of LAN networks.
      * In standalone mode, it will return all networks (typically just one).
      *
+     * @param boolean $use_prefix set TRUE if prefix should be returned instead of netmask
+     *
      * @return array list of most trusted networks.
      * @throws Engine_Exception
      */
 
-    public function get_most_trusted_networks()
+    public function get_most_trusted_networks($use_prefix = FALSE)
     {
         clearos_profile(__METHOD__, __LINE__);
 
@@ -307,7 +309,9 @@ class Iface_Manager extends Engine
             // Gateway mode
             if (($details['role'] == Role::ROLE_LAN) && (! empty($details['address'])) && (! empty($details['netmask']))) {
                 $basenetwork = Network_Utils::get_network_address($details['address'], $details['netmask']);
-                $lans[] = $basenetwork . "/" . $details['netmask'];
+                $suffix = ($use_prefix) ? Network_Utils::get_prefix($details['netmask']) : $details['netmask'];
+    
+                $lans[] = $basenetwork . '/' . $suffix;
             }
 
             // Standalone mode
@@ -315,7 +319,9 @@ class Iface_Manager extends Engine
                 && ($mode == Network::MODE_TRUSTED_STANDALONE) || ($mode == Network::MODE_STANDALONE)
             ) {
                 $basenetwork = Network_Utils::get_network_address($details['address'], $details['netmask']);
-                $lans[] = $basenetwork . "/" . $details['netmask'];
+                $suffix = ($use_prefix) ? Network_Utils::get_prefix($details['netmask']) : $details['netmask'];
+
+                $lans[] = $basenetwork . '/' . $suffix;
             }
         }
 
