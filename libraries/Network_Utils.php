@@ -410,18 +410,21 @@ class Network_Utils extends Engine
     /**
      * Validates a MAC address.
      *
-     * @param string $mac MAC address
+     * @param string  $mac        MAC address
+     * @param boolean $allow_dash flag if dashes should be allowed
      *
      * @return string error message if MAC address is invalid
      */
 
-    public static function is_valid_mac($mac)
+    public static function is_valid_mac($mac, $allow_dash = FALSE)
     {
         clearos_profile(__METHOD__, __LINE__);
 
         $mac = strtoupper($mac);
 
-        if (!(preg_match("/^[0-9A-F]{2}:[0-9A-F]{2}:[0-9A-F]{2}:[0-9A-F]{2}:[0-9A-F]{2}:[0-9A-F]{2}$/", $mac)))
+        $separators = ($allow_dash) ? ':' : '-:';
+
+        if (! preg_match("/^(?:[[:xdigit:]]{2}([$separators]))(?:[[:xdigit:]]{2}\1){4}[[:xdigit:]]{2}$/", $mac))
             return FALSE;
 
         return TRUE;
