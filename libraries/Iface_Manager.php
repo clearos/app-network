@@ -250,32 +250,7 @@ class Iface_Manager extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        $network = new Network();
-        $mode = $network->get_mode();
-
-        $ethlist = $this->get_interface_details();
-
-        $lan_ips = array();
-
-        foreach ($ethlist as $eth => $details) {
-            // Only interested in configured interfaces
-            if (! $details['configured'])
-                continue;
-
-            // Gateway mode
-            if (($details['role'] == Role::ROLE_LAN) && (! empty($details['address'])) && (! empty($details['netmask']))) {
-                $lan_ips[] = $details['address'];
-            }
-
-            // Standalone mode
-            if (($details['role'] == Role::ROLE_EXTERNAL) && (! empty($details['address'])) && (! empty($details['netmask']))
-                && ($mode == Network::MODE_TRUSTED_STANDALONE) || ($mode == Network::MODE_STANDALONE)
-            ) {
-                $lan_ips[] = $details['address'];
-            }
-        }
-
-        return $lan_ips;
+        return $this->_get_most_trusted('ips', $use_prefix);
     }
 
     /**
@@ -294,38 +269,7 @@ class Iface_Manager extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        $network = new Network();
-        $mode = $network->get_mode();
-
-        $ethlist = $this->get_interface_details();
-
-        $lans = array();
-
-        foreach ($ethlist as $eth => $details) {
-            // Only interested in configured interfaces
-            if (! $details['configured'])
-                continue;
-
-            // Gateway mode
-            if (($details['role'] == Role::ROLE_LAN) && (! empty($details['address'])) && (! empty($details['netmask']))) {
-                $basenetwork = Network_Utils::get_network_address($details['address'], $details['netmask']);
-                $suffix = ($use_prefix) ? Network_Utils::get_prefix($details['netmask']) : $details['netmask'];
-    
-                $lans[] = $basenetwork . '/' . $suffix;
-            }
-
-            // Standalone mode
-            if (($details['role'] == Role::ROLE_EXTERNAL) && (! empty($details['address'])) && (! empty($details['netmask']))
-                && ($mode == Network::MODE_TRUSTED_STANDALONE) || ($mode == Network::MODE_STANDALONE)
-            ) {
-                $basenetwork = Network_Utils::get_network_address($details['address'], $details['netmask']);
-                $suffix = ($use_prefix) ? Network_Utils::get_prefix($details['netmask']) : $details['netmask'];
-
-                $lans[] = $basenetwork . '/' . $suffix;
-            }
-        }
-
-        return $lans;
+        return $this->_get_most_trusted('networks', $use_prefix);
     }
 
     /**
@@ -600,5 +544,62 @@ class Iface_Manager extends Engine
         $this->is_loaded = TRUE;
 
         return $ethinfo;
+    }
+
+    /**
+     * Returns most trusted network information.
+     *
+     * @param string  $type       type of information to return
+     * @param boolean $use_prefix set TRUE if prefix should be returned instead of netmask
+     *
+     * @return array list of most trusted networks.
+     * @throws Engine_Exception
+     */
+
+    public function _get_most_trusted($type, $use_prefix = FALSE)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $network = new Network();
+        $mode = $network->get_mode();
+
+        $ethlist = $this->get_interface_details();
+
+        $lans = array();
+        $lan_ips = array();
+        $lan_ifaces = array();
+
+        foreach ($ethlist as $eth => $details) {
+            // Only interested in configured interfaces
+            if (! $details['configured'])
+                continue;
+
+            // Gateway mode
+            if (($details['role'] == Role::ROLE_LAN) && (! empty($details['address'])) && (! empty($details['netmask']))) {
+                $basenetwork = Network_Utils::get_network_address($details['address'], $details['netmask']);
+                $suffix = ($use_prefix) ? Network_Utils::get_prefix($details['netmask']) : $details['netmask'];
+    
+                $lans[] = $basenetwork . '/' . $suffix;
+                $lan_ips[] = $details['address'];
+            }
+
+            // Standalone mode
+            if (($details['role'] == Role::ROLE_EXTERNAL) && (! empty($details['address'])) && (! empty($details['netmask']))
+                && ($mode == Network::MODE_TRUSTED_STANDALONE) || ($mode == Network::MODE_STANDALONE)
+            ) {
+                $basenetwork = Network_Utils::get_network_address($details['address'], $details['netmask']);
+                $suffix = ($use_prefix) ? Network_Utils::get_prefix($details['netmask']) : $details['netmask'];
+
+                $lans[] = $basenetwork . '/' . $suffix;
+                $lan_ips[] = $details['address'];
+            }
+        }
+
+        if ($type === 'networks')
+            return $lans;
+        else if ($type === 'ips')
+            return $lan_ips;
+        else if ($type === 'ifaces')
+            return $lan_ifaces;
     }
 }
