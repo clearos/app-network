@@ -5,9 +5,4 @@
 
 /usr/clearos/apps/network/deploy/autofix-hostname
 
-# Dirty hack, sorry
-#------------------
-
-[ -x /usr/sbin/install-pro-extras ] && /usr/sbin/install-pro-extras
-
 exit 0

@@ -95,6 +95,7 @@ $app['core_directory_manifest'] = array(
     '/var/clearos/network' => array(),
     '/var/clearos/network/backup' => array(),
     '/var/clearos/events/network_configuration' => array(),
+    '/var/clearos/events/network_connected' => array(),
     '/var/clearos/events/network_peerdns' => array(),
 );
 
@@ -105,7 +106,7 @@ $app['core_file_manifest'] = array(
     ),
     'filewatch-network.conf' => array('target' => '/etc/clearsync.d/filewatch-network.conf'),
     'filewatch-network-hostname.conf' => array('target' => '/etc/clearsync.d/filewatch-network-hostname.conf'),
-    'filewatch-network-connected.conf' => array('target' => '/etc/clearsync.d/filewatch-network-connected.conf'),
+    'filewatch-network-connected-event.conf' => array('target' => '/etc/clearsync.d/filewatch-network-connected-event.conf'),
     'filewatch-network-configuration-event.conf' => array('target' => '/etc/clearsync.d/filewatch-network-configuration-event.conf'),
     'filewatch-network-peerdns-event.conf' => array('target' => '/etc/clearsync.d/filewatch-network-peerdns-event.conf'),
     'network.conf' => array(
@@ -115,6 +116,10 @@ $app['core_file_manifest'] = array(
         'group' => 'root',
         'config' => TRUE,
         'config_params' => 'noreplace',
+    ),
+    'network-connected-event'=> array(
+        'target' => '/var/clearos/events/network_connected/network',
+        'mode' => '0755'
     ),
     'network_resolver2'=> array(
         'target' => '/var/clearos/events/network_peerdns/network_resolver',
