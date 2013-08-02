@@ -62,6 +62,7 @@ use \clearos\apps\base\Folder as Folder;
 use \clearos\apps\network\Iface as Iface;
 use \clearos\apps\network\Network as Network;
 use \clearos\apps\network\Role as Role;
+use \clearos\apps\network\Routes as Routes;
 
 clearos_load_library('base/Engine');
 clearos_load_library('base/File');
@@ -69,6 +70,7 @@ clearos_load_library('base/Folder');
 clearos_load_library('network/Iface');
 clearos_load_library('network/Network');
 clearos_load_library('network/Role');
+clearos_load_library('network/Routes');
 
 // Exceptions
 //-----------
@@ -260,16 +262,27 @@ class Iface_Manager extends Engine
      * In standalone mode, it will return all networks (typically just one).
      *
      * @param boolean $use_prefix set TRUE if prefix should be returned instead of netmask
+     * @param boolean $extra_lans set TRUE if extra LANs should be included
      *
      * @return array list of most trusted networks.
      * @throws Engine_Exception
      */
 
-    public function get_most_trusted_networks($use_prefix = FALSE)
+    public function get_most_trusted_networks($use_prefix = FALSE, $extra_lans = FALSE)
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        return $this->_get_most_trusted('networks', $use_prefix);
+        $networks = $this->_get_most_trusted('networks', $use_prefix);
+
+        if ($extra_lans) {
+            $routes = new Routes();
+            $lans = $routes->get_extra_lans();
+
+            if (! empty($lans))
+                $networks = array_merge($networks, $lans);
+        }
+
+        return $networks;
     }
 
     /**
