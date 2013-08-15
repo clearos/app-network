@@ -239,6 +239,23 @@ class Iface_Manager extends Engine
     }
 
     /**
+     * Returns list of most trusted network interfaces.
+     *
+     * In gateway mode, this will return a list of LAN IP addresses.
+     * In standalone mode, it will return all IPs (typically just one).
+     *
+     * @return array list of most trusted network interfaces
+     * @throws Engine_Exception
+     */
+
+    public function get_most_trusted_interfaces()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        return $this->_get_most_trusted('interfaces');
+    }
+
+    /**
      * Returns list of most trusted IPs.
      *
      * In gateway mode, this will return a list of LAN IP addresses.
@@ -594,6 +611,7 @@ class Iface_Manager extends Engine
     
                 $lans[] = $basenetwork . '/' . $suffix;
                 $lan_ips[] = $details['address'];
+                $lan_ifaces[] = $eth;
             }
 
             // Standalone mode
@@ -605,6 +623,7 @@ class Iface_Manager extends Engine
 
                 $lans[] = $basenetwork . '/' . $suffix;
                 $lan_ips[] = $details['address'];
+                $lan_ifaces[] = $eth;
             }
         }
 
@@ -612,7 +631,7 @@ class Iface_Manager extends Engine
             return $lans;
         else if ($type === 'ips')
             return $lan_ips;
-        else if ($type === 'ifaces')
+        else if ($type === 'interfaces')
             return $lan_ifaces;
     }
 }

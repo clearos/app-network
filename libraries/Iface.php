@@ -297,12 +297,14 @@ class Iface extends Engine
         if($iface != NULL) $this->iface = $iface;
 
         try {
+            $options['validate_exit_code'] = FALSE;
+
             $shell = new Shell();
-            $retval = $shell->execute(self::COMMAND_IFDOWN, $this->iface, TRUE);
+            $retval = $shell->execute(self::COMMAND_IFDOWN, $this->iface, TRUE, $options);
 
             if ($retval != 0) {
                 // Really force it down if ifdown fails.  Don't bother logging errors...
-                $retval = $shell->execute(self::COMMAND_IFCONFIG, $this->iface . ' down', TRUE);
+                $retval = $shell->execute(self::COMMAND_IFCONFIG, $this->iface . ' down', TRUE, $options);
             }
         } catch (Exception $e) {
             throw new Engine_Exception($e->GetMessage(), COMMON_WARNING);
