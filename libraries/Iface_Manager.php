@@ -269,7 +269,7 @@ class Iface_Manager extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        return $this->_get_most_trusted('ips', $use_prefix);
+        return $this->_get_most_trusted('ips');
     }
 
     /**
