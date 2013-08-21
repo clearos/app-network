@@ -12,6 +12,7 @@ TIMESTAMP=`date "+%b-%d-%Y-%T"`
 /usr/sbin/addsudo /sbin/ifup app-network-core
 /usr/sbin/addsudo /sbin/ip app-network-core
 /usr/sbin/addsudo /sbin/iwconfig app-network-core
+/usr/sbin/addsudo /sbin/arping app-network-core
 
 # Migrate /etc/firewall
 #----------------------

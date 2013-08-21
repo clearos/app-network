@@ -104,6 +104,7 @@ class Network_Status extends Engine
     // TODO: move to syswatch
     const FILE_STATE = '/var/lib/syswatch/state';
     const COMMAND_PING = '/bin/ping';
+    const COMMAND_ARPING = '/sbin/arping';
 
     ///////////////////////////////////////////////////////////////////////////////
     // V A R I A B L E S
@@ -267,12 +268,6 @@ class Network_Status extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        // KLUDGE: Amazon EC2 does not allow pings to the gateway,
-        // so always return online if we're running in Amazon.
-        // Reference: http://aws.amazon.com/vpc/faqs/#S10
-        if (file_exists('/usr/clearos/apps/amazon_ec2'))
-            return self::STATUS_ONLINE;
-
         $shell = new Shell();
         $options['validate_exit_code'] = FALSE;
 
@@ -280,8 +275,8 @@ class Network_Status extends Engine
         $gateway = $routes->get_default();
 
         if (! empty($gateway)) {
-            $retval = $shell->execute(self::COMMAND_PING, '-c 1 -w 5 ' . $gateway, FALSE, $options);
-            clearos_profile(__METHOD__, __LINE__, 'network status ping gateway retval ' . $retval);
+            $retval = $shell->execute(self::COMMAND_ARPING, '-c 1 -w 5 ' . $gateway, TRUE, $options);
+            clearos_profile(__METHOD__, __LINE__, 'network status arping gateway retval ' . $retval);
             if ($retval === 0)
                 return self::STATUS_ONLINE;
         }
