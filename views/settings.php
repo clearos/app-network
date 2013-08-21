@@ -62,6 +62,7 @@ echo field_dropdown('network_mode', $network_modes, $network_mode, lang('network
 
 if (!clearos_console()) {
     echo field_input('hostname', $hostname, lang('network_hostname'), $read_only);
+    echo field_input('internet_hostname', $internet_hostname, lang('network_internet_hostname'), $read_only);
     echo field_input('domain', $domain, lang('network_default_domain'), $read_only);
 }
 

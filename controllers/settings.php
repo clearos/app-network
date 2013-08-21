@@ -100,6 +100,7 @@ class Settings extends ClearOS_Controller
 
         if (!clearos_console()) {
             $this->form_validation->set_policy('hostname', 'network/Hostname', 'validate_hostname', TRUE);
+            $this->form_validation->set_policy('internet_hostname', 'network/Hostname', 'validate_internet_hostname', TRUE);
             $this->form_validation->set_policy('domain', 'network/Domain', 'validate_domain', TRUE);
         }
 
@@ -113,6 +114,7 @@ class Settings extends ClearOS_Controller
                 $this->network->set_mode($this->input->post('network_mode'));
 
                 if (!clearos_console()) {
+                    $this->hostname->set_internet_hostname($this->input->post('internet_hostname'));
                     $this->hostname->set($this->input->post('hostname'));
                     $this->domain->set_default($this->input->post('domain'));
                 }
@@ -150,6 +152,7 @@ class Settings extends ClearOS_Controller
             $data['network_mode'] = $this->network->get_mode();
             $data['network_modes'] = $this->network->get_supported_modes();
             $data['hostname'] = $this->hostname->get();
+            $data['internet_hostname'] = $this->hostname->get_internet_hostname();
             $data['domain'] = $this->domain->get_default();
         } catch (Exception $e) {
             $this->page->view_exception($e);
