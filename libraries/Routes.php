@@ -191,10 +191,10 @@ class Routes extends Engine
     }
 
     /**
-     * Get default route.
+     * Returns default route.
      *
-     * @see  Routes::get_default_info()
-     * @return  string  default route
+     * @see Routes::get_default_info()
+     * @return string default route
      * @throws Engine_Exception
      */
 
@@ -202,20 +202,14 @@ class Routes extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        $file = new File(self::FILE_ACTIVE);
-        $contents = $file->get_contents_as_array();
+        $info = $this->get_default_info();
 
-        // Grab the last line in the route table
-        $lastline = array_pop($contents);
-        $lastline = preg_replace('/\s+/', ' ', $lastline);
+        if (! empty($info))
+            $default_route = array_shift($info);
+        else
+            $default_route = '0.0.0.0';
 
-        // Grab the second column (contains the default route)
-        $lineitem = explode(' ', $lastline);
-
-        // Split the IP up and make it readable
-        $ip = str_split($lineitem[2], 2);
-
-        return hexdec($ip[3]) . '.' . hexdec($ip[2]) . '.' . hexdec($ip[1]) . '.' . hexdec($ip[0]);
+        return $default_route;
     }
 
     /**
