@@ -340,6 +340,31 @@ class Iface_Manager extends Engine
     }
 
     /**
+     * Returns the external IP addresses.
+     *
+     * @return list of external IP addresses
+     * @throws Engine_Exception
+     */
+
+    public function get_external_ip_addresses()
+    {
+        $ifaces = $this->get_external_interfaces();
+
+        $addresses = array();
+
+        foreach ($ifaces as $interface) {
+            $iface = new Iface($interface);
+            try {
+                $addresses[] = $iface->get_live_ip();
+            } catch (Exception $e) {
+                // keep going
+            }
+        }
+
+        return $addresses;
+    }
+
+    /**
      * Returns the external interface.
      *
      * @return external interface
