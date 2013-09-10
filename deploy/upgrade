@@ -120,8 +120,3 @@ if ( [ ! -e /etc/resolv-peerdns.conf ] && [ -e /etc/resolv.conf ] ); then
 fi
 
 /var/clearos/events/network_configuration/network_resolver
-
-# Reload clearsyncd
-#------------------
-
-/sbin/service clearsyncd condrestart >/dev/null 2>&1

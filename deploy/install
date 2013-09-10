@@ -31,8 +31,3 @@ if [ -n "$CHECK" ]; then
     /sbin/chkconfig pppoe-server off
     /sbin/service pppoe-server stop >/dev/null 2>&1
 fi
-
-# Reload clearsyncd
-#------------------
-
-/sbin/service clearsyncd condrestart >/dev/null 2>&1
