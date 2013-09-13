@@ -124,10 +124,8 @@ class Iface_Manager extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        if (! extension_loaded('ifconfig')) {
-            if (!@dl('ifconfig.so'))
-                throw new Engine_Exception(lang('network_network_error_occurred'));
-        }
+        if (! extension_loaded('ifconfig'))
+            throw new Engine_Exception(lang('network_network_error_occurred'));
 
         $this->ifconfig_ctx = @ifconfig_init();
     }

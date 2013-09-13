@@ -401,10 +401,8 @@ class Iface extends Engine
 
         // Using ioctl(2) calls (from custom extension ifconfig.so).
 
-        if (! extension_loaded('ifconfig')) {
-            if (!@dl('ifconfig.so'))
-                throw new Engine_Exception(lang('network_network_error_occurred'));
-        }
+        if (! extension_loaded('ifconfig'))
+            throw new Engine_Exception(lang('network_network_error_occurred'));
 
         $handle = @ifconfig_init();
         ifconfig_debug($handle, FALSE);
@@ -639,10 +637,8 @@ class Iface extends Engine
 
         // Using ioctl(2) calls (from custom extension ifconfig.so).
 
-        if (! extension_loaded('ifconfig')) {
-            if (!@dl('ifconfig.so'))
-                throw new Engine_Exception(lang('network_network_error_occurred'));
-        }
+        if (! extension_loaded('ifconfig'))
+            throw new Engine_Exception(lang('network_network_error_occurred'));
 
         $handle = @ifconfig_init();
         $ip = @ifconfig_address($handle, $this->iface);
@@ -665,10 +661,8 @@ class Iface extends Engine
 
         // Using ioctl(2) calls (from custom extension ifconfig.so).
 
-        if (! extension_loaded('ifconfig')) {
-            if (!@dl('ifconfig.so'))
-                throw new Engine_Exception(lang('network_network_error_occurred'));
-        }
+        if (! extension_loaded('ifconfig'))
+            throw new Engine_Exception(lang('network_network_error_occurred'));
 
         $handle = @ifconfig_init();
         $mac = @ifconfig_hwaddress($handle, $this->iface);
@@ -690,10 +684,8 @@ class Iface extends Engine
         Validation_Exception::is_valid($this->validate_interface($this->iface));
 
         // Using ioctl(2) calls (from custom extension ifconfig.so).
-        if (! extension_loaded('ifconfig')) {
-            if (!@dl('ifconfig.so'))
-                throw new Engine_Exception(lang('network_network_error_occurred'));
-        }
+        if (! extension_loaded('ifconfig'))
+            throw new Engine_Exception(lang('network_network_error_occurred'));
 
         // This method is from: /var/webconfig/lib/ifconfig.so
         $handle = @ifconfig_init();
@@ -715,10 +707,8 @@ class Iface extends Engine
 
         Validation_Exception::is_valid($this->validate_interface($this->iface));
 
-        if (! extension_loaded('ifconfig')) {
-            if (!@dl('ifconfig.so'))
-                throw new Engine_Exception(lang('network_network_error_occurred'));
-        }
+        if (! extension_loaded('ifconfig'))
+            throw new Engine_Exception(lang('network_network_error_occurred'));
 
         $handle = @ifconfig_init();
 
