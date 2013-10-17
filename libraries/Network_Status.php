@@ -274,7 +274,13 @@ class Network_Status extends Engine
         $routes = new Routes();
         $gateway = $routes->get_default();
 
+        // Try ping first, if that fails try arping
         if (! empty($gateway)) {
+            $retval = $shell->execute(self::COMMAND_PING, '-c 1 -w 5 ' . $gateway, FALSE, $options);
+            clearos_profile(__METHOD__, __LINE__, 'network status ping gateway retval ' . $retval);
+            if ($retval === 0)
+                return self::STATUS_ONLINE;
+
             $retval = $shell->execute(self::COMMAND_ARPING, '-c 1 -w 5 ' . $gateway, TRUE, $options);
             clearos_profile(__METHOD__, __LINE__, 'network status arping gateway retval ' . $retval);
             if ($retval === 0)
