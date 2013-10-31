@@ -295,8 +295,6 @@ function showDnsStatusInfo(payload) {
             $('#dns_test_message').html(lang_dns_failed);
             $('#dns_test_message').addClass('theme-text-bad-status');
 
-            $('#theme_wizard_nav_next').hide();
-            $('#theme_wizard_nav_previous').hide();
             $('#dns_edit_anchor').show();
         }
     }
