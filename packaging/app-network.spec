@@ -1,7 +1,7 @@
 
 Name: app-network
 Epoch: 1
-Version: 1.5.15
+Version: 1.5.16
 Release: 1%{dist}
 Summary: IP Settings
 License: GPLv3
@@ -20,6 +20,7 @@ License: LGPLv3
 Group: ClearOS/Libraries
 Requires: app-base-core
 Requires: app-base-core >= 1:1.4.37
+Requires: app-firewall-core >= 1:1.5.19
 Requires: app-events-core
 Requires: avahi
 Requires: bind-utils
