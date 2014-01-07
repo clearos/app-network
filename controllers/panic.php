@@ -1,13 +1,13 @@
 <?php
 
 /**
- * Network domain controller.
+ * Network panic controller.
  *
  * @category   apps
  * @package    network
  * @subpackage controllers
  * @author     ClearFoundation <developer@clearfoundation.com>
- * @copyright  2012 ClearFoundation
+ * @copyright  2011 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
  * @link       http://www.clearfoundation.com/docs/developer/apps/network/
  */
@@ -34,66 +34,35 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * Network domain controller.
+ * Network panic controller.
  *
  * @category   apps
  * @package    network
  * @subpackage controllers
  * @author     ClearFoundation <developer@clearfoundation.com>
- * @copyright  2012 ClearFoundation
+ * @copyright  2011 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
  * @link       http://www.clearfoundation.com/docs/developer/apps/network/
  */
 
-class Domain extends ClearOS_Controller
+class Panic extends ClearOS_Controller
 {
     /**
-     * Domain overview.
+     * Network panic overview.
      *
      * @return view
      */
 
     function index()
     {
-        // Load libraries
-        //---------------
+        $data['panic'] = FALSE;
 
-        $this->load->library('network/Domain');
-
-        // Set validation rules
-        //---------------------
-         
-        $this->form_validation->set_policy('domain', 'network/Domain', 'validate_domain', TRUE);
-        $form_ok = $this->form_validation->run();
-
-        // Handle form submit
-        //-------------------
-
-        if (($this->input->post('domain') && $form_ok)) {
-            try {
-                $this->domain->set_default($this->input->post('domain'));
-
-                $this->page->set_status_updated();
-                redirect($this->session->userdata('wizard_redirect'));
-            } catch (Engine_Exception $e) {
-                $this->page->view_exception($e->get_message());
-                return;
-            }
+        if (clearos_library_installed('firewall/Firewall')) {
+            $this->load->library('firewall/Firewall');
+            if (method_exists($this->firewall, 'is_panic'))
+                $data['panic'] = $this->firewall->is_panic();
         }
 
-        // Load view data
-        //---------------
-
-        try {
-            $data['domain'] = $this->domain->get_default();
-        } catch (Exception $e) {
-            $this->page->view_exception($e);
-            return;
-        }
-
-        // Load views
-        //-----------
-
-        $this->page->view_form('network/wizard/domain', $data, lang('base_settings'), $options);
+        // FIXME: load a warning here
     }
 }

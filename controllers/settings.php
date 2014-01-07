@@ -92,7 +92,6 @@ class Settings extends ClearOS_Controller
         $this->load->library('network/Network');
         $this->load->library('network/Hostname');
         $this->load->library('network/Domain');
-        $this->load->library('firewall/Firewall');
 
         // Set validation rules
         //---------------------
@@ -155,7 +154,6 @@ class Settings extends ClearOS_Controller
             $data['hostname'] = $this->hostname->get();
             $data['internet_hostname'] = $this->hostname->get_internet_hostname();
             $data['domain'] = $this->domain->get_default();
-            $data['panic'] = $this->firewall->is_panic();
         } catch (Exception $e) {
             $this->page->view_exception($e);
             return;

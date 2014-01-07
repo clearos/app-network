@@ -63,11 +63,13 @@ class Network extends ClearOS_Controller
         // Load views
         //-----------
 
-        if (clearos_console())
+        if (clearos_console()) {
             $options['type'] = MY_Page::TYPE_CONSOLE;
+            $views = array('network/settings', 'network/dns', 'network/iface');
+        } else {
+            $views = array('network/panic', 'network/settings', 'network/dns', 'network/iface');
+        }
 
-        $views = array('network/settings', 'network/dns', 'network/iface');
-        
         $this->page->view_controllers($views, lang('network_network'), $options);
     }
 
