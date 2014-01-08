@@ -59,10 +59,8 @@ class Panic extends ClearOS_Controller
 
         if (clearos_library_installed('firewall/Firewall')) {
             $this->load->library('firewall/Firewall');
-            if (method_exists($this->firewall, 'is_panic'))
-                $data['panic'] = $this->firewall->is_panic();
+            if (method_exists($this->firewall, 'is_panic') && $this->firewall->is_panic())
+                $this->load->view('firewall/panic');
         }
-
-        // FIXME: load a warning here
     }
 }
