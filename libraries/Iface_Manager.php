@@ -627,6 +627,9 @@ class Iface_Manager extends Engine
             if (! $details['configured'])
                 continue;
 
+            if (empty($details['address']))
+                continue;
+
             // Gateway mode
             if (($details['role'] == Role::ROLE_LAN) && (! empty($details['address'])) && (! empty($details['netmask']))) {
                 $basenetwork = Network_Utils::get_network_address($details['address'], $details['netmask']);
