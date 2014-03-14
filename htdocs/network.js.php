@@ -202,7 +202,7 @@ function getNetworkStatusInfo() {
  */
 
 function getInterfaceInfo() {
-    var iface = $('#interface').html();
+    var iface = $('#interface').val();
 
     $.ajax({
         url: '/app/network/get_info/' + iface,
@@ -335,8 +335,8 @@ function showInterfaceInfo(payload) {
     var link_text = (payload.link) ? lang_yes : lang_no;
     var speed_text = (payload.speed > 0) ? payload.speed + ' ' + lang_megabits_per_second : lang_unknown;
 
-    $('#link').html(link_text);
-    $('#speed').html(speed_text);
+    $('#link_text').html(link_text);
+    $('#speed_text').html(speed_text);
 }
 
 /**
