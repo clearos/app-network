@@ -89,10 +89,9 @@ class Iface extends ClearOS_Controller
         // Load views
         //-----------
 
-        if (clearos_console())
-            $options['type'] = MY_Page::TYPE_CONSOLE;
+        $page_options['type'] = (clearos_console()) ? MY_Page::TYPE_CONSOLE : NULL;
 
-        $this->page->view_form('network/ifaces', $data, lang('network_interfaces'), $options);
+        $this->page->view_form('network/ifaces', $data, lang('network_interfaces'), $page_options);
     }
 
     /**
@@ -144,10 +143,9 @@ class Iface extends ClearOS_Controller
         $cancel_uri = '/app/network/iface';
         $items = array($interface);
 
-        if (clearos_console())
-            $options['type'] = MY_Page::TYPE_CONSOLE;
+        $page_options['type'] = (clearos_console()) ? MY_Page::TYPE_CONSOLE : NULL;
 
-        $this->page->view_confirm_delete($confirm_uri, $cancel_uri, $items, $options);
+        $this->page->view_confirm_delete($confirm_uri, $cancel_uri, $items, $page_options);
     }
 
     /**
@@ -416,10 +414,9 @@ class Iface extends ClearOS_Controller
         // Load the views
         //---------------
 
-        if (clearos_console())
-            $options['type'] = MY_Page::TYPE_CONSOLE;
+        $page_options['type'] = (clearos_console()) ? MY_Page::TYPE_CONSOLE : NULL;
 
-        $this->page->view_form('network/iface', $data, lang('network_interface'), $options);
+        $this->page->view_form('network/iface', $data, lang('network_interface'), $page_options);
     }
 
     /**
@@ -523,10 +520,9 @@ class Iface extends ClearOS_Controller
         // Load the views
         //---------------
 
-        if (clearos_console())
-            $options['type'] = MY_Page::TYPE_CONSOLE;
+        $page_options['type'] = (clearos_console()) ? MY_Page::TYPE_CONSOLE : NULL;
 
-        $this->page->view_form('network/virtual', $data, lang('network_interface'), $options);
+        $this->page->view_form('network/virtual', $data, lang('network_interface'), $page_options);
     }
 
     /**
@@ -662,9 +658,8 @@ class Iface extends ClearOS_Controller
         // Load the views
         //---------------
 
-        if (clearos_console())
-            $options['type'] = MY_Page::TYPE_CONSOLE;
+        $page_options['type'] = (clearos_console()) ? MY_Page::TYPE_CONSOLE : NULL;
 
-        $this->page->view_form('network/vlan', $data, lang('network_interface'), $options);
+        $this->page->view_form('network/vlan', $data, lang('network_interface'), $page_options);
     }
 }

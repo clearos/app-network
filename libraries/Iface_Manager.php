@@ -440,6 +440,8 @@ class Iface_Manager extends Engine
         if ($this->is_loaded)
             return $this->ethinfo;
 
+        $ethinfo = array();
+
         $options['filter_ibvpn'] = isset($options['filter_ibvpn']) ? $options['filter_ibvpn'] : TRUE;
         $options['filter_imq'] = isset($options['filter_imq']) ? $options['filter_imq'] : TRUE;
         $options['filter_ppp'] = isset($options['filter_ppp']) ? $options['filter_ppp'] : FALSE;
