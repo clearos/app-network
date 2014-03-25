@@ -80,13 +80,21 @@ class Network_Check extends ClearOS_Controller
 
     function index($protocol = NULL, $port = NULL)
     {
-
         // SSH and maybe some others have floating protocol an port numbers
         // Added a way to override these on the fly instead of using the
         // constructor.
 
+        // Bail if firewall is not installed
+        //----------------------------------
+
+        if (!clearos_app_installed('incoming_firewall'))
+            return;
+
         // Load dependencies
         //------------------
+
+        $this->lang->load('network');
+        $this->load->library('incoming_firewall/Port');
 
         if (! empty($port))
             $this->port_number = $port;
@@ -94,19 +102,11 @@ class Network_Check extends ClearOS_Controller
         if (! empty($protocol))
             $this->protocol = $protocol;
 
-        $this->lang->load('network');
-
-        if (clearos_app_installed('incoming_firewall'))
-            $this->load->library('incoming_firewall/Port');
-    
         // Load view data
         //---------------
 
         try {
-            if (clearos_app_installed('incoming_firewall'))
-                $is_firewalled = $this->port->is_firewalled($this->protocol, $this->port_number);
-            else
-                $is_firewalled = TRUE;
+            $is_firewalled = $this->port->is_firewalled($this->protocol, $this->port_number);
         } catch (Exception $e) {
             $this->page->view_exception($e);
             return;
