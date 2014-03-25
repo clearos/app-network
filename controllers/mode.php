@@ -140,6 +140,6 @@ class Mode extends ClearOS_Controller
         // Load views
         //-----------
 
-        $this->page->view_form('network/wizard/mode', $data, lang('network_network_mode'), $options);
+        $this->page->view_form('network/wizard/mode', $data, lang('network_network_mode'));
     }
 }

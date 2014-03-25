@@ -75,7 +75,6 @@ class Iface extends ClearOS_Controller
             $iface_options['filter_virtual'] = FALSE;
             $iface_options['filter_vlan'] = FALSE;
 
-            $data['mode'] = $mode;
             $data['form_type'] = ($this->session->userdata('wizard')) ? 'wizard' : 'view';
             $data['network_status'] = $this->network_status->get_connection_status();
             $data['network_interfaces'] = $this->iface_manager->get_interface_details($iface_options);
@@ -126,7 +125,9 @@ class Iface extends ClearOS_Controller
 
     function add_vlan()
     {
-        $this->_vlan_item('add');
+        $interface = $this->input->post('iface');
+
+        $this->_vlan_item('add', $interface);
     }
 
     /**
@@ -536,9 +537,6 @@ class Iface extends ClearOS_Controller
 
     function _vlan_item($form_type, $interface)
     {
-        if ($form_type === 'add')
-            $interface = $this->input->post('iface');
-
         // Load libraries
         //---------------
 

@@ -162,8 +162,7 @@ class Settings extends ClearOS_Controller
         // Load views
         //-----------
 
-        if (clearos_console())
-            $options['type'] = MY_Page::TYPE_CONSOLE;
+        $options['type'] = (clearos_console()) ? MY_Page::TYPE_CONSOLE : NULL;
 
         $this->page->view_form('network/settings', $data, lang('base_settings'), $options);
     }

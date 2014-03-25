@@ -195,8 +195,7 @@ class DNS extends ClearOS_Controller
         // Load views
         //-----------
 
-        if (clearos_console())
-            $options['type'] = MY_Page::TYPE_CONSOLE;
+        $options['type'] = (clearos_console()) ? MY_Page::TYPE_CONSOLE : NULL;
 
         $this->page->view_form('network/dns', $data, lang('network_dns'), $options);
     }

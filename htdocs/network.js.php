@@ -104,7 +104,8 @@ $(document).ready(function() {
     if ($('#role').length != 0)  {
         setInterfaceFields();
         setGateway();
-        getInterfaceInfo();
+        if ($('#interface').length != 0)
+            getInterfaceInfo();
 
         $('#role').change(function() {
             setGateway();
