@@ -1,7 +1,7 @@
 
 Name: app-network
 Epoch: 1
-Version: 1.5.16
+Version: 1.5.17
 Release: 1%{dist}
 Summary: IP Settings
 License: GPLv3
@@ -59,7 +59,7 @@ install -D -m 0644 packaging/filewatch-network-configuration-event.conf %{buildr
 install -D -m 0644 packaging/filewatch-network-connected-event.conf %{buildroot}/etc/clearsync.d/filewatch-network-connected-event.conf
 install -D -m 0644 packaging/filewatch-network-hostname.conf %{buildroot}/etc/clearsync.d/filewatch-network-hostname.conf
 install -D -m 0644 packaging/filewatch-network-peerdns-event.conf %{buildroot}/etc/clearsync.d/filewatch-network-peerdns-event.conf
-install -D -m 0644 packaging/filewatch-network.conf %{buildroot}/etc/clearsync.d/filewatch-network.conf
+install -D -m 0755 packaging/network-configuration-event %{buildroot}/var/clearos/events/network_configuration/network
 install -D -m 0755 packaging/network-connected-event %{buildroot}/var/clearos/events/network_connected/network
 install -D -m 0644 packaging/network.conf %{buildroot}/etc/clearos/network.conf
 install -D -m 0755 packaging/network_resolver %{buildroot}/var/clearos/events/network_configuration/network_resolver
@@ -116,7 +116,7 @@ exit 0
 /etc/clearsync.d/filewatch-network-connected-event.conf
 /etc/clearsync.d/filewatch-network-hostname.conf
 /etc/clearsync.d/filewatch-network-peerdns-event.conf
-/etc/clearsync.d/filewatch-network.conf
+/var/clearos/events/network_configuration/network
 /var/clearos/events/network_connected/network
 %config(noreplace) /etc/clearos/network.conf
 /var/clearos/events/network_configuration/network_resolver
