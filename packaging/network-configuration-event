@@ -1,0 +1,5 @@
+#!/bin/sh
+
+/sbin/service syswatch reload
+
+exit 0

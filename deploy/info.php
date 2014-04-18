@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'network';
-$app['version'] = '1.5.16';
+$app['version'] = '1.5.17';
 $app['release'] = '1';
 $app['vendor'] = 'ClearFoundation';
 $app['packager'] = 'ClearFoundation';
@@ -104,7 +104,6 @@ $app['core_file_manifest'] = array(
         'target' => '/etc/dhcp/dhclient-exit-hooks',
         'mode' => '0755',
     ),
-    'filewatch-network.conf' => array('target' => '/etc/clearsync.d/filewatch-network.conf'),
     'filewatch-network-hostname.conf' => array('target' => '/etc/clearsync.d/filewatch-network-hostname.conf'),
     'filewatch-network-connected-event.conf' => array('target' => '/etc/clearsync.d/filewatch-network-connected-event.conf'),
     'filewatch-network-configuration-event.conf' => array('target' => '/etc/clearsync.d/filewatch-network-configuration-event.conf'),
@@ -116,6 +115,10 @@ $app['core_file_manifest'] = array(
         'group' => 'root',
         'config' => TRUE,
         'config_params' => 'noreplace',
+    ),
+    'network-configuration-event'=> array(
+        'target' => '/var/clearos/events/network_configuration/network',
+        'mode' => '0755'
     ),
     'network-connected-event'=> array(
         'target' => '/var/clearos/events/network_connected/network',
