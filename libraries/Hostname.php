@@ -7,7 +7,7 @@
  * @package    network
  * @subpackage libraries
  * @author     ClearFoundation <developer@clearfoundation.com>
- * @copyright  2002-2011 ClearFoundation
+ * @copyright  2002-2014 ClearFoundation
  * @license    http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License version 3 or later
  * @link       http://www.clearfoundation.com/docs/developer/apps/network/
  */
@@ -77,9 +77,11 @@ clearos_load_library('network/Role');
 //-----------
 
 use \clearos\apps\base\File_No_Match_Exception as File_No_Match_Exception;
+use \clearos\apps\base\File_Not_Found_Exception as File_Not_Found_Exception;
 use \clearos\apps\base\Validation_Exception as Validation_Exception;
 
 clearos_load_library('base/File_No_Match_Exception');
+clearos_load_library('base/File_Not_Found_Exception');
 clearos_load_library('base/Validation_Exception');
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -93,7 +95,7 @@ clearos_load_library('base/Validation_Exception');
  * @package    network
  * @subpackage libraries
  * @author     ClearFoundation <developer@clearfoundation.com>
- * @copyright  2002-2011 ClearFoundation
+ * @copyright  2002-2014 ClearFoundation
  * @license    http://www.gnu.org/copyleft/lgpl.html GNU Lesser General Public License version 3 or later
  * @link       http://www.clearfoundation.com/docs/developer/apps/network/
  */
@@ -105,6 +107,7 @@ class Hostname extends Engine
     ///////////////////////////////////////////////////////////////////////////////
 
     const FILE_CONFIG = '/etc/sysconfig/network';
+    const FILE_CONFIG_V7 = '/etc/hostname';
     const FILE_APP_CONFIG = '/etc/clearos/network.conf';
     const COMMAND_HOSTNAME = '/bin/hostname';
     const DEFAULT_HOSTNAME = 'system.lan';
@@ -223,7 +226,6 @@ class Hostname extends Engine
         return $shell->get_first_output_line();
     }
 
-
     /**
      * Returns hostname from configuration first, then system if not available.
      *
@@ -235,13 +237,23 @@ class Hostname extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        $file = new File(self::FILE_CONFIG);
+        if (clearos_version() >= 7) {
+            try {
+                $file = new File(self::FILE_CONFIG_V7);
 
-        try {
-            $hostname = $file->lookup_value('/^HOSTNAME=/');
-            $hostname = preg_replace('/"/', '', $hostname);
-        } catch (File_No_Match_Exception $e) {
-            // Not fatal
+                $hostname = $file->get_contents();
+            } catch (File_Not_Found_Exception $e) {
+                // Not fatal
+            }
+        } else {
+            try {
+                $file = new File(self::FILE_CONFIG);
+
+                $hostname = $file->lookup_value('/^HOSTNAME=/');
+                $hostname = preg_replace('/"/', '', $hostname);
+            } catch (File_No_Match_Exception $e) {
+                // Not fatal
+            }
         }
 
         if (empty($hostname))
@@ -344,15 +356,21 @@ class Hostname extends Engine
         // Update tag if it exists
         //------------------------
 
-        $file = new File(self::FILE_CONFIG);
+        if (clearos_version() >= 7) {
+            $file = new File(self::FILE_CONFIG_V7);
 
-        $match = $file->replace_lines('/^HOSTNAME=/', "HOSTNAME=\"$hostname\"\n");
+            if ($file->exists())
+                $file->delete();
 
-        // If tag does not exist, add it
-        //------------------------------
+            $file->create('root', 'root', '0644');
+            $file->add_lines("$hostname\n");
+        } else {
+            $file = new File(self::FILE_CONFIG);
+            $match = $file->replace_lines('/^HOSTNAME=/', "HOSTNAME=\"$hostname\"\n");
 
-        if (! $match)
-            $file->add_lines("HOSTNAME=\"$hostname\"\n");
+            if (! $match)
+                $file->add_lines("HOSTNAME=\"$hostname\"\n");
+        }
 
         // Run hostname command...
         //------------------------
