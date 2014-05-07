@@ -31,3 +31,29 @@ if [ -n "$CHECK" ]; then
     /sbin/chkconfig pppoe-server off
     /sbin/service pppoe-server stop >/dev/null 2>&1
 fi
+
+# Disable IPv6 by default
+#------------------------
+
+CHECK=`grep "^net.ipv6.conf.all.disable_ipv6[[:space:]]*=" /etc/sysctl.conf`
+
+if [ -z "$CHECK" ]; then
+    logger -p local6.notice -t installer "app-network-core - disabling IPv6 interfaces"
+    echo "" >> /etc/sysctl.conf
+    echo "# IPv6 policy" >> /etc/sysctl.conf
+    echo "net.ipv6.conf.all.disable_ipv6 = 1" >> /etc/sysctl.conf
+fi
+
+CHECK=`grep "^net.ipv6.conf.default.disable_ipv6[[:space:]]*=" /etc/sysctl.conf`
+
+if [ -z "$CHECK" ]; then
+    logger -p local6.notice -t installer "app-network-core - setting IPv6 default policy"
+    echo "net.ipv6.conf.default.disable_ipv6 = 1" >> /etc/sysctl.conf
+fi
+
+CHECK=`grep "^#::1[[:space:]]*" /etc/hosts`
+
+if [ -n "$CHECK" ]; then
+    logger -p local6.notice -t installer "app-network-core - cleaning IPv6 localhost in /etc/hosts"
+    sed -i -e 's/^#::1[[:space:]]*/::1         /' /etc/hosts
+fi
