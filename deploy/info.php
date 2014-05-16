@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'network';
-$app['version'] = '1.6.0';
+$app['version'] = '1.6.1';
 $app['release'] = '1';
 $app['vendor'] = 'ClearFoundation';
 $app['packager'] = 'ClearFoundation';
@@ -102,6 +102,10 @@ $app['core_directory_manifest'] = array(
 $app['core_file_manifest'] = array(
     'dhclient-exit-hooks' => array(
         'target' => '/etc/dhcp/dhclient-exit-hooks',
+        'mode' => '0755',
+    ),
+    'network' => array(
+        'target' => '/usr/sbin/network',
         'mode' => '0755',
     ),
     'filewatch-network-hostname.conf' => array('target' => '/etc/clearsync.d/filewatch-network-hostname.conf'),

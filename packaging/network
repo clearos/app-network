@@ -1,0 +1,88 @@
+#!/usr/clearos/sandbox/usr/bin/php
+<?php
+
+/**
+ * Network utilities.
+ *
+ * @category   apps
+ * @package    network
+ * @subpackage scripts
+ * @author     ClearFoundation <developer@clearfoundation.com>
+ * @copyright  2014 ClearFoundation
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
+ * @link       http://www.clearfoundation.com/docs/developer/apps/dns/
+ */
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+// B O O T S T R A P
+///////////////////////////////////////////////////////////////////////////////
+
+$bootstrap = getenv('CLEAROS_BOOTSTRAP') ? getenv('CLEAROS_BOOTSTRAP') : '/usr/clearos/framework/shared';
+require_once $bootstrap . '/bootstrap.php';
+
+///////////////////////////////////////////////////////////////////////////////
+// D E P E N D E N C I E S
+///////////////////////////////////////////////////////////////////////////////
+
+// Classes
+//--------
+
+use \clearos\apps\network\Iface_Manager as Iface_Manager;
+
+clearos_load_library('network/Iface_Manager');
+
+// Exceptions
+//-----------
+
+use \Exception as Exception;
+
+///////////////////////////////////////////////////////////////////////////////
+// O P T I O N S
+///////////////////////////////////////////////////////////////////////////////
+
+$long_options = array('help::', 'get-lan-ips::');
+
+$help_options  = '';
+$help_options .= "  --help:          help\n";
+$help_options .= "  --get-lan-ips:   returns a list of LAN IPs\n";
+
+$options = getopt(NULL, $long_options);
+
+///////////////////////////////////////////////////////////////////////////////
+// M A I N
+///////////////////////////////////////////////////////////////////////////////
+
+try {
+    $iface_manager = new Iface_Manager();
+
+    if (isset($options['get-lan-ips'])) {
+        $lan_ips = $iface_manager->get_most_trusted_ips();
+        echo implode(' ', $lan_ips) . "\n";
+    } else  {
+        echo "usage: " . $argv[0] . " [options]\n";
+        echo $help_options;
+        exit(0);
+    }
+
+} catch (Exception $e) {
+    exit(1);
+}
+
+// vim: syntax=php ts=4
