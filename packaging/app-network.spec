@@ -1,7 +1,7 @@
 
 Name: app-network
 Epoch: 1
-Version: 1.6.1
+Version: 1.6.2
 Release: 1%{dist}
 Summary: IP Settings
 License: GPLv3
@@ -57,7 +57,6 @@ install -d -m 0755 %{buildroot}/var/clearos/network/backup
 install -D -m 0755 packaging/dhclient-exit-hooks %{buildroot}/etc/dhcp/dhclient-exit-hooks
 install -D -m 0644 packaging/filewatch-network-configuration-event.conf %{buildroot}/etc/clearsync.d/filewatch-network-configuration-event.conf
 install -D -m 0644 packaging/filewatch-network-connected-event.conf %{buildroot}/etc/clearsync.d/filewatch-network-connected-event.conf
-install -D -m 0644 packaging/filewatch-network-hostname.conf %{buildroot}/etc/clearsync.d/filewatch-network-hostname.conf
 install -D -m 0644 packaging/filewatch-network-peerdns-event.conf %{buildroot}/etc/clearsync.d/filewatch-network-peerdns-event.conf
 install -D -m 0755 packaging/network %{buildroot}/usr/sbin/network
 install -D -m 0755 packaging/network-configuration-event %{buildroot}/var/clearos/events/network_configuration/network
@@ -115,7 +114,6 @@ exit 0
 /etc/dhcp/dhclient-exit-hooks
 /etc/clearsync.d/filewatch-network-configuration-event.conf
 /etc/clearsync.d/filewatch-network-connected-event.conf
-/etc/clearsync.d/filewatch-network-hostname.conf
 /etc/clearsync.d/filewatch-network-peerdns-event.conf
 /usr/sbin/network
 /var/clearos/events/network_configuration/network

@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'network';
-$app['version'] = '1.6.1';
+$app['version'] = '1.6.2';
 $app['release'] = '1';
 $app['vendor'] = 'ClearFoundation';
 $app['packager'] = 'ClearFoundation';
@@ -108,7 +108,6 @@ $app['core_file_manifest'] = array(
         'target' => '/usr/sbin/network',
         'mode' => '0755',
     ),
-    'filewatch-network-hostname.conf' => array('target' => '/etc/clearsync.d/filewatch-network-hostname.conf'),
     'filewatch-network-connected-event.conf' => array('target' => '/etc/clearsync.d/filewatch-network-connected-event.conf'),
     'filewatch-network-configuration-event.conf' => array('target' => '/etc/clearsync.d/filewatch-network-configuration-event.conf'),
     'filewatch-network-peerdns-event.conf' => array('target' => '/etc/clearsync.d/filewatch-network-peerdns-event.conf'),
