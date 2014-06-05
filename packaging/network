@@ -57,11 +57,12 @@ use \Exception as Exception;
 // O P T I O N S
 ///////////////////////////////////////////////////////////////////////////////
 
-$long_options = array('help::', 'get-lan-ips::');
+$long_options = array('help::', 'get-lan-ips::', 'get-lan-interfaces::');
 
 $help_options  = '';
-$help_options .= "  --help:          help\n";
-$help_options .= "  --get-lan-ips:   returns a list of LAN IPs\n";
+$help_options .= "  --help:                help\n";
+$help_options .= "  --get-lan-ips:         returns a list of LAN IPs\n";
+$help_options .= "  --get-lan-interfaces:  returns a list of LAN interfaces\n";
 
 $options = getopt(NULL, $long_options);
 
@@ -75,6 +76,9 @@ try {
     if (isset($options['get-lan-ips'])) {
         $lan_ips = $iface_manager->get_most_trusted_ips();
         echo implode(' ', $lan_ips) . "\n";
+    } else if (isset($options['get-lan-interfaces'])) {
+        $lan_ifaces = $iface_manager->get_most_trusted_interfaces();
+        echo implode(' ', $lan_ifaces) . "\n";
     } else  {
         echo "usage: " . $argv[0] . " [options]\n";
         echo $help_options;
