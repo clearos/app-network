@@ -69,3 +69,12 @@ else
         sed -i -e 's/^::1[[:space:]]*/#::1         /' /etc/hosts
     fi
 fi
+
+# Set first NIC as external
+#--------------------------
+
+EXTERNAL=`ip addr | grep ^2: | awk '{ print $2 }' | sed 's/://'`
+if [ "$EXTERNAL" != "eth0" ]; then
+    logger -p local6.notice -t installer "app-network-core - setting external interface to $EXTERNAL"
+    sed -i -e "s/^EXTIF=.*/EXTIF=\"$EXTERNAL\"/" /etc/clearos/network.conf
+fi
