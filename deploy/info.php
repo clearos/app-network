@@ -87,6 +87,7 @@ $app['core_requires'] = array(
     'rp-pppoe >= 3.10-8.1',
     'syswatch',
     'traceroute',
+    'tcpdump',
     'wireless-tools',
 );
 

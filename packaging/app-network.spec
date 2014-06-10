@@ -33,6 +33,7 @@ Requires: ppp
 Requires: rp-pppoe >= 3.10-8.1
 Requires: syswatch
 Requires: traceroute
+Requires: tcpdump
 Requires: wireless-tools
 
 %description core
