@@ -76,3 +76,9 @@ if [ "$EXTERNAL" != "eth0" ]; then
     logger -p local6.notice -t installer "app-network-core - setting external interface to $EXTERNAL"
     sed -i -e "s/^EXTIF=.*/EXTIF=\"$EXTERNAL\"/" /etc/clearos/network.conf
 fi
+
+# Reload syswatch
+#----------------
+
+logger -p local6.notice -t installer "app-base-core - restarting syswatch"
+service syswatch condrestart >/dev/null 2>&1
