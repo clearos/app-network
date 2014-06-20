@@ -5,7 +5,7 @@
 
 logger -p local6.notice -t installer "app-network-core - enabling syswatch"
 /sbin/chkconfig syswatch on >/dev/null 2>&1
-/sbin/service syswatcn start >/dev/null 2>&1
+/sbin/service syswatch start >/dev/null 2>&1
 
 # Disable Avahi server
 #---------------------
