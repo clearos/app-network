@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# Enable syswatch
+#----------------
+
+logger -p local6.notice -t installer "app-network-core - enabling syswatch"
+/sbin/chkconfig syswatch on >/dev/null 2>&1
+/sbin/service syswatcn start >/dev/null 2>&1
+
 # Disable Avahi server
 #---------------------
 
@@ -16,7 +23,7 @@ fi
 
 if [ -x /usr/sbin/pppoe-server ]; then
     logger -p local6.notice -t installer "app-network-core - disabling PPPoE server"
-    /sbin/chkconfig pppoe-server off
+    /sbin/chkconfig pppoe-server off >/dev/null 2>&1
     /sbin/service pppoe-server stop >/dev/null 2>&1
 fi
 
