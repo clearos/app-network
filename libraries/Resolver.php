@@ -386,7 +386,11 @@ class Resolver extends Engine
         } else {
             try {
                 $peerdns_file = new File(self::FILE_PEERDNS);
-                $resolv_lines .= $peerdns_file->get_contents();
+                $raw_lines = $peerdns_file->get_contents_as_array();
+                foreach ($raw_lines as $line) {
+                    if (!preg_match('/^;/', $line))
+                        $resolv_lines .= $line . "\n";
+                }
             } catch (File_Not_Found_Exception $e) {
                 $resolv_lines .= "nameserver " . self::PUBLIC_DNS1 . "\n";
                 $resolv_lines .= "nameserver " . self::PUBLIC_DNS2 . "\n";
