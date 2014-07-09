@@ -39,9 +39,6 @@
 //              also used to store other network types (notably, "dialup"
 //              and "wireless").
 //
-// - The "/sbin/iwconfig | /bin/grep ESSID" is not a great way to detect a
-//   wireless interface... but that's the way we'll do it for now.
-//
 // - Before writing a new config, you must disable the interface.  Otherwise,
 //   you won't be able to bring the interface down *after* a config change.
 //
@@ -135,7 +132,7 @@ class Iface extends Engine
     const COMMAND_IFCONFIG = '/sbin/ifconfig';
     const COMMAND_IFDOWN = '/sbin/ifdown';
     const COMMAND_IFUP = '/sbin/ifup';
-    const COMMAND_IWCONFIG = '/sbin/iwconfig';
+    const COMMAND_IW = '/sbin/iw';
 
     // Files and paths
     const FILE_LOG = '/var/log/messages';
@@ -779,12 +776,12 @@ class Iface extends Engine
 
         if ($type == self::TYPE_WIRELESS) {
             $shell = new Shell();
-            $shell->execute(self::COMMAND_IWCONFIG, $this->iface, FALSE);
+            $shell->execute(self::COMMAND_IW, $this->iface . ' link', FALSE);
             $output = $shell->get_output();
             $matches = array();
             
             foreach ($output as $line) {
-                if (preg_match('/Bit Rate:\s*([0-9]*)/', $line, $matches)) {
+                if (preg_match('/bitrate:\s*([0-9]*)/', $line, $matches)) {
                     $speed = $matches[1];
                     break;
                 }
@@ -948,13 +945,14 @@ class Iface extends Engine
         //-----------------------------------------------------
 
         if (! $isconfigured) {
+            // TODO: must be a /proc or /sys way to get this information
             try {
                 $shell = new Shell();
-                $shell->execute(self::COMMAND_IWCONFIG, $this->iface, FALSE);
+                $shell->execute(self::COMMAND_IWCONFIG, $this->iface . ' info', FALSE);
                 $output = $shell->get_output();
 
                 foreach ($output as $line) {
-                    if (preg_match('/ESSID/', $line))
+                    if (preg_match('/channel/', $line))
                         return self::TYPE_WIRELESS;
                 }
             } catch (Engine_Exception $e) {

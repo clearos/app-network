@@ -28,13 +28,13 @@ Requires: csplugin-filewatch
 Requires: dhclient >= 12:4.1.1-31.P1.v6.1
 Requires: ethtool
 Requires: initscripts >= 9.03.31-3
+Requires: iw
 Requires: net-tools
 Requires: ppp
 Requires: rp-pppoe >= 3.10-8.1
 Requires: syswatch
 Requires: traceroute
 Requires: tcpdump
-Requires: wireless-tools
 
 %description core
 The IP Settings app provides the tools to configure the most common network tasks like network mode, system hostname, DNS servers and network interface settings.

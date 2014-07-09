@@ -82,13 +82,13 @@ $app['core_requires'] = array(
     'dhclient >= 12:4.1.1-31.P1.v6.1',
     'ethtool',
     'initscripts >= 9.03.31-3',
+    'iw',
     'net-tools',
     'ppp',
     'rp-pppoe >= 3.10-8.1',
     'syswatch',
     'traceroute',
     'tcpdump',
-    'wireless-tools',
 );
 
 $app['core_directory_manifest'] = array(
