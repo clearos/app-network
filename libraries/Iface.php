@@ -948,7 +948,7 @@ class Iface extends Engine
             // TODO: must be a /proc or /sys way to get this information
             try {
                 $shell = new Shell();
-                $shell->execute(self::COMMAND_IWCONFIG, $this->iface . ' info', FALSE);
+                $shell->execute(self::COMMAND_IW, $this->iface . ' info', FALSE);
                 $output = $shell->get_output();
 
                 foreach ($output as $line) {
