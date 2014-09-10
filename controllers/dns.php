@@ -122,13 +122,7 @@ class DNS extends ClearOS_Controller
 
         $is_automatic = $this->resolver->is_automatically_configured();
 
-        // if wizard mode and automatic DNS is disabled, go straight to edit mode
-        if ($form_type === 'view') {
-            $is_wizard = ($this->session->userdata('wizard')) ? TRUE : FALSE;
-
-            if ($is_wizard && !$is_automatic)
-                redirect('/network/dns/edit');
-        }
+        $is_wizard = ($this->session->userdata('wizard')) ? TRUE : FALSE;
 
         // Set validation rules
         //---------------------

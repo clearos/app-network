@@ -64,6 +64,7 @@ $(document).ready(function() {
     lang_connected = '<?php echo lang("network_connected"); ?>';
     lang_dns_failed = '<?php echo lang("network_dns_lookup_failed"); ?>';
     lang_dns_passed = '<?php echo lang("network_dns_lookup_passed"); ?>';
+    lang_dns_lookup = '<?php echo lang("network_dns_lookup"); ?>';
 
     // Defaults
     //---------
@@ -74,29 +75,7 @@ $(document).ready(function() {
     // Wizard next button handling
     //----------------------------
 
-    if (($(location).attr('href').match('.*\/iface\/edit') != null) 
-        || ($(location).attr('href').match('.*\/iface\/add') != null)
-        || ($(location).attr('href').match('.*\/dns\/edit\/verify') != null)) {
-        $('#theme_wizard_nav_next').hide();
-        $('#theme_wizard_nav_previous').hide();
-    }
-
-    $("#wizard_nav_next").click(function(){
-        if ($(location).attr('href').match('.*\/hostname$') != null)
-            $('form#hostname_form').submit();
-        else if ($(location).attr('href').match('.*\/mode$') != null)
-            $('form#mode_form').submit();
-        else if ($(location).attr('href').match('.*\/domain$') != null)
-            $('form#domain_form').submit();
-        else if ($(location).attr('href').match('.*\/dns\/edit\/verify') != null)
-            window.location = '/app/base/wizard/next_step';
-        else if ($(location).attr('href').match('.*\/dns\/edit') != null)
-            $('form#dns_form').submit();
-        else if ($(location).attr('href').match('.*\/dns') != null)
-            window.location = '/app/network/dns/edit/verify';
-        else if ($(location).attr('href').match('.*\/iface') != null)
-            window.location = '/app/base/wizard/next_step';
-    });
+    $("#wizard_continue").attr('href', $('#wizard_nav_next').attr('href'));
 
     // Network interface configuration
     //--------------------------------
@@ -129,6 +108,9 @@ $(document).ready(function() {
 
     if ($('#network_status_label').length != 0) {
         getNetworkStatusInfo();
+        getDnsStatusInfo();
+    } else if ($('#dns_test_message').length != 0) {
+        // In wizard
         getDnsStatusInfo();
     }
 
@@ -281,18 +263,20 @@ function showDnsStatusInfo(payload) {
     if (payload['dns_status'] == 'online') {
         dns_status_message = '<span class=\'theme-text-good-status\'>' + lang_connected + '</span>';
 
-        if ($('#theme_wizard_nav_next').length != 0) {
-            $('#dns_test_message').html(lang_dns_passed);
-            $('#dns_test_message').removeClass('theme-text-bad-status');
-
-            $('#theme_wizard_nav_next').show();
-            $('#theme_wizard_nav_previous').show();
-            $('#dns_edit_anchor').hide();
+        // Are we in wizard?
+        if ($('#dns_test_message').length != 0) {
+            $('#dns_test_message_container').hide();
+            var options = new Object();
+            options.redirect_on_close = '/app/network/dns';
+            options.type = 'success';
+            if (typeof modal_dns_status == 'undefined')
+                modal_dns_status = clearos_dialog_box('modal_dns_status', lang_dns_lookup, lang_dns_passed, options)
         }
     } else {
         dns_status_message = '<span class=\'theme-text-bad-status\'>' + lang_offline + '</span>';
 
-        if ($('#theme_wizard_nav_next').length != 0) {
+        if ($('#dns_test_message').length != 0) {
+            $('#wizard_nav_next').addClass('disabled');
             $('#dns_test_message').html(lang_dns_failed);
             $('#dns_test_message').addClass('theme-text-bad-status');
 

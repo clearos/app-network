@@ -45,36 +45,36 @@ $read_only = FALSE;
 // FIXME: translate
 // TODO: move HTML/CSS elements to theme
 
-$gateway_label = "<span style='font-size: 13px; font-weight: bold;'>Gateway Mode</span>";
+$gateway_label = "Gateway Mode";
 $gateway_options['image'] = clearos_app_htdocs('network') . '/gateway.png';
-$gateway_options['label_help'] = "<p style='font-size: 13px;  padding-left: 25px'>Gateway mode is used to connect a network of systems to the Internet or internal network.  You need at least two network cards for this mode.</p>";
+$gateway_options['label_help'] = "Gateway mode is used to connect a network of systems to the Internet or internal network.  You need at least two network cards for this mode.";
 
-$private_label = "<span style='font-size: 13px; font-weight: bold;'>Private Server Mode</span>";
+$private_label = "Private Server Mode";
 $private_options['image'] = clearos_app_htdocs('network') . '/private_server.png';
-$private_options['label_help'] = "<p style='font-size: 13px;  padding-left: 25px'>This mode is appropriate for standalone servers installed on a protected network, for example, an office network.  The firewall is disabled in this mode.</p>";
+$private_options['label_help'] = "This mode is appropriate for standalone servers installed on a protected network, for example, an office network.  The firewall is disabled in this mode.";
 
-$public_label = "<span style='font-size: 13px; font-weight: bold;'>Public Server Mode</span>";
+$public_label = "Public Server Mode";
 $public_options['image'] = clearos_app_htdocs('network') . '/public_server.png';
-$public_options['label_help'] = "<p style='font-size: 13px; padding-left: 25px;'>This mode is appropriate for standalone servers installed in hostile environment, for example a data center or public hotspot.</p>";
+$public_options['label_help'] = "This mode is appropriate for standalone servers installed in hostile environment, for example a data center or public hotspot.";
 
 $checked[$network_mode] = TRUE;
 
 // Put what makes sense at the top of the list
 if ($iface_count > 1) {
     $radio_buttons = array(
-        field_radio_set_item('gateway', 'network_mode', $gateway_label, $checked['gateway'], $read_only, $gateway_options),
-        field_radio_set_item('trustedstandalone', 'network_mode', $private_label, $checked['trustedstandalone'], $read_only, $private_options),
-        field_radio_set_item('standalone', 'network_mode', $public_label, $checked['standalone'], $read_only, $public_options),
+        radio_set_item('gateway', 'network_mode', $gateway_label, $checked['gateway'], $gateway_options),
+        radio_set_item('trustedstandalone', 'network_mode', $private_label, $checked['trustedstandalone'], $private_options),
+        radio_set_item('standalone', 'network_mode', $public_label, $checked['standalone'], $public_options),
     );
 } else {
     $gateway_options['disabled'] = TRUE;
-    $gateway_label = "<span style='font-size: 13px; font-weight: bold;'>Gateway Mode (Unavailable)</span>";
-    $gateway_options['label_help'] = "<p style='font-size: 13px;  padding-left: 25px'>Gateway mode is used to connect a network of systems to the Internet or internal network.  <span style='color: red'>You need at least two network cards for this mode.</span></p>";
+    $gateway_label = "Gateway Mode (Unavailable)";
+    $gateway_options['label_help'] = "Gateway mode is used to connect a network of systems to the Internet or internal network.  <span class='theme-text-alert'>You need at least two network cards for this mode.</span>";
 
     $radio_buttons = array(
-        field_radio_set_item('trustedstandalone', 'network_mode', $private_label, $checked['trustedstandalone'], $read_only, $private_options),
-        field_radio_set_item('standalone', 'network_mode', $public_label, $checked['standalone'], $read_only, $public_options),
-        field_radio_set_item('gateway', 'network_mode', $gateway_label, $checked['gateway'], $read_only, $gateway_options),
+        radio_set_item('trustedstandalone', 'network_mode', $private_label, $checked['trustedstandalone'], $private_options),
+        radio_set_item('standalone', 'network_mode', $public_label, $checked['standalone'], $public_options),
+        radio_set_item('gateway', 'network_mode', $gateway_label, $checked['gateway'], $gateway_options),
     );
 }
 
@@ -85,9 +85,10 @@ if ($iface_count > 1) {
 echo form_open('network/mode', array('id' => 'mode_form'));
 echo form_header(lang('base_settings'));
 
-echo field_radio_set(
-    '',
-    $radio_buttons
+echo radio_set(
+    'network_mode',
+    $radio_buttons,
+    'network_mode_options'
 );
 
 echo form_footer();

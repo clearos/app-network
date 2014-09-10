@@ -38,7 +38,8 @@ $this->lang->load('base');
 
 echo infobox_highlight(
     lang('network_performing_dns_test'), 
-    '<span id="dns_test_message"><span class="theme-loading-small">' . lang('network_testing_dns_lookups') . '</span></span>'
+    "<span id='dns_test_message'>" . loading('normal', lang('network_testing_dns_lookups')) . "</span>",
+    array ('id' => 'dns_test_message_container')
 );
 
 echo "<p align='center' id='dns_edit_anchor' style='display:none;'>";

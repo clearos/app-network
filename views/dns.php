@@ -51,19 +51,36 @@ if ($is_automatic) {
 if ($form_type === 'edit') {
     $form = '/network/dns/edit';
     $read_only = FALSE;
-    if ($is_wizard) {
-        $buttons = array();
-    } else {
-        $buttons = array(
-            form_submit_update('submit'),
-            anchor_cancel('/app/network/dns')
-        );
-    }
+    $buttons = array(
+        form_submit_update('submit'),
+        anchor_cancel('/app/network/dns')
+    );
 } else {
-    $form = '/network/dns/view';
-	$read_only = TRUE;
-    $is_automatic_warning = FALSE; // Don't show auto warning in view only mode
-    $buttons = array(anchor_custom('/app/network/dns/edit', $edit_button_text));
+    if ($is_wizard) {
+        $read_only = TRUE;
+        if ($is_automatic) {
+            $buttons = array(
+                anchor_edit('/app/network/dns/edit'),
+                anchor_custom('#', lang('base_continue'), 'high', array('id' => 'wizard_continue'))
+            );
+        } else {
+            if (count($dns) === 0)
+                $buttons = array(
+                    anchor_edit('/app/network/dns/edit'),
+                    anchor_custom('#', lang('base_continue'), 'low', array('id' => 'wizard_continue', 'disabled' => TRUE))
+                );
+            else
+                $buttons = array(
+                    anchor_custom('#', lang('base_continue'), 'high', array('id' => 'wizard_continue')),
+                    anchor_edit('/app/network/dns/edit', 'low'),
+                );
+        }
+    } else {
+        $form = '/network/dns/view';
+        $read_only = TRUE;
+        $is_automatic_warning = FALSE; // Don't show auto warning in view only mode
+        $buttons = array(anchor_custom('/app/network/dns/edit', $edit_button_text));
+    }
 }
 
 $dns_count = count($dns);
