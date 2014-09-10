@@ -39,6 +39,9 @@ $this->lang->load('network');
 // Form
 ///////////////////////////////////////////////////////////////////////////////
 
+// FIXME
+if (clearos_version() == 7)
+    return;
 echo sidebar_header(lang('network_network_status'));
 echo sidebar_value('<span class="theme-loading-small">&nbsp;</span>', lang('network_gateway_status'), array('id' => 'gateway_status'));
 echo sidebar_value('<span class="theme-loading-small">&nbsp;</span>', lang('network_internet_status'), array('id' => 'network_status'));
