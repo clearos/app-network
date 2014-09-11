@@ -163,7 +163,7 @@ class DNS extends ClearOS_Controller
 
                 $this->page->set_status_updated();
 
-                if ($this->session->userdata('wizard_redirect'))
+                if ($this->session->userdata('wizard'))
                     redirect('/network/dns/edit/verify');
                 else
                     redirect('/network/dns');
