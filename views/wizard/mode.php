@@ -86,7 +86,6 @@ echo form_open('network/mode', array('id' => 'mode_form'));
 echo form_header(lang('base_settings'));
 
 echo radio_set(
-    'network_mode',
     $radio_buttons,
     'network_mode_options'
 );

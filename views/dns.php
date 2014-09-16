@@ -58,23 +58,9 @@ if ($form_type === 'edit') {
 } else {
     if ($is_wizard) {
         $read_only = TRUE;
-        if ($is_automatic) {
-            $buttons = array(
-                anchor_edit('/app/network/dns/edit'),
-                anchor_custom('#', lang('base_continue'), 'high', array('id' => 'wizard_continue'))
-            );
-        } else {
-            if (count($dns) === 0)
-                $buttons = array(
-                    anchor_edit('/app/network/dns/edit'),
-                    anchor_custom('#', lang('base_continue'), 'low', array('id' => 'wizard_continue', 'disabled' => TRUE))
-                );
-            else
-                $buttons = array(
-                    anchor_custom('#', lang('base_continue'), 'high', array('id' => 'wizard_continue')),
-                    anchor_edit('/app/network/dns/edit', 'low'),
-                );
-        }
+        $buttons = array(
+            anchor_edit('/app/network/dns/edit')
+        );
     } else {
         $form = '/network/dns/view';
         $read_only = TRUE;
@@ -148,3 +134,6 @@ if (! empty($buttons))
 
 echo form_footer();
 echo form_close();
+
+if (!$is_automatic && count($dns) === 0)
+    echo modal_info("wizard_next_showstopper", lang('base_error'), lang('network_no_dns_servers_warning'), array('type' => 'warning'));

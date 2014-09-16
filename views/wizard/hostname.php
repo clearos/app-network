@@ -36,16 +36,28 @@
 $this->lang->load('base');
 $this->lang->load('network');
 
+if ($form_type === 'edit') {
+    $read_only = FALSE;
+    $buttons = array(
+        form_submit_update('submit'),
+        anchor_cancel('/app/network/hostname')
+    );
+} else {
+    $read_only = TRUE;
+    $buttons = array(
+        anchor_edit('/app/network/hostname/edit')
+    );
+}
 ///////////////////////////////////////////////////////////////////////////////
 // Form
 ///////////////////////////////////////////////////////////////////////////////
-// Note: the wizard previous/next buttons are used for form submission 
 
-echo form_open('network/hostname', array('id' => 'hostname_form')); 
+echo form_open('/network/hostname/edit');
 echo form_header(lang('base_settings'));
 
 echo field_input('hostname', $hostname, lang('network_hostname'), $read_only);
 echo field_input('internet_hostname', $internet_hostname, lang('network_internet_hostname'), $read_only);
+echo field_button_set($buttons);
 
 echo form_footer();
 echo form_close();

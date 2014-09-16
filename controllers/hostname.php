@@ -56,12 +56,37 @@ use \clearos\apps\network\Network as Network;
 class Hostname extends ClearOS_Controller
 {
     /**
-     * General settings overview.
+     * General Hostname overview.
      *
      * @return view
      */
 
     function index()
+    {
+        $this->_view_edit('view');
+    }
+
+    /**
+     * General Hostname edit view.
+     *
+     * @return view
+     */
+
+    function edit()
+    {
+        $this->_view_edit('edit');
+    }
+
+    /**
+     * Common view/edit form
+     *
+     * @param string $form_type form type
+     *
+     * @return view
+     */
+
+
+    function _view_edit($form_type)
     {
         // Load libraries
         //---------------
@@ -86,7 +111,8 @@ class Hostname extends ClearOS_Controller
                 $this->hostname->set_internet_hostname($this->input->post('internet_hostname'));
 
                 $this->page->set_status_updated();
-                redirect($this->session->userdata('wizard_redirect'));
+                redirect('/network/hostname');
+                return;
             } catch (Engine_Exception $e) {
                 $this->page->view_exception($e->get_message());
                 return;
@@ -97,7 +123,7 @@ class Hostname extends ClearOS_Controller
         //---------------
 
         try {
-            $data['form_type'] = 'edit';
+            $data['form_type'] = $form_type;
             $data['hostname'] = $this->hostname->get();
             $data['internet_hostname'] = $this->hostname->get_internet_hostname();
 

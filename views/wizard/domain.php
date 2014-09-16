@@ -39,12 +39,24 @@ $this->lang->load('network');
 ///////////////////////////////////////////////////////////////////////////////
 // Form
 ///////////////////////////////////////////////////////////////////////////////
-// Note: the wizard previous/next buttons are used for form submission 
 
-echo form_open('network/domain', array('id' => 'domain_form')); 
+if ($form_type === 'edit') {
+    $read_only = FALSE;
+    $buttons = array(
+        form_submit_update('submit'),
+        anchor_cancel('/app/network/domain')
+    );
+} else {
+    $read_only = TRUE;
+    $buttons = array(
+        anchor_edit('/app/network/domain/edit')
+    );
+}
+echo form_open('network/domain/edit'); 
 echo form_header(lang('base_settings'));
 
-echo field_input('domain', $domain, lang('network_domain'));
+echo field_input('domain', $domain, lang('network_domain'), $read_only);
+echo field_button_set($buttons);
 
 echo form_footer();
 echo form_close();

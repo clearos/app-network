@@ -55,6 +55,28 @@ class Domain extends ClearOS_Controller
 
     function index()
     {
+        $this->_view_edit('view');
+    }
+
+    /**
+     * Domain edit view.
+     *
+     * @return view
+     */
+
+    function edit()
+    {
+        $this->_view_edit('edit');
+    }
+
+    /**
+     * Domain overview.
+     *
+     * @return view
+     */
+
+    function _view_edit($form_type)
+    {
         // Load libraries
         //---------------
 
@@ -74,7 +96,6 @@ class Domain extends ClearOS_Controller
                 $this->domain->set_default($this->input->post('domain'));
 
                 $this->page->set_status_updated();
-                redirect($this->session->userdata('wizard_redirect'));
             } catch (Engine_Exception $e) {
                 $this->page->view_exception($e->get_message());
                 return;
@@ -85,6 +106,7 @@ class Domain extends ClearOS_Controller
         //---------------
 
         try {
+            $data['form_type'] = $form_type;
             $data['domain'] = $this->domain->get_default();
         } catch (Exception $e) {
             $this->page->view_exception($e);

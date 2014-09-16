@@ -75,7 +75,12 @@ $(document).ready(function() {
     // Wizard next button handling
     //----------------------------
 
-    $("#wizard_continue").attr('href', $('#wizard_nav_next').attr('href'));
+    $('#wizard_nav_next').on('click', function(e) {
+        if ($('wizard_next_showstopper').length != 0) {
+            e.preventDefault();
+            $('#wizard_next_showstopper').modal({show: true, backdrop: 'static'});
+        }
+    });
 
     // Network interface configuration
     //--------------------------------
