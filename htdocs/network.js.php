@@ -76,9 +76,9 @@ $(document).ready(function() {
     //----------------------------
 
     $('#wizard_nav_next').on('click', function(e) {
-        if ($('wizard_next_showstopper').length != 0) {
+        if ($('#wizard_next_showstopper').length != 0) {
             e.preventDefault();
-            $('#wizard_next_showstopper').modal({show: true, backdrop: 'static'});
+            clearos_modal_infobox_open('wizard_next_showstopper');
         }
     });
 
