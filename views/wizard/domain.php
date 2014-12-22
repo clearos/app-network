@@ -60,3 +60,5 @@ echo field_button_set($buttons);
 
 echo form_footer();
 echo form_close();
+if (!isset($domain) || $domain == '')
+    echo modal_info("wizard_next_showstopper", lang('base_error'), lang('network_internet_domain_invalid'), array('type' => 'warning'));
