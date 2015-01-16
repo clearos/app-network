@@ -78,10 +78,19 @@ fi
 # Set first NIC as external
 #--------------------------
 
-EXTERNAL=`ip addr | grep ^2: | awk '{ print $2 }' | sed 's/://'`
-if [ "$EXTERNAL" != "eth0" ]; then
-    logger -p local6.notice -t installer "app-network-core - setting external interface to $EXTERNAL"
-    sed -i -e "s/^EXTIF=.*/EXTIF=\"$EXTERNAL\"/" /etc/clearos/network.conf
+FIRST_NIC=`ip addr | grep ^2: | awk '{ print $2 }' | sed 's/://'`
+if [ -n "$FIRST_NIC" ]; then
+    logger -p local6.notice -t installer "app-network-core - setting external interface to $FIRST_NIC"
+    sed -i -e "s/^EXTIF=.*/EXTIF=\"$FIRST_NIC\"/" /etc/clearos/network.conf
+
+    # Make sure GATEWAYDEV is set
+    #----------------------------
+
+    CHECK=`grep "^GATEWAYDEV=" /etc/sysconfig/network 2>/dev/null`
+    if [ -z $CHECK ]; then
+        logger -p local6.notice -t installer "app-network-core - adding default gateway device"
+        echo "GATEWAYDEV=\"$FIRST_NIC\"" >> /etc/sysconfig/network
+    fi
 fi
 
 # Reload syswatch
