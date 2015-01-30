@@ -165,22 +165,12 @@ class Role extends Engine
 
         if ($role === Role::ROLE_LAN) {
             $key = Role::ROLE_LAN;
-            $default = 'eth1';
         } else if ($role === Role::ROLE_HOT_LAN) {
             $key = Role::ROLE_HOT_LAN;
-            $default = 'eth1';
         } else if ($role === Role::ROLE_EXTERNAL) {
             $key = Role::ROLE_EXTERNAL;
-            // TODO: cleanup
-            // If we see ppp0 defined, we assume it is either a DSL or dial-up
-            // connection to the Internet.
-            if (file_exists('/etc/sysconfig/network-scripts/ifcfg-ppp0'))
-                $default = 'ppp0';
-            else
-                $default = 'eth0';
         } else if ($role === Role::ROLE_DMZ) {
             $key = Role::ROLE_DMZ;
-            $default = '';
         }
 
         $file = new File(Network::FILE_CONFIG);
@@ -198,10 +188,10 @@ class Role extends Engine
         $role = preg_replace("/\"/", "", $role);
         $role = preg_replace("/\s.*/", "", $role); // Only the first listed
 
-        if ($role)
+        if empty($role)
+            return '';
+        else
             return $role;
-
-        return $default;
     }
 
     /**
