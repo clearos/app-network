@@ -188,7 +188,7 @@ class Role extends Engine
         $role = preg_replace("/\"/", "", $role);
         $role = preg_replace("/\s.*/", "", $role); // Only the first listed
 
-        if empty($role)
+        if (empty($role))
             return '';
         else
             return $role;
