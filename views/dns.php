@@ -104,6 +104,9 @@ if ($is_automatic_warning)
 if (! $dns_okay)
     echo infobox_warning(lang('base_warning'), lang('network_dns_lookup_failed'));
 
+if ($is_wizard && count($dns) > 0)
+    include('dns_verify.php');
+
 ///////////////////////////////////////////////////////////////////////////////
 // Form
 ///////////////////////////////////////////////////////////////////////////////
@@ -135,5 +138,4 @@ if (! empty($buttons))
 echo form_footer();
 echo form_close();
 
-if (!$is_automatic && count($dns) === 0)
-    echo modal_info("wizard_next_showstopper", lang('base_error'), lang('network_no_dns_servers_warning'), array('type' => 'warning'));
+echo modal_info("wizard_next_showstopper", lang('base_error'), (count($dns) > 0 ? lang('network_testing_dns_lookups') : lang('network_no_dns_servers_warning')), array('type' => 'warning'));

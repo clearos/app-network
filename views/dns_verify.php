@@ -36,12 +36,10 @@
 $this->lang->load('network');
 $this->lang->load('base');
 
-echo infobox_highlight(
+echo infobox_info(
     lang('network_performing_dns_test'), 
-    "<span id='dns_test_message'>" . loading('normal', lang('network_testing_dns_lookups')) . "</span>",
+    "<span id='dns_test_message'>" . loading('normal', lang('network_testing_dns_lookups')) . "</span>" .
+    "<div id='dns_edit_anchor' style='padding: 15px;' class='text-center theme-hidden'>" .
+    anchor_custom('/app/network/dns', lang('network_review_dns_server_settings')) . "</div>",
     array ('id' => 'dns_test_message_container')
 );
-
-echo "<p align='center' id='dns_edit_anchor' style='display:none;'>";
-echo anchor_custom('/app/network/dns', lang('network_review_dns_server_settings'));
-echo "</p>";

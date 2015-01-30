@@ -270,21 +270,17 @@ function showDnsStatusInfo(payload) {
 
         // Are we in wizard?
         if ($('#dns_test_message').length != 0) {
-            $('#dns_test_message_container').hide();
-            var options = new Object();
-            options.redirect_on_close = '/app/network/dns';
-            options.type = 'success';
-            if (typeof modal_dns_status == 'undefined')
-                modal_dns_status = clearos_dialog_box('modal_dns_status', lang_dns_lookup, lang_dns_passed, options)
+            $('#dns_test_message_container').replaceWith(clearos_infobox_success(lang_success, lang_dns_passed));
+            clearos_modal_infobox_close('wizard_next_showstopper');
+            $('#wizard_next_showstopper').remove();
+            // hack to remove modal backdrop
+            $('.modal-backdrop').remove();
         }
     } else {
         dns_status_message = '<span class=\'theme-text-bad-status\'>' + lang_offline + '</span>';
 
         if ($('#dns_test_message').length != 0) {
-            $('#wizard_nav_next').addClass('disabled');
-            $('#dns_test_message').html(lang_dns_failed);
-            $('#dns_test_message').addClass('theme-text-bad-status');
-
+            $('#dns_test_message_container').replaceWith(clearos_infobox_warning(lang_warning, lang_dns_failed));
             $('#dns_edit_anchor').show();
         }
     }
