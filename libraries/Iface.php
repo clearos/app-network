@@ -775,8 +775,10 @@ class Iface extends Engine
         //--------------------
 
         if ($type == self::TYPE_WIRELESS) {
+            $options['validate_exit_code'] = FALSE;
+
             $shell = new Shell();
-            $shell->execute(self::COMMAND_IW, $this->iface . ' link', FALSE);
+            $shell->execute(self::COMMAND_IW, $this->iface . ' link', FALSE, $options);
             $output = $shell->get_output();
             $matches = array();
             
@@ -947,8 +949,10 @@ class Iface extends Engine
         if (! $isconfigured) {
             // TODO: must be a /proc or /sys way to get this information
             try {
+                $options['validate_exit_code'] = FALSE;
+
                 $shell = new Shell();
-                $shell->execute(self::COMMAND_IW, $this->iface . ' info', FALSE);
+                $shell->execute(self::COMMAND_IW, $this->iface . ' info', FALSE, $options);
                 $output = $shell->get_output();
 
                 foreach ($output as $line) {
