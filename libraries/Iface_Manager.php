@@ -643,7 +643,7 @@ class Iface_Manager extends Engine
             }
 
             // Standalone mode
-            if (($details['role'] == Role::ROLE_EXTERNAL) && (! empty($details['address'])) && (! empty($details['netmask']))
+            else if (($details['role'] == Role::ROLE_EXTERNAL) && (! empty($details['address'])) && (! empty($details['netmask']))
                 && ($mode == Network::MODE_TRUSTED_STANDALONE) || ($mode == Network::MODE_STANDALONE)
             ) {
                 $basenetwork = Network_Utils::get_network_address($details['address'], $details['netmask']);
