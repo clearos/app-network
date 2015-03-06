@@ -63,31 +63,6 @@ class Hostname extends ClearOS_Controller
 
     function index()
     {
-        $this->_view_edit('view');
-    }
-
-    /**
-     * General Hostname edit view.
-     *
-     * @return view
-     */
-
-    function edit()
-    {
-        $this->_view_edit('edit');
-    }
-
-    /**
-     * Common view/edit form
-     *
-     * @param string $form_type form type
-     *
-     * @return view
-     */
-
-
-    function _view_edit($form_type)
-    {
         // Load libraries
         //---------------
 
@@ -123,7 +98,6 @@ class Hostname extends ClearOS_Controller
         //---------------
 
         try {
-            $data['form_type'] = $form_type;
             $data['hostname'] = $this->hostname->get();
             $data['internet_hostname'] = $this->hostname->get_internet_hostname();
 
