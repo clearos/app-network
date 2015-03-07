@@ -57,20 +57,52 @@ $(document).ready(function() {
 
     lang_yes = '<?php echo lang("base_yes"); ?>';
     lang_no = '<?php echo lang("base_no"); ?>';
+    lang_save = '<?php echo lang("base_save"); ?>';
+    lang_close = '<?php echo lang("base_close"); ?>';
     lang_unknown = '<?php echo lang("base_unknown"); ?>';
     lang_megabits_per_second = '<?php echo lang("base_megabits_per_second"); ?>';
+    lang_kilobits_per_second = '<?php echo lang("base_kilobits_per_second"); ?>';
     lang_offline = '<?php echo lang("network_offline"); ?>';
     lang_waiting = '<?php echo lang("base_waiting"); ?>';
+    lang_warning = '<?php echo lang("base_warning"); ?>';
     lang_connected = '<?php echo lang("network_connected"); ?>';
     lang_dns_failed = '<?php echo lang("network_dns_lookup_failed"); ?>';
     lang_dns_passed = '<?php echo lang("network_dns_lookup_passed"); ?>';
     lang_dns_lookup = '<?php echo lang("network_dns_lookup"); ?>';
+    lang_run_speed_test = '<?php echo lang("network_run_speed_test"); ?>';
+    lang_speed_test = '<?php echo lang("network_speed_test"); ?>';
+    lang_test_again = '<?php echo lang("network_test_again"); ?>';
+    lang_result_saved = '<?php echo lang("network_speed_test_results_saved"); ?>';
 
     // Defaults
     //---------
 
     $('#dns0_field').hide();
     $('#dns1_field').hide();
+
+    // Network speed test
+    //-------------------
+
+    $('.network-speed-test').on('click', function(e) {
+        e.preventDefault();
+        $('#speed-test-container').attr('data-interface', $(this).data('interface'));
+        $('#modal-confirm-start-speed-test').html(lang_run_speed_test);
+        $('#modal-close-start-speed-test').html(lang_close);
+    });
+    $('#modal-confirm-start-speed-test').on('click', function(e) {
+        e.preventDefault();
+        $('#speed-test-container').show();
+        $('#clearos-speed-test-save-container').hide();
+        $('#speed-test-result-ping').html(clearos_loading());
+        $('#speed-test-result-upstream').html(clearos_loading());
+        $('#speed-test-result-downstream').html(clearos_loading());
+        run_speed_test($('#speed-test-container').data('interface'));
+    });
+
+    $('#clearos-speed-test-save').on('click', function(e) {
+        e.preventDefault();
+        save_speed_result($('#speed-test-container').data('interface'));
+    });
 
     // Wizard next button handling
     //----------------------------
@@ -393,6 +425,88 @@ function setWirelessFields() {
         $('#passphrase_field').hide();
     else
         $('#passphrase_field').show();
+}
+
+/**
+ * Ajax call to get run network speed test
+ */
+
+function run_speed_test(iface) {
+
+    $('#modal-confirm-start-speed-test').attr('disabled', 'disabled');
+    $.ajax({
+        url: '/app/network/speed_test/start/' + iface,
+        method: 'GET',
+        dataType: 'json',
+        success : function(json) {
+            if (json.code == 0)
+                window.setTimeout(get_speed_result, 2000);
+            else
+                clearos_dialog_box('error', lang_warning, json.errmsg);
+        },
+        error: function(xhr, text, err) {
+            clearos_dialog_box('error', lang_warning, xhr.responseText.toString());
+        }
+    });
+}
+
+/**
+ * Ajax call to get net network speed test result
+ */
+
+function get_speed_result() {
+    $.ajax({
+        url: '/app/network/speed_test/result',
+        method: 'GET',
+        dataType: 'json',
+        success : function(json) {
+            if (json.code < 0) {
+                // Pending
+            } else if (json.code == 0) {
+                if (json.ping != undefined)
+                    $('#speed-test-result-ping').html(json.ping + ' ms');
+                if (json.downstream != undefined)
+                    $('#speed-test-result-downstream').html(json.downstream * 1000 + ' ' + lang_kilobits_per_second);
+                if (json.upstream != undefined)
+                    $('#speed-test-result-upstream').html(json.upstream * 1000 + ' ' + lang_kilobits_per_second);
+                if (json.complete == undefined) {
+                    window.setTimeout(get_speed_result, 1000);
+                } else {
+                    $('#modal-confirm-start-speed-test').html(lang_test_again);
+                    $('#modal-confirm-start-speed-test').removeAttr('disabled');
+                    $('#clearos-speed-test-save-container').show();
+                }
+            } else {
+                clearos_dialog_box('error', lang_warning, json.errmsg);
+            }
+        },
+        error: function(xhr, text, err) {
+            clearos_dialog_box('error', lang_warning, xhr.responseText.toString());
+        }
+    });
+}
+
+/**
+ * Ajax call to save network speed test result to config
+ */
+
+function save_speed_result(iface) {
+    $.ajax({
+        url: '/app/network/speed_test/save/' + iface,
+        method: 'GET',
+        dataType: 'json',
+        success : function(json) {
+            if (json.code == 0) {
+                clearos_modal_infobox_close('start-speed-test');
+                clearos_dialog_box('info', lang_speed_test, lang_result_saved);
+            } else {
+                clearos_dialog_box('error', lang_warning, json.errmsg);
+            }
+        },
+        error: function(xhr, text, err) {
+            clearos_dialog_box('error', lang_warning, xhr.responseText.toString());
+        }
+    });
 }
 
 // vim: ts=4 syntax=javascript

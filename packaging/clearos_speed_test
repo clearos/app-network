@@ -1,0 +1,157 @@
+#!/usr/clearos/sandbox/usr/bin/php
+<?php
+
+/**
+ * ClearOS Speed Test script.
+ *
+ * @category   apps
+ * @package    account-import
+ * @subpackage scripts
+ * @author     ClearFoundation <developer@clearfoundation.com>
+ * @copyright  2015 ClearFoundation
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
+ * @link       http://www.clearfoundation.com/docs/developer/apps/network/
+ */
+
+///////////////////////////////////////////////////////////////////////////////
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program.  If not, see <http://www.gnu.org/licenses/>.
+//
+///////////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////////////
+// B O O T S T R A P
+///////////////////////////////////////////////////////////////////////////////
+
+$bootstrap = getenv('CLEAROS_BOOTSTRAP') ? getenv('CLEAROS_BOOTSTRAP') : '/usr/clearos/framework/shared';
+require_once $bootstrap . '/bootstrap.php';
+
+///////////////////////////////////////////////////////////////////////////////
+// T R A N S L A T I O N S
+///////////////////////////////////////////////////////////////////////////////
+
+clearos_load_language('base');
+clearos_load_language('network');
+
+///////////////////////////////////////////////////////////////////////////////
+// D E P E N D E N C I E S
+///////////////////////////////////////////////////////////////////////////////
+
+// Classes
+//--------
+
+use \clearos\apps\network\Iface as Iface;
+use \clearos\apps\network\Speed_Test as Speed_Test;
+use \clearos\apps\base\File as File;
+use \clearos\apps\base\Shell as Shell;
+use \clearos\apps\base\Script as Script;
+
+clearos_load_library('network/Iface');
+clearos_load_library('network/Speed_Test');
+clearos_load_library('base/File');
+clearos_load_library('base/Script');
+clearos_load_library('base/Shell');
+
+// Exceptions
+//-----------
+
+use \Exception as Exception;
+
+///////////////////////////////////////////////////////////////////////////////
+// M A I N
+///////////////////////////////////////////////////////////////////////////////
+
+//--------------------------------------------------------------------
+// Command line options
+//--------------------------------------------------------------------
+
+$short_options  = '';
+
+// Common
+$short_options .= 'i:'; // Interface
+$short_options .= 'o::'; // Output
+$short_options .= 'h';   // Help
+
+$helpopts  = '
+  Common Options
+  --------------
+
+  -i=interface
+  -o=output (json [default] or stdout)
+  -h: help
+
+';
+
+// Must be run as root
+if (php_sapi_name() === 'cli') {
+    $user = exec('whoami');
+    if ($user != 'root' && $user != 'webconfig') {
+        echo "Must be run as webconfig or superuser (root)\n";
+        exit(1);
+    }
+}
+
+// Handle command line options
+//----------------------------
+
+$options = getopt($short_options);
+
+$script = new Script();
+
+$output = isset($options['o']) ? $options['o'] : 'json';
+$help = isset($options['h']) ? TRUE : FALSE;
+
+if ($help) {
+    echo "usage: " . $argv[0] . " -i INTERFACE[options]\n";
+    echo $helpopts;
+    exit(0);
+}
+if (!isset($options['i'])) {
+    echo "Requires -i (interface) flag\n";
+    exit(0);
+}
+
+try {
+    if ($script->lock() !== TRUE) {
+        echo lang('network_speed_test_already_in_progress') . "\n";
+        exit(0);
+    } else {
+        $status = new File(CLEAROS_TEMP_DIR . "/" . Speed_Test::FILE_STATUS, FALSE);
+        if ($status->exists())
+            $status->delete();
+    }
+
+    $iface = new Iface($options['i']);
+    $info = $iface->get_info();
+
+    $options = array(
+        'background' => FALSE,
+        'lang' => 'en_US',
+        'log' => Speed_Test::FILE_STATUS
+    );
+
+    echo lang('network_speed_test_started') . "\n";
+    // Need to use python -u argument so that stout buffer will be flushed
+    // Makes the GUI nicer by displaying results as they come in (eg. ping, then download, then upload)
+    $args = "-u /usr/clearos/apps/network/deploy/speedtest_cli.py --simple --source " . $info['address'];
+    $shell = new Shell();
+    $shell->execute(Speed_Test::COMMAND_PYTHON, $args, FALSE, $options);
+    $script->unlock();
+    echo lang('base_complete') . "\n";
+} catch (Exception $e) {
+    echo clearos_exception_message($e) . "\n";
+    $script->unlock();
+}
+
+// vim: syntax=php

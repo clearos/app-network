@@ -414,6 +414,8 @@ class Iface extends Engine
         $info['metric'] = @ifconfig_metric($handle, $this->iface) + 1;
         $info['flags'] = @ifconfig_flags($handle, $this->iface);
         $info['debug'] = @ifconfig_debug($handle, $this->iface);
+        $info['max_downstream'] = $this->get_max_downstream();
+        $info['max_upstream'] = $this->get_max_upstream();
 
         // TODO: the existence of an IP address has always been used
         // to determine the "state" of the network interface.  This
@@ -723,6 +725,95 @@ class Iface extends Engine
         }
     }
 
+    /**
+     * Returns maximum practical downstream speed.
+     *
+     * @return int max
+     */
+
+    public function get_max_downstream($max)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        try {
+            $config = new File(Network::FILE_CONFIG);
+            $retval = $config->lookup_value('/^' . strtoupper($this->iface) . '_MAX_DOWNSTREAM=/');
+        } catch (Exception $e) {
+            return 0;
+        }
+
+        return $retval;
+    }
+
+    /**
+     * Returns maximum practical upstream speed.
+     *
+     * @return int max
+     */
+
+    public function get_max_upstream($max)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        try {
+            $config = new File(Network::FILE_CONFIG);
+            $retval = $config->lookup_value('/^' . strtoupper($this->iface) . '_MAX_UPSTREAM=/');
+        } catch (Exception $e) {
+            return 0;
+        }
+
+        return $retval;
+    }
+
+    /**
+     * Set downstream practical max.
+     *
+     * @param int $max downstream max in kbits/s
+     *
+     * @return void
+     * @throws Exception, Validation_Exception
+     */
+
+    public function set_max_downstream($max)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        Validation_Exception::is_valid($this->validate_max_downstream($max));
+
+        try {
+            $config = new File(Network::FILE_CONFIG);
+            $match = $config->replace_lines("/^" . strtoupper($this->iface) . "_MAX_DOWNSTREAM=/", strtoupper($this->iface) . "_MAX_DOWNSTREAM=$max\n");
+            if (! $match)
+                $config->add_lines_after(strtoupper($this->iface) . "_MAX_DOWNSTREAM=$max\n", '/^# ISP Maximum Speeds$/');
+        } catch (Exception $e) {
+            throw new Engine_Exception($e->get_message());
+        }
+    }
+
+    /**
+     * Set upstream practical max.
+     *
+     * @param int $max upstream max in kbits/s
+     *
+     * @return void
+     * @throws Exception, Validation_Exception
+     */
+
+    public function set_max_upstream($max)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        Validation_Exception::is_valid($this->validate_max_upstream($max));
+
+        try {
+            $config = new File(Network::FILE_CONFIG);
+            $match = $config->replace_lines("/^" . strtoupper($this->iface) . "_MAX_UPSTREAM=/", strtoupper($this->iface) . "_MAX_UPSTREAM=$max\n");
+            if (! $match)
+                $config->add_lines_after(strtoupper($this->iface) . "_MAX_UPSTREAM=$max\n", '/^# ISP Maximum Speeds$/');
+        } catch (Exception $e) {
+            throw new Engine_Exception($e->get_message());
+        }
+    }
     /**
      * Returns the network address.
      *
@@ -2109,6 +2200,38 @@ class Iface extends Engine
 
         if (strlen($ssid) > 32)
             return lang('network_ssid_invalid');
+    }
+
+    /**
+     * Validation routine for maximum upstream.
+     *
+     * @param int $max maximum upstream
+     *
+     * @return string error message if network maximum upstream is invalid
+     */
+
+    public function validate_max_upstream($max)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        if (! preg_match('/^[0-9]+$/', $max))
+            return lang('network_max_upstream') . ' - ' . lang('base_invalid');
+    }
+
+    /**
+     * Validation routine for maximum downstream.
+     *
+     * @param int $max maximum downstream
+     *
+     * @return string error message if network maximum downstream is invalid
+     */
+
+    public function validate_max_downstream($max)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        if (! preg_match('/^[0-9]+$/', $max))
+            return lang('network_max_downstream') . ' - ' . lang('base_invalid');
     }
 
     ///////////////////////////////////////////////////////////////////////////

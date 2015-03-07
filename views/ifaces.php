@@ -34,6 +34,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 use \clearos\apps\network\Iface as Iface;
+use \clearos\apps\network\Role as Role;
 
 $this->lang->load('network');
 $this->lang->load('base');
@@ -48,6 +49,8 @@ $headers = array(
     lang('network_type'),
     lang('network_ip'),
     lang('network_link'),
+    lang('network_max_downstream'),
+    lang('network_max_upstream'),
 );
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -113,6 +116,8 @@ foreach ($network_interfaces as $interface => $detail) {
                 anchor_edit('/app/network/iface/edit/' . $interface),
                 anchor_delete('/app/network/iface/delete/' . $interface)
             );
+            if ($detail['role'] === Role::ROLE_EXTERNAL)
+                $buttons[] = anchor_custom('#', lang('network_speed_test'), 'low', array('class' => 'network-speed-test', 'data' => array('interface' => $interface)));
 
         // Virtual interfaces
         //-------------------
@@ -147,6 +152,14 @@ foreach ($network_interfaces as $interface => $detail) {
             continue;
         }
 
+        if ($detail['role'] === Role::ROLE_EXTERNAL) {
+            $max_downstream = $detail['max_downstream'] . ' ' . lang('base_kilobits_per_second');
+            $max_upstream = $detail['max_upstream'] . ' ' . lang('base_kilobits_per_second');
+        } else {
+            $max_downstream = lang('base_not_applicable');
+            $max_upstream = lang('base_not_applicable');
+        }
+
     // Behavior when interface is not configured
     //------------------------------------------
 
@@ -177,6 +190,9 @@ foreach ($network_interfaces as $interface => $detail) {
         } else {
             continue;
         }
+
+        $max_downstream = lang('base_not_applicable');
+        $max_upstream = lang('base_not_applicable');
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -192,6 +208,8 @@ foreach ($network_interfaces as $interface => $detail) {
         "<span id='bootproto_" . $interface . "'>$bootproto</span>",
         "<span id='ip_" . $interface . "'>$ip</span>",
         "<span id='link_" . $interface . "'>$link</span>",
+        $max_downstream,
+        $max_upstream,
     );
 
     $items[] = $item;
@@ -207,6 +225,7 @@ foreach ($network_interfaces as $interface => $detail) {
 ///////////////////////////////////////////////////////////////////////////////
 
 $options['id'] = 'network_summary';
+$options['responsive'] = array(5 => 'none', 6 => 'none');
 
 if (count($types) > 1) {
     $options['grouping'] = TRUE;
@@ -220,6 +239,50 @@ echo summary_table(
     $headers,
     $items,
     $options
+);
+
+echo modal_confirm(
+    lang('network_speed_test'),
+    lang('network_speed_test_help') .
+    "<div id='speed-test-container' class='theme-hidden'>" .
+
+    row_open() .
+    column_open(6, NULL, NULL, array('class' => 'theme-align-right')) .
+    lang('network_ping') .
+    column_close() .
+    column_open(6) .
+    "<div id='speed-test-result-ping'></div>" .
+    column_close() .
+    row_close() .
+
+    row_open() .
+    column_open(6, NULL, NULL, array('class' => 'theme-align-right')) .
+    lang('network_downstream') .
+    column_close() .
+    column_open(6) .
+    "<div id='speed-test-result-downstream'></div>" .
+    column_close() .
+    row_close() .
+
+    row_open() .
+    column_open(6, NULL, NULL, array('class' => 'theme-align-right')) .
+    lang('network_upstream') .
+    column_close() .
+    column_open(6) .
+    "<div id='speed-test-result-upstream'></div>" .
+    column_close() .
+    row_close() .
+
+    "<div class='text-center theme-hidden' id='clearos-speed-test-save-container' style='padding-top:20px;'>" .
+    anchor_custom('#', lang('network_save_speed_test_results'), 'high', array('id' => 'clearos-speed-test-save')) .
+    "</div>" .
+
+    "</div>",
+    array(),
+    array('class' => 'network-speed-test'),
+    NULL,
+    'start-speed-test',
+    array('stay_open_on_confirm' => TRUE)
 );
 
 ///////////////////////////////////////////////////////////////////////////////

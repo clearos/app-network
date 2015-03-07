@@ -34,6 +34,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 use \clearos\apps\network\Iface as Iface;
+use \clearos\apps\network\Role as Role;
 
 $this->load->language('base');
 $this->load->language('network');
@@ -135,7 +136,17 @@ echo field_input('username', $iface_info['ifcfg']['user'], lang('base_username')
 echo field_input('password', $password, lang('base_password'), $read_only);
 echo field_input('mtu', $iface_info['ifcfg']['mtu'], lang('network_mtu'), $read_only);
 echo field_checkbox('pppoe_dns', $dns, lang('network_automatic_dns_servers'), $read_only);
-echo fieldset_footer();
+
+///////////////////////////////////////////////////////////////////////////////
+// Maximum Upload/Download
+///////////////////////////////////////////////////////////////////////////////
+
+if ($iface_info['role'] === Role::ROLE_EXTERNAL) {
+    echo fieldset_header(lang('network_maximum_bandwith_available'));
+    echo field_input('max_upstream', $max_upstream, lang('network_upstream') . ' (' . lang('base_kilobits_per_second') . ')', $read_only);
+    echo field_input('max_downstream', $max_downstream, lang('network_downstream') . ' (' . lang('base_kilobits_per_second') . ')', $read_only);
+    echo fieldset_footer();
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // Wireless

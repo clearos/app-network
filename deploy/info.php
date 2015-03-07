@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'network';
-$app['version'] = '2.0.18';
+$app['version'] = '2.0.19';
 $app['release'] = '1';
 $app['vendor'] = 'ClearFoundation';
 $app['packager'] = 'ClearFoundation';
@@ -134,6 +134,10 @@ $app['core_file_manifest'] = array(
     ),
     'network_resolver'=> array(
         'target' => '/var/clearos/events/network_configuration/network_resolver',
+        'mode' => '0755'
+    ),
+    'clearo_speed_test'=> array(
+        'target' => '/usr/sbin/clearos_speed_test',
         'mode' => '0755'
     ),
 );
