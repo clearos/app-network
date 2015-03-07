@@ -136,7 +136,7 @@ $app['core_file_manifest'] = array(
         'target' => '/var/clearos/events/network_configuration/network_resolver',
         'mode' => '0755'
     ),
-    'clearo_speed_test'=> array(
+    'clearos_speed_test'=> array(
         'target' => '/usr/sbin/clearos_speed_test',
         'mode' => '0755'
     ),

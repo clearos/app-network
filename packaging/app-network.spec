@@ -55,7 +55,7 @@ install -d -m 0755 %{buildroot}/var/clearos/events/network_connected
 install -d -m 0755 %{buildroot}/var/clearos/events/network_peerdns
 install -d -m 0755 %{buildroot}/var/clearos/network
 install -d -m 0755 %{buildroot}/var/clearos/network/backup
-install -D -m 0755 packaging/clearo_speed_test %{buildroot}/usr/sbin/clearos_speed_test
+install -D -m 0755 packaging/clearos_speed_test %{buildroot}/usr/sbin/clearos_speed_test
 install -D -m 0755 packaging/dhclient-exit-hooks %{buildroot}/etc/dhcp/dhclient-exit-hooks
 install -D -m 0644 packaging/filewatch-network-configuration-event.conf %{buildroot}/etc/clearsync.d/filewatch-network-configuration-event.conf
 install -D -m 0644 packaging/filewatch-network-connected-event.conf %{buildroot}/etc/clearsync.d/filewatch-network-connected-event.conf
