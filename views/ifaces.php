@@ -116,7 +116,7 @@ foreach ($network_interfaces as $interface => $detail) {
                 anchor_edit('/app/network/iface/edit/' . $interface),
                 anchor_delete('/app/network/iface/delete/' . $interface)
             );
-            if ($detail['role'] === Role::ROLE_EXTERNAL)
+            if ($detail['role'] === Role::ROLE_EXTERNAL && $form_type != 'wizard')
                 $buttons[] = anchor_custom('#', lang('network_speed_test'), 'low', array('class' => 'network-speed-test', 'data' => array('interface' => $interface)));
 
         // Virtual interfaces
