@@ -498,9 +498,13 @@ function save_speed_result(iface) {
         success : function(json) {
             if (json.code == 0) {
                 clearos_modal_infobox_close('start-speed-test');
-                clearos_dialog_box('info', lang_speed_test, lang_result_saved);
+                var options = new Object();
+                options.reload_on_close = true;
+                clearos_dialog_box('info', lang_speed_test, lang_result_saved, options);
             } else {
-                clearos_dialog_box('error', lang_warning, json.errmsg);
+                var options = new Object();
+                options.type = 'warning';
+                clearos_dialog_box('error', lang_warning, json.errmsg, options);
             }
         },
         error: function(xhr, text, err) {
