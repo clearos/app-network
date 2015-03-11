@@ -731,7 +731,7 @@ class Iface extends Engine
      * @return int max
      */
 
-    public function get_max_downstream($max)
+    public function get_max_downstream()
     {
         clearos_profile(__METHOD__, __LINE__);
 
@@ -751,7 +751,7 @@ class Iface extends Engine
      * @return int max
      */
 
-    public function get_max_upstream($max)
+    public function get_max_upstream()
     {
         clearos_profile(__METHOD__, __LINE__);
 
