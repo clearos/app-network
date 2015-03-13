@@ -225,12 +225,14 @@ foreach ($network_interfaces as $interface => $detail) {
 ///////////////////////////////////////////////////////////////////////////////
 
 $options['id'] = 'network_summary';
-$options['responsive'] = array(5 => 'none', 6 => 'none');
 
 if (count($types) > 1) {
     $options['grouping'] = TRUE;
     $items = $items_grouped;
     array_unshift($headers, lang('network_type'));
+    $options['responsive'] = array(6 => 'none', 7 => 'none');
+} else {
+    $options['responsive'] = array(5 => 'none', 6 => 'none');
 }
 
 echo summary_table(
