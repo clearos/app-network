@@ -117,7 +117,22 @@ foreach ($network_interfaces as $interface => $detail) {
                 anchor_delete('/app/network/iface/delete/' . $interface)
             );
             if ($detail['role'] === Role::ROLE_EXTERNAL && $form_type != 'wizard')
-                $buttons[] = anchor_custom('#', lang('network_speed_test'), 'low', array('class' => 'network-speed-test', 'data' => array('interface' => $interface)));
+                $buttons[] = anchor_custom(
+                    '#',
+                    icon('speedometer'),
+                    'low',
+                    array(
+                        'no_escape_html' => TRUE,
+                        'class' => 'network-speed-test',
+                        'data' =>
+                            array(
+                                'original-title' => lang('network_speed_test'),
+                                'toggle' => 'tooltip',
+                                'container' => 'body',
+                                'interface' => $interface
+                            )
+                    )
+                );
 
         // Virtual interfaces
         //-------------------
@@ -225,14 +240,12 @@ foreach ($network_interfaces as $interface => $detail) {
 ///////////////////////////////////////////////////////////////////////////////
 
 $options['id'] = 'network_summary';
+$options['responsive'] = array(5 => 'none', 6 => 'none');
 
 if (count($types) > 1) {
     $options['grouping'] = TRUE;
     $items = $items_grouped;
     array_unshift($headers, lang('network_type'));
-    $options['responsive'] = array(6 => 'none', 7 => 'none');
-} else {
-    $options['responsive'] = array(5 => 'none', 6 => 'none');
 }
 
 echo summary_table(
