@@ -482,14 +482,14 @@ class Network_Utils extends Engine
     }
 
     /**
-     * Validates a network address.
+     * Validates an IPv4  network address.
      *
      * @param string $network network address
      *
      * @return string error message if network is invalid
      */
 
-    public static function is_valid_network($network)
+    public static function is_valid_ipv4_network($network)
     {
         clearos_profile(__METHOD__, __LINE__);
 
@@ -517,6 +517,52 @@ class Network_Utils extends Engine
             return FALSE;
 
         return TRUE;
+    }
+
+    /**
+     * Validates an IPv6 network address.
+     *
+     * @param string $network network address
+     *
+     * @return string error message if network is invalid
+     */
+
+    public static function is_valid_ipv6_network($network)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $matches = array();
+
+        if (! preg_match("/^(.*)\/(.*)$/", $network, $matches))
+            return FALSE;
+
+        $baseip = $matches[1];
+        $prefix = $matches[2];
+
+        if (!Network_Utils::is_valid_prefix($prefix))
+            return FALSE;
+
+        // Make sure the base IP is valid
+        // FIXME
+        return TRUE;
+    }
+
+    /**
+     * Validates a network address.
+     *
+     * @param string $network network address
+     *
+     * @return string error message if network is invalid
+     */
+
+    public static function is_valid_network($network)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        if (self::is_valid_ipv6_network($network) || self::is_valid_ipv4_network($network))
+            return TRUE;
+        else
+            return FALSE;
     }
 
     /**
@@ -573,13 +619,49 @@ class Network_Utils extends Engine
      * @return string error message if prefix is invalid
      */
 
-    public static function is_valid_prefix($prefix)
+    public static function is_valid_ipv4_prefix($prefix)
     {
         clearos_profile(__METHOD__, __LINE__);
 
         $prefix_list = Network_Utils::_get_prefix_list();
 
         if (isset($prefix_list[$prefix]))
+            return TRUE;
+        else
+            return FALSE;
+    }
+
+    /**
+     * Validates a prefix (bitmask).
+     *
+     * @param string $prefix prefix
+     *
+     * @return string error message if prefix is invalid
+     */
+
+    public static function is_valid_ipv6_prefix($prefix)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        if (($prefix >= 1) && ($prefix <= 128))
+            return TRUE;
+        else
+            return FALSE;
+    }
+
+    /**
+     * Validates a prefix (bitmask).
+     *
+     * @param string $prefix prefix
+     *
+     * @return string error message if prefix is invalid
+     */
+
+    public static function is_valid_prefix($prefix)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        if (self::is_valid_ipv4_prefix($prefix) || self::is_valid_ipv6_prefix($prefix))
             return TRUE;
         else
             return FALSE;
