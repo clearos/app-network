@@ -163,6 +163,7 @@ $lang['network_speed_test_results_saved'] = 'Network speed results have been sav
 $lang['network_speed_test_started'] = 'Speed test initiated.';
 $lang['network_ssid_invalid'] = 'SSID is invalid.';
 $lang['network_standalone_or_gateway'] = 'Standalone or Gateway';
+$lang['network_switching_modes_help'] = 'After changing modes, you may need to review your network interface and firewall settings.';
 $lang['network_temporary_override'] = 'Temporary Override';
 $lang['network_test_again'] = 'Test Again';
 $lang['network_run_speed_test'] = 'Run Speed Test';

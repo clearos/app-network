@@ -34,6 +34,11 @@ $app['controllers']['dns']['title'] = lang('network_dns');
 $app['controllers']['iface']['title'] = lang('network_network_interfaces');
 $app['controllers']['settings']['title'] = lang('base_settings');
 
+$app['controllers']['settings']['inline_help'] = array(
+    lang('network_settings') => lang('network_settings_help'),
+    lang('base_warning') => lang('network_switching_modes_help'),
+);
+
 // Wizard extras
 $app['controllers']['iface']['wizard_name'] = lang('network_network_interfaces');
 $app['controllers']['iface']['wizard_description'] = lang('network_interfaces_help');
@@ -52,6 +57,7 @@ $app['controllers']['mode']['inline_help'] = array(
 $app['controllers']['dns']['wizard_name'] = lang('network_dns_servers');
 $app['controllers']['dns']['wizard_description'] = lang('network_dns_help');
 $app['controllers']['dns']['inline_help'] = array(
+    lang('network_dns') => lang('network_dns_help'),
     lang('network_best_practices') => lang('network_dns_best_practices_help'),
 );
 
