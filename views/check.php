@@ -39,10 +39,12 @@ $this->load->language('network');
 // Form 
 ///////////////////////////////////////////////////////////////////////////////
 
-$anchor = '/app/' . $app_name . '/network/add/' . $protocol . '/' . $port;
+$options['buttons'] = array(
+    anchor_custom('/app/' . $app_name . '/network/add/' . $protocol . '/' . $port, lang('network_allow_connections'))
+);
 
 echo infobox_warning(
     lang('base_warning'),
-    lang('network_firewall_configuration_warning') . 
-    "<p align='center'>" . anchor_custom($anchor, lang('network_allow_connections')) . "</p>"
+    lang('network_firewall_configuration_warning'),
+    $options
 );
