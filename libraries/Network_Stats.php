@@ -204,8 +204,26 @@ class Network_Stats extends Engine
             }
         }
 
-        
-
         return $stats;
+    }
+
+    /**
+     * Returns interface list.
+     *
+     * @return array interface list
+     * @throws Engine_Exception
+     */
+
+    public function get_interfaces()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $details = $this->get_interface_stats();
+
+        $ifaces = array_keys($details);
+
+        sort($ifaces);
+
+        return $ifaces;
     }
 }
