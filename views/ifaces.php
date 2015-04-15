@@ -168,8 +168,16 @@ foreach ($network_interfaces as $interface => $detail) {
         }
 
         if ($detail['role'] === Role::ROLE_EXTERNAL) {
-            $max_downstream = "<span id='max-dn-$interface'>" . $detail['max_downstream'] . ' ' . lang('base_kilobits_per_second') . "</span>";
-            $max_upstream = "<span id='max-up-$interface'>" . $detail['max_upstream'] . ' ' . lang('base_kilobits_per_second') . "</span>";
+            if ($detail['max_downstream'] == 0)
+                $down = lang('base_not_specified');
+            else
+                $down = $detail['max_downstream'] . ' ' . lang('base_kilobits_per_second');
+            if ($detail['max_upstream'] == 0)
+                $up = lang('base_not_specified');
+            else
+                $up = $detail['max_upstream'] . ' ' . lang('base_kilobits_per_second');
+            $max_downstream = "<span id='max-dn-$interface'>" . $down . "</span>";
+            $max_upstream = "<span id='max-up-$interface'>" . $up . "</span>";
         } else {
             $max_downstream = lang('base_not_applicable');
             $max_upstream = lang('base_not_applicable');
