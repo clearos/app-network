@@ -83,7 +83,7 @@ class Hostname extends ClearOS_Controller
         if (($this->input->post('hostname') && $form_ok)) {
             try {
                 $this->hostname->set($this->input->post('hostname'));
-                $this->hostname->set_internet_hostname($this->input->post('internet_hostname'));
+                $this->hostname->set_internet_hostname($this->input->post('internet_hostname'), TRUE);
 
                 $this->page->set_status_updated();
                 redirect('/network/hostname');

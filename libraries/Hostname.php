@@ -383,14 +383,20 @@ class Hostname extends Engine
      * Sets Internet hostname.
      *
      * Internet hostname must have at least one period.
+     * The base install typically includes the SMTP engine for outbound mail.
+     * During the wizard mode, it is nice to have the SMTP hostname set
+     * to the Internet hostname.  That is how the hostname is set in other
+     * apps, but that default is set when those apps are installed.
      *
-     * @param string $hostname hostname
+     * @param string  $hostname hostname
+     * @param boolean $set_apps sets hostname for installed apps
      *
      * @return void
      * @throws Exception, Validation_Exception
      */
 
-    public function set_internet_hostname($hostname)
+    public function set_internet_hostname($hostname, $set_apps = FALSE)
+
     {
         clearos_profile(__METHOD__, __LINE__);
 
@@ -408,6 +414,16 @@ class Hostname extends Engine
 
         if (! $match)
             $file->add_lines("INTERNET_HOSTNAME=\"$hostname\"\n");
+
+        // Installed apps
+        //---------------
+
+        if ($set_apps) {
+            if (clearos_load_library('smtp/Postfix')) {
+                $postfix = new \clearos\apps\smtp\Postfix();
+                $postfix->set_hostname($hostname);
+            }
+        }
     }
 
     ///////////////////////////////////////////////////////////////////////////////
