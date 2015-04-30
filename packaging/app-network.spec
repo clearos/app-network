@@ -1,7 +1,7 @@
 
 Name: app-network
 Epoch: 1
-Version: 2.0.24
+Version: 2.0.25
 Release: 1%{dist}
 Summary: IP Settings
 License: GPLv3
@@ -33,6 +33,7 @@ Requires: net-tools
 Requires: ppp
 Requires: rp-pppoe >= 3.10-8.1
 Requires: syswatch
+Requires: telnet
 Requires: traceroute
 Requires: tcpdump
 

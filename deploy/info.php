@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'network';
-$app['version'] = '2.0.24';
+$app['version'] = '2.0.25';
 $app['release'] = '1';
 $app['vendor'] = 'ClearFoundation';
 $app['packager'] = 'ClearFoundation';
@@ -93,6 +93,7 @@ $app['core_requires'] = array(
     'ppp',
     'rp-pppoe >= 3.10-8.1',
     'syswatch',
+    'telnet',
     'traceroute',
     'tcpdump',
 );
