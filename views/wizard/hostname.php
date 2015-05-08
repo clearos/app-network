@@ -40,16 +40,11 @@ $this->lang->load('network');
 // Form
 ///////////////////////////////////////////////////////////////////////////////
 
-$buttons = array(
-    form_submit_update('submit'),
-);
-
-echo form_open('/network/hostname');
+echo form_open('/network/hostname', array('id' => 'hostname_form'));
 echo form_header(lang('base_settings'));
 
 echo field_input('hostname', $hostname, lang('network_hostname'));
 echo field_input('internet_hostname', $internet_hostname, lang('network_internet_hostname'));
-echo field_button_set($buttons);
 
 echo form_footer();
 echo form_close();

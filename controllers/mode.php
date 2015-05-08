@@ -95,7 +95,7 @@ class Mode extends ClearOS_Controller
                 }
 
                 $this->page->set_status_updated();
-                redirect($this->session->userdata('wizard_redirect'));
+                redirect('/base/wizard/next_step');
             } catch (Engine_Exception $e) {
                 $this->page->view_exception($e->get_message());
                 return;

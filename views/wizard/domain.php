@@ -40,18 +40,10 @@ $this->lang->load('network');
 // Form
 ///////////////////////////////////////////////////////////////////////////////
 
-$buttons = array(
-    form_submit_update('submit')
-);
-
-echo form_open('network/domain');
+echo form_open('network/domain', array('id' => 'domain_form'));
 echo form_header(lang('base_settings'));
 
 echo field_input('domain', $domain, lang('network_domain'));
-echo field_button_set($buttons);
 
 echo form_footer();
 echo form_close();
-
-if (!isset($domain) || $domain == '')
-    echo modal_info("wizard_next_showstopper", lang('base_error'), lang('network_internet_domain_invalid'), array('type' => 'warning'));

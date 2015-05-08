@@ -108,8 +108,13 @@ $(document).ready(function() {
     //----------------------------
 
     $('#wizard_nav_next').on('click', function(e) {
-        if ($(location).attr('href').match('.*\/mode$') != null)
+        if ($(location).attr('href').match('.*\/hostname') != null) {
+            $('form#hostname_form').submit();
+        } else if ($(location).attr('href').match('.*\/domain') != null) {
+            $('form#domain_form').submit();
+        } else if ($(location).attr('href').match('.*\/mode$') != null) {
             $('form#mode_form').submit();
+        }
 
         if ($('#wizard_next_showstopper').length != 0) {
             e.preventDefault();

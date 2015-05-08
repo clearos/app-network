@@ -7,7 +7,7 @@
  * @package    network
  * @subpackage controllers
  * @author     ClearFoundation <developer@clearfoundation.com>
- * @copyright  2012 ClearFoundation
+ * @copyright  2012-2015 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
  * @link       http://www.clearfoundation.com/docs/developer/apps/network/
  */
@@ -40,7 +40,7 @@
  * @package    network
  * @subpackage controllers
  * @author     ClearFoundation <developer@clearfoundation.com>
- * @copyright  2012 ClearFoundation
+ * @copyright  2012-2015 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
  * @link       http://www.clearfoundation.com/docs/developer/apps/network/
  */
@@ -74,6 +74,7 @@ class Domain extends ClearOS_Controller
                 $this->domain->set_default($this->input->post('domain'));
 
                 $this->page->set_status_updated();
+                redirect('/base/wizard/next_step');
             } catch (Engine_Exception $e) {
                 $this->page->view_exception($e->get_message());
                 return;
