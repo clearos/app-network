@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'network';
-$app['version'] = '1.6.11';
+$app['version'] = '1.6.12';
 $app['release'] = '1';
 $app['vendor'] = 'ClearFoundation';
 $app['packager'] = 'ClearFoundation';
@@ -86,7 +86,7 @@ $app['core_requires'] = array(
     'net-tools',
     'ppp',
     'rp-pppoe >= 3.10-8.1',
-    'syswatch',
+    'syswatch >= 6.6.2',
     'traceroute',
     'tcpdump',
 );
