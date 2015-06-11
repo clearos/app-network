@@ -586,11 +586,6 @@ class Iface extends ClearOS_Controller
             $this->form_validation->set_policy('dhcp_dns', 'network/Iface', 'validate_peerdns');
         }
 
-        if ($role == Role::ROLE_EXTERNAL) {
-            $this->form_validation->set_policy('max_upstream', 'network/Iface', 'validate_max_upstream');
-            $this->form_validation->set_policy('max_downstream', 'network/Iface', 'validate_max_downstream');
-        }
-
         $form_ok = $this->form_validation->run();
 
         // Handle form submit
@@ -623,13 +618,6 @@ class Iface extends ClearOS_Controller
                 
                     $this->_update_routing($interface, $role);
                     $this->iface->enable(TRUE);
-                }
-
-                // ISP Bandwidth settings
-                //-----------------------
-                if ($role == Role::ROLE_EXTERNAL) {
-                    $this->iface->set_max_upstream($this->input->post('max_upstream'));
-                    $this->iface->set_max_downstream($this->input->post('max_downstream'));
                 }
 
                 // Return to summary page with status message

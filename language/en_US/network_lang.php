@@ -77,6 +77,7 @@ $lang['network_hostname_invalid'] = 'Hostname is invalid.';
 $lang['network_hostname_must_have_a_period'] = 'Full hostname must have at least one period.';
 $lang['network_hostname_wizard_description'] = 'It is time to define the hostname for your system.  Hey, wait a minute... why do you need two hostnames?  Often, these two hostnames are the same, but please read the help section for more information.';
 $lang['network_hot_lan'] = 'Hot LAN';
+$lang['network_inherited_from_physical_nic'] = 'Inherited from physical NIC';
 $lang['network_interface'] = 'Interface';
 $lang['network_interfaces'] = 'Interfaces';
 $lang['network_interfaces_help'] = 'Configuring your network interfaces can be a bit tricky.  In order for the system to reach the Internet, you need at least one network interface configured in the external role.';

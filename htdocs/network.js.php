@@ -379,16 +379,19 @@ function setGateway() {
         if (role == 'EXTIF') {
             $('#gateway_field').show();
             $('#enable_dhcp_field').hide();
-            $('#fieldset_header_bandwidth').show();
-            $('#max_upstream_field').show();
-            $('#max_downstream_field').show();
         } else {
             $('#gateway_field').hide();
             $('#enable_dhcp_field').show();
-            $('#fieldset_header_bandwidth').hide();
-            $('#max_upstream_field').hide();
-            $('#max_downstream_field').hide();
         }
+    }
+    if (role == 'EXTIF') {
+        $('#fieldset_header_bandwidth').show();
+        $('#max_upstream_field').show();
+        $('#max_downstream_field').show();
+    } else {
+        $('#fieldset_header_bandwidth').hide();
+        $('#max_upstream_field').hide();
+        $('#max_downstream_field').hide();
     }
 }
 

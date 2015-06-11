@@ -167,7 +167,10 @@ foreach ($network_interfaces as $interface => $detail) {
             continue;
         }
 
-        if ($detail['role'] === Role::ROLE_EXTERNAL) {
+        if ($detail['type'] === Iface::TYPE_VLAN || $detail['type'] === Iface::TYPE_VIRTUAL) {
+            $max_downstream = lang('network_inherited_from_physical_nic');
+            $max_upstream = lang('network_inherited_from_physical_nic');
+        } else if ($detail['role'] === Role::ROLE_EXTERNAL) {
             if ($detail['max_downstream'] == 0)
                 $down = lang('base_not_specified');
             else
