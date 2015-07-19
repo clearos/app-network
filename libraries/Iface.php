@@ -1047,7 +1047,7 @@ class Iface extends Engine
                 $output = $shell->get_output();
 
                 foreach ($output as $line) {
-                    if (preg_match('/channel/', $line))
+                    if (preg_match('/addr/', $line))
                         return self::TYPE_WIRELESS;
                 }
             } catch (Engine_Exception $e) {
