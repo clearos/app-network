@@ -79,6 +79,7 @@ $lang['network_hostname_invalid'] = 'Värdnamnet är ogiltigt.';
 $lang['network_hostname_must_have_a_period'] = 'Ett korrekt värdnamn måste ha minst en punkt.';
 $lang['network_hostname_wizard_description'] = 'Det är dags att ange ett värdnamn för ditt system.   Men vänta... varför måste du ha två värdnamn?   Ofta så är dessa värdnamn samma, men läs för säkerhetsskull igenom hjälpavsnittet för mer information.';
 $lang['network_hot_lan'] = 'Hot LAN';
+$lang['network_inherited_from_physical_nic'] = 'Inherited from physical NIC';
 $lang['network_interface'] = 'Gränssnitt';
 $lang['network_interfaces'] = 'Gränssnitt';
 $lang['network_interfaces_help'] = 'Konfigureringen av dina nätverkskort kan vara lite svårt.   För att ditt system skall kunna nå Internet så måste du ha minst ett närverkskort konfigurerat i en extern roll.';
