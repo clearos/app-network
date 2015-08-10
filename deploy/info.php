@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'network';
-$app['version'] = '2.1.8';
+$app['version'] = '2.1.15';
 $app['release'] = '1';
 $app['vendor'] = 'ClearFoundation';
 $app['packager'] = 'ClearFoundation';
@@ -85,6 +85,7 @@ $app['core_requires'] = array(
     'bind-utils',
     'bridge-utils',
     'csplugin-filewatch',
+    'csplugin-procwatch',
     'dhclient >= 12:4.1.1-31.P1.v6.1',
     'ethtool',
     'initscripts >= 9.03.31-3',
@@ -119,6 +120,7 @@ $app['core_file_manifest'] = array(
     'filewatch-network-connected-event.conf' => array('target' => '/etc/clearsync.d/filewatch-network-connected-event.conf'),
     'filewatch-network-configuration-event.conf' => array('target' => '/etc/clearsync.d/filewatch-network-configuration-event.conf'),
     'filewatch-network-peerdns-event.conf' => array('target' => '/etc/clearsync.d/filewatch-network-peerdns-event.conf'),
+    'procwatch-network-proxy-event.conf' => array('target' => '/etc/clearsync.d/procwatch-network-proxy-event.conf'),
     'network.conf' => array(
         'target' => '/etc/clearos/network.conf',
         'mode' => '0644',
