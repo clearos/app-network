@@ -79,6 +79,7 @@ $lang['network_hostname_invalid'] = 'Rechnername ist ungültig.';
 $lang['network_hostname_must_have_a_period'] = 'Ein vollständiger Hostname muss mindestens einen Punkt einhalten.';
 $lang['network_hostname_wizard_description'] = 'Nun ist es Zeit einen Rechnernamen für Ihr System festzulegen.  Hey moment mal... wieso brauche ich zwei Rechnernamen?  Häufig können die zwei Rechnernamen identisch sein, für weitere Informationen lesen Sie bitte die Hilfe.';
 $lang['network_hot_lan'] = 'Hot LAN';
+$lang['network_inherited_from_physical_nic'] = 'Inherited from physical NIC';
 $lang['network_interface'] = 'Netzwerkkarte';
 $lang['network_interfaces'] = 'Netzwerkkarten';
 $lang['network_interfaces_help'] = 'Die Konfiguration Ihrer Netzwerkkarten ist etwas knifflig.  Damit Ihr System auf das Internet zugreifen kann muss mindestens eine Netzwerkkarte die externe Rolle haben.';

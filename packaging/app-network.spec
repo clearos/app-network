@@ -1,7 +1,7 @@
 
 Name: app-network
 Epoch: 1
-Version: 2.1.9
+Version: 2.1.15
 Release: 1%{dist}
 Summary: IP Settings
 License: GPLv3
@@ -25,6 +25,7 @@ Requires: avahi
 Requires: bind-utils
 Requires: bridge-utils
 Requires: csplugin-filewatch
+Requires: csplugin-procwatch
 Requires: dhclient >= 12:4.1.1-31.P1.v6.1
 Requires: ethtool
 Requires: initscripts >= 9.03.31-3
@@ -67,6 +68,7 @@ install -D -m 0755 packaging/network-connected-event %{buildroot}/var/clearos/ev
 install -D -m 0644 packaging/network.conf %{buildroot}/etc/clearos/network.conf
 install -D -m 0755 packaging/network_resolver %{buildroot}/var/clearos/events/network_configuration/network_resolver
 install -D -m 0755 packaging/network_resolver2 %{buildroot}/var/clearos/events/network_peerdns/network_resolver
+install -D -m 0644 packaging/procwatch-network-proxy-event.conf %{buildroot}/etc/clearsync.d/procwatch-network-proxy-event.conf
 
 %post
 logger -p local6.notice -t installer 'app-network - installing'
@@ -125,3 +127,4 @@ exit 0
 %config(noreplace) /etc/clearos/network.conf
 /var/clearos/events/network_configuration/network_resolver
 /var/clearos/events/network_peerdns/network_resolver
+/etc/clearsync.d/procwatch-network-proxy-event.conf
