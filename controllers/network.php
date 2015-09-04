@@ -30,6 +30,12 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
+// D E P E N D E N C I E S
+///////////////////////////////////////////////////////////////////////////////
+
+use \clearos\apps\network\Network_Status as Network_Status;
+
+///////////////////////////////////////////////////////////////////////////////
 // C L A S S
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -110,6 +116,8 @@ class Network extends ClearOS_Controller
         // Load libraries
         //---------------
 
+        $this->load->library('base/Yum');
+        $this->load->library('base/Install_Wizard');
         $this->load->library('network/Network_Status');
 
         // Dump JSON information
@@ -117,6 +125,12 @@ class Network extends ClearOS_Controller
 
         sleep(3);
         $data['dns_status'] = $this->network_status->get_live_dns_status();
+
+        // This is a bit of a hack...It updates the a limited number of app packages during the
+        // Wizard only and once DNS is determined to be OK that may need to be updated prior to software
+        // updates
+        if ($this->session->userdata('wizard') && $data['dns_status'] === Network_Status::STATUS_ONLINE)
+            $this->install_wizard->run_update_script();
 
         header('Cache-Control: no-cache, must-revalidate');
         header('Content-type: application/json');
