@@ -116,7 +116,6 @@ class Network extends ClearOS_Controller
         // Load libraries
         //---------------
 
-        $this->load->library('base/Yum');
         $this->load->library('base/Install_Wizard');
         $this->load->library('network/Network_Status');
 
