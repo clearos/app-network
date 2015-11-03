@@ -1355,6 +1355,7 @@ class Iface extends Engine
             || preg_match('/^p\d+p/', $this->iface)
             || preg_match('/^br/', $this->iface) 
             || preg_match('/^bond/', $this->iface)
+            || preg_match('/^netw/', $this->iface)
             || (preg_match('/^ppp/', $this->iface) && $this->is_configured())
         ) {
             return TRUE;
