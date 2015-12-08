@@ -315,5 +315,7 @@ echo modal_confirm(
 // External interface warning
 ///////////////////////////////////////////////////////////////////////////////
 
-if (count($external_interfaces) == 0)
+if (count($external_interfaces) == 0) {
     echo infobox_warning(lang('base_warning'), lang('network_lang_one_external_interface_required'));
+    echo modal_info("wizard_next_showstopper", lang('base_error'), lang('network_lang_one_external_interface_required'), array('type' => 'warning'));
+}
