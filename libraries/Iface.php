@@ -472,10 +472,10 @@ class Iface extends Engine
         // Other info
         //-----------
 
-        if (preg_match('/^[a-z]+\d+:/', $this->iface)) {
+        if (preg_match('/^[a-zZ-Z0-9]+\d+:/', $this->iface)) {
             $info['virtual'] = TRUE;
 
-            $virtualnum = preg_replace('/[a-z]+\d+:/', '', $this->iface);
+            $virtualnum = preg_replace('/[a-zA-Z0-9]+\d+:/', '', $this->iface);
 
             if ($virtualnum >= self::CONSTANT_ONE_TO_ONE_NAT_START)
                 $info['one-to-one-nat'] = TRUE;
