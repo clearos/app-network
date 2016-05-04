@@ -2,6 +2,6 @@
 
 /usr/clearos/apps/network/deploy/autofix-hostname
 
-/sbin/service syswatch reload
+/sbin/service syswatch restart
 
 exit 0
