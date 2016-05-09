@@ -91,8 +91,18 @@ fi
 
 /var/clearos/events/network_configuration/network_resolver
 
+# Enable IPv6
+#------------
+
+CHECK=`grep "^#::1[[:space:]]*" /etc/hosts`
+if [ -n "$CHECK" ]; then
+    logger -p local6.notice -t installer "app-network-core - enabling IPv6 localhost in /etc/hosts"
+    sed -i -e 's/^#::1[[:space:]]*/::1         /' /etc/hosts
+fi
+
 # Add ISP Bandwidth section
 #--------------------------
+
 EXISTS=`grep '^# ISP Maximum Speeds' /etc/clearos/network.conf`
 if [ ! -n "$EXISTS" ]; then
     logger -p local6.notice -t installer "app-network-core - adding ISP Bandwidth Section to /etc/clearos/network.conf"
