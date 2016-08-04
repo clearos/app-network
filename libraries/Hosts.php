@@ -438,7 +438,7 @@ class Hosts extends Engine
 
         foreach ($contents as $line) {
 
-            $entries = preg_split('/[\s]+/', $line);
+            $entries = preg_split('/[\s]+/', trim($line));
             $ip = array_shift($entries);
 
             $error_message = $this->validate_ip($ip);
