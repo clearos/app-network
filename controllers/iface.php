@@ -398,6 +398,21 @@ class Iface extends ClearOS_Controller
             if (clearos_app_installed('dhcp') && ($data['iface_info']['configured'] === FALSE)) {
                 $data['show_dhcp'] = TRUE;
                 $data['enable_dhcp'] = TRUE;
+            } else if (clearos_app_installed('dhcp')) {
+                $this->load->library('dhcp/Dnsmasq');
+                $subnets = $this->dnsmasq->get_subnets();
+                if (array_key_exists($interface, $subnets)) {
+                    $dhcp_info = $subnets[$interface];
+                    // Hide DHCP status on networkin interface info when already configured
+                    // to try and prevent users from accidently deleting their DHCP setup
+                    if ($dhcp_info['isconfigured'])
+                        $data['show_dhcp'] = FALSE;
+                    else
+                        $data['show_dhcp'] = TRUE;
+                } else {
+                    $data['show_dhcp'] = TRUE;
+                    $data['enable_dhcp'] = TRUE;
+                }
             } else {
                 $data['show_dhcp'] = FALSE;
             }
