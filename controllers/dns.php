@@ -147,7 +147,7 @@ class DNS extends ClearOS_Controller
             }
 
             if ($dns_empty) {
-                $this->form_validation->set_error('dns[1]', lang('required'));
+                $this->form_validation->set_error('dns[1]', lang('base_required'));
                 $form_ok = FALSE;
             }
         }

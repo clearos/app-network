@@ -172,6 +172,7 @@ $lang['network_speed_test'] = 'Speed Test';
 $lang['network_speed_test_help'] = 'This test will run a bandwidth speed test to the closest proximity speedtest.net server.  Saving test results on completion of a test will store downstream and upstream limits to your server configuration.';
 $lang['network_speed_test_results_saved'] = 'Network speed results have been saved to your system network configuration.';
 $lang['network_speed_test_started'] = 'Speed test initiated.';
+$lang['network_speed_test_already_in_progress'] = 'Speed test is already in progress.';
 $lang['network_ssid_invalid'] = 'SSID is invalid.';
 $lang['network_standalone_or_gateway'] = 'Standalone or Gateway';
 $lang['network_switching_modes_help'] = 'After changing modes, you may need to review your network interface and firewall settings.';
