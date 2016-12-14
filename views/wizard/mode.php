@@ -42,24 +42,17 @@ $read_only = FALSE;
 // Content
 ///////////////////////////////////////////////////////////////////////////////
 
-// FIXME: translate
-// TODO: move HTML/CSS elements to theme
-
-$gateway_label = "Gateway Mode";
+$gateway_label = lang('network_gateway_mode');
 $gateway_options['image'] = clearos_app_htdocs('network') . '/gateway.png';
-$gateway_options['label_help'] = "Gateway mode is used to connect a network of systems to the Internet or internal network.  You need at least two network cards for this mode.";
+$gateway_options['label_help'] = lang('network_gateway_mode_help');
 
-$private_label = "Private Server Mode";
+$private_label = lang('network_private_server_mode');
 $private_options['image'] = clearos_app_htdocs('network') . '/private_server.png';
-$private_options['label_help'] = "This mode is appropriate for standalone servers installed on a protected network, for example, an office network.  The firewall is disabled in this mode.";
+$private_options['label_help'] = lang('network_private_server_mode_help');
 
-$public_label = "Public Server Mode";
+$public_label = lang('network_public_server_mode');
 $public_options['image'] = clearos_app_htdocs('network') . '/public_server.png';
-$public_options['label_help'] = "This mode is appropriate for standalone servers installed in hostile environment, for example a data center or public hotspot.";
-
-$public_label = "Public Server Mode";
-$public_options['image'] = clearos_app_htdocs('network') . '/public_server.png';
-$public_options['label_help'] = "This mode is appropriate for standalone servers installed in hostile environment, for example a data center or public hotspot.";
+$public_options['label_help'] = lang('network_public_server_mode_help');
 
 $checked[$network_mode] = TRUE;
 
@@ -72,8 +65,9 @@ if ($iface_count > 1) {
     );
 } else {
     $gateway_options['disabled'] = TRUE;
-    $gateway_label = "Gateway Mode (Unavailable)";
-    $gateway_options['label_help'] = "Gateway mode is used to connect a network of systems to the Internet or internal network.  <span class='theme-text-alert'>You need at least two network cards for this mode.</span>";
+    $gateway_label = lang('network_gateway_mode_unavailable');
+    $gateway_options['label_help'] = lang('network_gateway_mode_unavailable_help') . ' ' .
+        "<span class='theme-text-alert'>" . lang('network_gateway_mode_unavailable_tip') . '</span>';
 
     $radio_buttons = array(
         radio_set_item('trustedstandalone', 'network_mode', $private_label, $checked['trustedstandalone'], $private_options),
@@ -83,8 +77,8 @@ if ($iface_count > 1) {
 }
 
 if ($network_mode == 'trustedgateway') {
-    $trustedgateway_label = "Router Mode";
-    $trustedgateway_options['label_help'] = "This mode is appropriate for deploying gateways inside a trusted network.";
+    $trustedgateway_label = lang('network_trusted_gateway_mode');
+    $trustedgateway_options['label_help'] = lang('network_trusted_gateway_mode_help');
     $radio_buttons[] = radio_set_item('trustedgateway', 'network_mode', $trustedgateway_label, $checked['trustedgateway'], $trustedgateway_options);
 }
 
