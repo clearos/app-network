@@ -57,6 +57,10 @@ $public_label = "Public Server Mode";
 $public_options['image'] = clearos_app_htdocs('network') . '/public_server.png';
 $public_options['label_help'] = "This mode is appropriate for standalone servers installed in hostile environment, for example a data center or public hotspot.";
 
+$public_label = "Public Server Mode";
+$public_options['image'] = clearos_app_htdocs('network') . '/public_server.png';
+$public_options['label_help'] = "This mode is appropriate for standalone servers installed in hostile environment, for example a data center or public hotspot.";
+
 $checked[$network_mode] = TRUE;
 
 // Put what makes sense at the top of the list
@@ -76,6 +80,12 @@ if ($iface_count > 1) {
         radio_set_item('standalone', 'network_mode', $public_label, $checked['standalone'], $public_options),
         radio_set_item('gateway', 'network_mode', $gateway_label, $checked['gateway'], $gateway_options),
     );
+}
+
+if ($network_mode == 'trustedgateway') {
+    $trustedgateway_label = "Router Mode";
+    $trustedgateway_options['label_help'] = "This mode is appropriate for deploying gateways inside a trusted network.";
+    $radio_buttons[] = radio_set_item('trustedgateway', 'network_mode', $trustedgateway_label, $checked['trustedgateway'], $trustedgateway_options);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
