@@ -59,9 +59,9 @@ $checked[$network_mode] = TRUE;
 // Put what makes sense at the top of the list
 if ($iface_count > 1) {
     $radio_buttons = array(
+        radio_set_item('standalone', 'network_mode', $public_label, $checked['standalone'], $public_options),
         radio_set_item('gateway', 'network_mode', $gateway_label, $checked['gateway'], $gateway_options),
         radio_set_item('trustedstandalone', 'network_mode', $private_label, $checked['trustedstandalone'], $private_options),
-        radio_set_item('standalone', 'network_mode', $public_label, $checked['standalone'], $public_options),
     );
 } else {
     $gateway_options['disabled'] = TRUE;
@@ -70,9 +70,9 @@ if ($iface_count > 1) {
         "<span class='theme-text-alert'>" . lang('network_gateway_mode_unavailable_tip') . '</span>';
 
     $radio_buttons = array(
-        radio_set_item('trustedstandalone', 'network_mode', $private_label, $checked['trustedstandalone'], $private_options),
         radio_set_item('standalone', 'network_mode', $public_label, $checked['standalone'], $public_options),
         radio_set_item('gateway', 'network_mode', $gateway_label, $checked['gateway'], $gateway_options),
+        radio_set_item('trustedstandalone', 'network_mode', $private_label, $checked['trustedstandalone'], $private_options),
     );
 }
 
