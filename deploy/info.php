@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'network';
-$app['version'] = '2.3.2';
+$app['version'] = '2.3.3';
 $app['release'] = '1';
 $app['vendor'] = 'ClearFoundation';
 $app['packager'] = 'ClearFoundation';
@@ -33,6 +33,7 @@ $app['controllers']['network']['title'] = lang('network_app_name');
 $app['controllers']['dns']['title'] = lang('network_dns');
 $app['controllers']['iface']['title'] = lang('network_network_interfaces');
 $app['controllers']['settings']['title'] = lang('base_settings');
+$app['controllers']['proxy']['title'] = lang('network_upstream_proxy');
 
 $app['controllers']['settings']['inline_help'] = array(
     lang('network_settings') => lang('network_settings_help'),
@@ -97,6 +98,14 @@ $app['core_requires'] = array(
     'telnet',
     'traceroute',
     'tcpdump',
+);
+
+$app['core_obsoletes'] = array(
+    'app-upstream-proxy-core',
+);
+
+$app['obsoletes'] = array(
+    'app-upstream-proxy',
 );
 
 $app['core_directory_manifest'] = array(

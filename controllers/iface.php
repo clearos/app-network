@@ -263,6 +263,7 @@ class Iface extends ClearOS_Controller
         $this->load->library('network/Iface', $interface);
         $this->load->library('network/Iface_Manager');
         $this->load->library('network/Role');
+        $this->load->library('network/Proxy');
 
         if (clearos_app_installed('dhcp'))
             $this->load->library('dhcp/Dnsmasq');
@@ -308,6 +309,11 @@ class Iface extends ClearOS_Controller
         if ($role == Role::ROLE_EXTERNAL) {
             $this->form_validation->set_policy('max_upstream', 'network/Iface', 'validate_max_upstream');
             $this->form_validation->set_policy('max_downstream', 'network/Iface', 'validate_max_downstream');
+
+            $this->form_validation->set_policy('proxy_server', 'network/Proxy', 'validate_server');
+            $this->form_validation->set_policy('proxy_port', 'network/Proxy', 'validate_port');
+            $this->form_validation->set_policy('proxy_username', 'network/Proxy', 'validate_username');
+            $this->form_validation->set_policy('proxy_password', 'network/Proxy', 'validate_password');
         }
 
         $form_ok = $this->form_validation->run();
@@ -366,11 +372,18 @@ class Iface extends ClearOS_Controller
                     $this->iface->enable(TRUE);
                 }
 
-                // ISP Bandwidth settings
-                //-----------------------
+                // ISP bandwidth and upstream proxy settings
+                //------------------------------------------
+
                 if ($role == Role::ROLE_EXTERNAL) {
                     $this->iface->set_max_upstream($this->input->post('max_upstream'));
                     $this->iface->set_max_downstream($this->input->post('max_downstream'));
+
+                    $this->proxy->set_server($this->input->post('proxy_server'));
+                    $this->proxy->set_port($this->input->post('proxy_port'));
+                    $this->proxy->set_username($this->input->post('proxy_username'));
+                    $this->proxy->set_password($this->input->post('proxy_password'));
+                    $this->proxy->write_profile();
                 }
 
                 // Return to summary page with status message
@@ -416,6 +429,12 @@ class Iface extends ClearOS_Controller
             } else {
                 $data['show_dhcp'] = FALSE;
             }
+
+            $data['proxy_server'] = $this->proxy->get_server();
+            $data['proxy_port'] = $this->proxy->get_port();
+            $data['proxy_username'] = $this->proxy->get_username();
+            $data['proxy_password'] = $this->proxy->get_password();
+
 
             if (clearos_library_installed('wireless/Hostapd')) {
                 $data['modes'] = $this->iface->get_supported_wireless_modes();

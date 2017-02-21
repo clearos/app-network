@@ -386,10 +386,12 @@ function setGateway() {
     }
     if (role == 'EXTIF') {
         $('#fieldset_header_bandwidth').show();
+        $('#fieldset_header_upstream_proxy').show();
         $('#max_upstream_field').show();
         $('#max_downstream_field').show();
     } else {
         $('#fieldset_header_bandwidth').hide();
+        $('#fieldset_header_upstream_proxy').hide();
         $('#max_upstream_field').hide();
         $('#max_downstream_field').hide();
     }
@@ -434,6 +436,7 @@ function setInterfaceFields() {
     }
     // Max/Min Bandwidth
     $('#fieldset_header_bandwidth').hide();
+    $('#fieldset_header_upstream_proxy').hide();
     $('#max_upstream_field').hide();
     $('#max_downstream_field').hide();
 }

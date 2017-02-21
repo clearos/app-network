@@ -147,6 +147,17 @@ echo field_input('max_downstream', $max_downstream, lang('network_downstream') .
 echo fieldset_footer();
 
 ///////////////////////////////////////////////////////////////////////////////
+// Upstream Proxy
+///////////////////////////////////////////////////////////////////////////////
+
+echo fieldset_header(lang('network_upstream_proxy'), array('id' => 'fieldset_header_upstream_proxy'));
+echo field_input('proxy_server', $proxy_server, lang('network_proxy_server'), $read_only);
+echo field_input('proxy_port', $proxy_port, lang('network_port'), $read_only);
+echo field_input('proxy_username', $proxy_username, lang('base_username'), $read_only);
+echo field_password('proxy_password', $proxy_password, lang('base_password'), $read_only);
+echo fieldset_footer();
+
+///////////////////////////////////////////////////////////////////////////////
 // Wireless
 ///////////////////////////////////////////////////////////////////////////////
 

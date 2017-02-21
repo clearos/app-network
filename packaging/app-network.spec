@@ -1,7 +1,7 @@
 
 Name: app-network
 Epoch: 1
-Version: 2.3.2
+Version: 2.3.3
 Release: 1%{dist}
 Summary: IP Settings
 License: GPLv3
@@ -10,6 +10,7 @@ Source: %{name}-%{version}.tar.gz
 Buildarch: noarch
 Requires: %{name}-core = 1:%{version}-%{release}
 Requires: app-base
+Obsoletes: app-upstream-proxy
 
 %description
 The IP Settings app provides the tools to configure the most common network tasks like network mode, system hostname, DNS servers and network interface settings.
@@ -37,6 +38,7 @@ Requires: syswatch
 Requires: telnet
 Requires: traceroute
 Requires: tcpdump
+Obsoletes: app-upstream-proxy-core
 
 %description core
 The IP Settings app provides the tools to configure the most common network tasks like network mode, system hostname, DNS servers and network interface settings.
