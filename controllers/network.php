@@ -74,7 +74,7 @@ class Network extends ClearOS_Controller
             $views = array('network/settings', 'network/dns', 'network/iface');
         } else {
             $options['type'] = NULL;
-            $views = array('network/panic', 'network/settings', 'network/dns', 'network/iface', 'network/proxy');
+            $views = array('network/panic', 'network/settings', 'network/dns', 'network/iface');
         }
 
         $this->page->view_controllers($views, lang('network_network'), $options);

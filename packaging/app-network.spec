@@ -1,7 +1,7 @@
 
 Name: app-network
 Epoch: 1
-Version: 2.3.3
+Version: 2.3.20
 Release: 1%{dist}
 Summary: IP Settings
 License: GPLv3
@@ -108,6 +108,7 @@ exit 0
 %files core
 %defattr(-,root,root)
 %exclude /usr/clearos/apps/network/packaging
+%exclude /usr/clearos/apps/network/unify.json
 %dir /usr/clearos/apps/network
 %dir /etc/clearos/network.d
 %dir /var/clearos/events/network_configuration
