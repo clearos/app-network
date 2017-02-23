@@ -512,7 +512,11 @@ class Iface extends Engine
                 $info['wireless_channel'] = isset($info['ifcfg']['channel']) ? $info['ifcfg']['channel'] : '';
                 $info['wireless_passphrase'] = isset($info['ifcfg']['key']) ? $info['ifcfg']['key'] : '';
             } else {
-                if (clearos_library_installed('wireless/Hostapd')) {
+                // This is the only section that requires admin privileges, so
+                // add an exception when clearconsole is the caller (to avoid sudo overhead).
+                $caller_info = posix_getpwuid(posix_geteuid());
+
+                if (($caller_info['name'] != 'clearconsole') && clearos_library_installed('wireless/Hostapd')) {
                     clearos_load_library('wireless/Hostapd');
                     $hostapd = new \clearos\apps\wireless\Hostapd();
                     $info['wireless_ssid'] = $hostapd->get_ssid();
