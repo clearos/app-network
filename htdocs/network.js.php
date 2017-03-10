@@ -386,14 +386,24 @@ function setGateway() {
     }
     if (role == 'EXTIF') {
         $('#fieldset_header_bandwidth').show();
-        $('#fieldset_header_upstream_proxy').show();
         $('#max_upstream_field').show();
         $('#max_downstream_field').show();
+
+        $('#fieldset_header_upstream_proxy').show();
+        $('#proxy_server_field').show();
+        $('#proxy_port_field').show();
+        $('#proxy_username_field').show();
+        $('#proxy_password_field').show();
     } else {
         $('#fieldset_header_bandwidth').hide();
-        $('#fieldset_header_upstream_proxy').hide();
         $('#max_upstream_field').hide();
         $('#max_downstream_field').hide();
+
+        $('#fieldset_header_upstream_proxy').hide();
+        $('#proxy_server_field').hide();
+        $('#proxy_port_field').hide();
+        $('#proxy_username_field').hide();
+        $('#proxy_password_field').hide();
     }
 }
 
@@ -436,9 +446,14 @@ function setInterfaceFields() {
     }
     // Max/Min Bandwidth
     $('#fieldset_header_bandwidth').hide();
-    $('#fieldset_header_upstream_proxy').hide();
     $('#max_upstream_field').hide();
     $('#max_downstream_field').hide();
+
+    $('#fieldset_header_upstream_proxy').hide();
+    $('#proxy_server_field').hide();
+    $('#proxy_port_field').hide();
+    $('#proxy_username_field').hide();
+    $('#proxy_password_field').hide();
 }
 
 function setWirelessFields() {
