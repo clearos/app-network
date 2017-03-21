@@ -108,3 +108,8 @@ if [ ! -n "$EXISTS" ]; then
     logger -p local6.notice -t installer "app-network-core - adding ISP Bandwidth Section to /etc/clearos/network.conf"
     printf '\n# ISP Maximum Speeds' >> /etc/clearos/network.conf
 fi
+
+# Tmeporary workaround - tracker #13851
+if [ -e /etc/clearos/upstream_proxy.conf ]; then
+    chmod 644 /etc/clearos/upstream_proxy.conf
+fi
