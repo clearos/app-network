@@ -417,6 +417,22 @@ class Iface extends Engine
         $info['max_downstream'] = $this->get_max_downstream();
         $info['max_upstream'] = $this->get_max_upstream();
 
+        if ($this->is_configurable())
+            $info['configurable'] = TRUE;
+        else
+            $info['configurable'] = FALSE;
+
+        if ($this->is_configured())
+            $info['configured'] = TRUE;
+        else
+            $info['configured'] = FALSE;
+
+        // The clearconsole tool does not need access to extended network info.
+        // We provide a kludge to avoid sudo overhead.
+        $caller_info = posix_getpwuid(posix_geteuid());
+        if ($caller_info['name'] == 'clearconsole')
+            return $info;
+
         // TODO: the existence of an IP address has always been used
         // to determine the "state" of the network interface.  This
         // policy should be changed and the $info['state'] should be
@@ -493,13 +509,10 @@ class Iface extends Engine
 
         if ($this->is_configured()) {
             try {
-                $info['configured'] = TRUE;
                 $info['ifcfg'] = $this->read_config();
             } catch (Exception $e) {
                 // Keep going?
             }
-        } else {
-            $info['configured'] = FALSE;
         }
 
         // Wireless extras
@@ -512,11 +525,7 @@ class Iface extends Engine
                 $info['wireless_channel'] = isset($info['ifcfg']['channel']) ? $info['ifcfg']['channel'] : '';
                 $info['wireless_passphrase'] = isset($info['ifcfg']['key']) ? $info['ifcfg']['key'] : '';
             } else {
-                // This is the only section that requires admin privileges, so
-                // add an exception when clearconsole is the caller (to avoid sudo overhead).
-                $caller_info = posix_getpwuid(posix_geteuid());
-
-                if (($caller_info['name'] != 'clearconsole') && clearos_library_installed('wireless/Hostapd')) {
+                if (clearos_library_installed('wireless/Hostapd')) {
                     clearos_load_library('wireless/Hostapd');
                     $hostapd = new \clearos\apps\wireless\Hostapd();
                     $info['wireless_ssid'] = $hostapd->get_ssid();
