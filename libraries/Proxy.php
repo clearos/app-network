@@ -402,7 +402,7 @@ class Proxy extends Engine
         if (! is_null($this->config))
             return;
 
-        $file = new File(self::FILE_CONFIG);
+        $file = new File(self::FILE_CONFIG, TRUE);
 
         try {
             $lines = array();
@@ -442,7 +442,7 @@ class Proxy extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        $file = new File(self::FILE_CONFIG);
+        $file = new File(self::FILE_CONFIG, TRUE);
 
         if (! $file->exists())
             $file->create('root', 'root', '0644');
