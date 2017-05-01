@@ -100,6 +100,7 @@ class Proxy extends Engine
 
     const FILE_CONFIG = '/etc/clearos/upstream_proxy.conf';
     const FILE_PROFILE = '/etc/profile.d/proxy.sh';
+    const DEFAULT_PORT = 3128;
 
     ///////////////////////////////////////////////////////////////////////////////
     // M E M B E R S
@@ -149,7 +150,9 @@ class Proxy extends Engine
 
         $this->_load_config();
 
-        return $this->config['port'];
+        $port = (empty($this->config['port'])) ? self::DEFAULT_PORT : $this->config['port'];
+
+        return $port;
     }
 
     /**
