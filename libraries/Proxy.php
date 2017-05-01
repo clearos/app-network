@@ -445,7 +445,7 @@ class Proxy extends Engine
         $file = new File(self::FILE_CONFIG, TRUE);
 
         if (! $file->exists())
-            $file->create('root', 'root', '0644');
+            $file->create('root', 'root', '0600');
 
         $match = $file->replace_lines("/^\s*$key\s*=/", "$key = $value\n");
 
