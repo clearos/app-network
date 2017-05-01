@@ -431,7 +431,7 @@ class Iface extends ClearOS_Controller
             }
 
             $data['proxy_server'] = $this->proxy->get_server();
-            $data['proxy_port'] = $this->proxy->get_port();
+            $data['proxy_port'] = $this->proxy->get_port(FALSE);
             $data['proxy_username'] = $this->proxy->get_username();
             $data['proxy_password'] = $this->proxy->get_password();
 

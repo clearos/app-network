@@ -140,17 +140,24 @@ class Proxy extends Engine
     /**
      * Returns proxy port.
      *
+     * @param boolean $return_default return default value if not set
+     *
      * @return string proxy port
      * @throws Exception
      */
 
-    public function get_port()
+    public function get_port($return_default = TRUE)
     {
         clearos_profile(__METHOD__, __LINE__);
 
         $this->_load_config();
 
-        $port = (empty($this->config['port'])) ? self::DEFAULT_PORT : $this->config['port'];
+        $port = '';
+
+        if (empty($this->config['port']) && $return_default)
+            $port = self::DEFAULT_PORT;
+        else
+            $port = $this->config['port'];
 
         return $port;
     }
