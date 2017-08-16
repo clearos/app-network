@@ -1361,11 +1361,10 @@ class Iface extends Engine
         // PPPoE interfaces are configurable, but only if they already configured.
 
         if (preg_match('/^eth/', $this->iface)
-            || preg_match('/^wlan/', $this->iface)
             || preg_match('/^ath/', $this->iface)
-            || preg_match('/^wlp/', $this->iface)
             || preg_match('/^em/', $this->iface)
             || preg_match('/^en/', $this->iface)
+            || preg_match('/^wl/', $this->iface)
             || preg_match('/^ww/', $this->iface)
             || preg_match('/^p\d+p/', $this->iface)
             || preg_match('/^br/', $this->iface) 
