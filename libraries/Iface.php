@@ -1366,6 +1366,7 @@ class Iface extends Engine
             || preg_match('/^wlp/', $this->iface)
             || preg_match('/^em/', $this->iface)
             || preg_match('/^en/', $this->iface)
+            || preg_match('/^ww/', $this->iface)
             || preg_match('/^p\d+p/', $this->iface)
             || preg_match('/^br/', $this->iface) 
             || preg_match('/^bond/', $this->iface)
