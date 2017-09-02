@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'network';
-$app['version'] = '2.4.2';
+$app['version'] = '2.4.3';
 $app['release'] = '1';
 $app['vendor'] = 'ClearFoundation';
 $app['packager'] = 'ClearFoundation';
@@ -80,7 +80,7 @@ $app['controllers']['domain']['inline_help'] = array(
 /////////////////////////////////////////////////////////////////////////////
 
 $app['core_requires'] = array(
-    'app-base-core >= 1:1.6.0',
+    'app-base-core >= 1:2.4.2',
     'app-events-core',
     'avahi',
     'bind-utils',
