@@ -81,8 +81,7 @@ class Network_Check extends Engine
     // C O N S T A N T S
     ///////////////////////////////////////////////////////////////////////////////
 
-    const FILE_STATS = '/proc/net/dev';
-    const FILE_STATE = '/var/clearos/network/state';
+    const PATH_STATE = '/var/clearos/network/check';
 
     ///////////////////////////////////////////////////////////////////////////////
     // M E T H O D S
@@ -98,16 +97,44 @@ class Network_Check extends Engine
     }
 
     /**
-     * Returns interface stats and rates.
+     * Get dismiss flag for network check for given app.
      *
-     * @return array interface stats and rates
+     * @param string  $app   app name
+     *
+     * @return void
      * @throws Engine_Exception
      */
 
-    public function incoming_check($app, $protocol, $check)
+    public function get_dismiss_state($app)
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        return FALSE;
+        $file = new File(self::PATH_STATE . '/' .  $app);
+
+        $state = $file->exists() ? TRUE : FALSE;
+
+        return $state;
+    }
+
+    /**
+     * Set dismiss flag for network check for given app.
+     *
+     * @param string  $app   app name
+     * @param boolean $state state
+     *
+     * @return void
+     * @throws Engine_Exception
+     */
+
+    public function set_dismiss_state($app, $state)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $file = new File(self::PATH_STATE . '/' .  $app);
+
+        if ($state && !$file->exists())
+            $file->create('root', 'root', '0644');
+        else if (!$state && $file->exists())
+            $file->delete();
     }
 }

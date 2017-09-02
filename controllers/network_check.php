@@ -54,22 +54,24 @@ use \clearos\apps\firewall\Firewall as Firewall;
 class Network_Check extends ClearOS_Controller
 {
     protected $app_name = NULL;
-    protected $protocol = NULL;
-    protected $port_number = NULL;
+    protected $rules = NULL;
+    protected $type = '';
 
     /**
      * Network check constructor.
      *
      * @param string $app_name app basename
+     * @param array  $rules    firewall rules
+     * @param string $type     warning or info
      *
      * @return view
      */
 
-    function __construct($app_name, $protocol = NULL, $port = NULL)
+    function __construct($app_name, $rules, $type = 'warning')
     {
         $this->app_name = $app_name;
-        $this->protocol = $protocol;
-        $this->port_number = $port;
+        $this->rules = $rules;
+        $this->type = $type;
     }
 
     /**
@@ -78,12 +80,8 @@ class Network_Check extends ClearOS_Controller
      * @return view
      */
 
-    function index($protocol = NULL, $port = NULL)
+    function index()
     {
-        // SSH and maybe some others have floating protocol an port numbers
-        // Added a way to override these on the fly instead of using the
-        // constructor.
-
         // Bail if firewall is not installed
         //----------------------------------
 
@@ -95,45 +93,56 @@ class Network_Check extends ClearOS_Controller
 
         $this->lang->load('network');
         $this->load->library('incoming_firewall/Port');
+        $this->load->library('network/Network_Check');
 
-        if (! empty($port))
-            $this->port_number = $port;
+        // Bail if admin has dismissed widget
+        //-----------------------------------
 
-        if (! empty($protocol))
-            $this->protocol = $protocol;
+        $is_dismissed = $this->network_check->get_dismiss_state($this->app_name);
+
+        if ($is_dismissed)
+            return;
 
         // Load view data
         //---------------
 
         try {
-            $is_firewalled = $this->port->is_firewalled($this->protocol, $this->port_number);
+            $result = [];
+            $show_widget = FALSE;
+
+            foreach ($this->rules as $rule) {
+                $is_firewalled = $this->port->is_firewalled($rule['protocol'], $rule['port']);
+                $rule['firewalled'] = $is_firewalled;
+                $result[] = $rule;
+
+                if ($is_firewalled)
+                    $show_widget = TRUE;
+            }
         } catch (Exception $e) {
             $this->page->view_exception($e);
             return;
         }
 
+        if (! $show_widget)
+            return;
+
         $data['app_name'] = $this->app_name;
-        $data['protocol'] = $this->protocol;
-        $data['port'] = $this->port_number;
+        $data['type'] = $this->type;
+        $data['rules'] = $result;
 
         // Load views
         //-----------
-
-        if (! $is_firewalled)
-            return;
 
         $this->page->view_form('network/check', $data, lang('network_network_check'));
     }
 
     /**
-     * Network add to incoming firewall.
+     * Adds rules to incoming firewall.
      *
-     * @param string $protocol protocol
-     * @param string $port     port
      * @return view
      */
 
-    function add($protocol, $port = NULL)
+    function add()
     {
         // Load libraries
         //---------------
@@ -141,35 +150,67 @@ class Network_Check extends ClearOS_Controller
         if (!(clearos_app_installed('incoming_firewall')))
             return;
 
-        $this->load->library('incoming_firewall/Port');
         $this->load->library('incoming_firewall/Incoming');
-        $this->lang->load('incoming_firewall');
 
-        // Handle form submit
-        //-------------------
+        // Add rules
+        //----------
 
-        // TODO: remove PPTP/IPsec hacks
-        if ($protocol == 'PPTP') {
-            $this->incoming->add_allow_standard_service('PPTP');
-        } else if ($protocol == 'IPsec') {
-            $this->incoming->add_allow_standard_service('IPsec');
-        } else {
-            if ($this->incoming->check_port($protocol, $port) == Firewall::CONSTANT_DISABLED)
-                $this->incoming->set_allow_port_state(TRUE, $protocol, $port);
-            else
-                $this->incoming->add_allow_port($this->app_name, $protocol, $port);
+        foreach ($this->rules as $rule) {
+            // TODO: remove PPTP/IPsec hacks
+            if ($rule['protocol'] == 'PPTP') {
+                $this->incoming->add_allow_standard_service('PPTP');
+            } else if ($rule['protocol'] == 'IPsec') {
+                $this->incoming->add_allow_standard_service('IPsec');
+            } else {
+                $check_port = $this->incoming->check_port($rule['protocol'], $rule['port']);
+                if ($check_port == Firewall::CONSTANT_DISABLED) {
+                    $this->incoming->set_allow_port_state(TRUE, $rule['protocol'], $rule['port']);
+                } else if ($check_port == Firewall::CONSTANT_NOT_CONFIGURED) {
+                    $name = preg_replace('/ - /', '-', $rule['name']);
+                    $name = preg_replace('/ /', '_', $name);
+                    $this->incoming->add_allow_port($name, $rule['protocol'], $rule['port']);
+                }
+            }
         }
 
         // Load view data
         //---------------
 
-        $this->page->set_status_updated();
+        $this->page->set_message(lang('network_firewall_updated'), 'info');
 
         $this->load->library('user_agent');
 
-        if ($this->agent->is_referral())
-            redirect($this->agent->referrer());
-        else
-            redirect('/incoming_firewall/allow');
+        redirect($this->agent->referrer());
+    }
+
+    /**
+     * Hides firewall warning.
+     *
+     * @param string $protocol protocol
+     * @param string $port     port
+     * @return view
+     */
+
+    function dismiss()
+    {
+        // Load libraries
+        //---------------
+
+        if (!(clearos_app_installed('incoming_firewall')))
+            return;
+
+        $this->load->library('network/Network_Check');
+
+        // Set dismiss state
+        //------------------
+
+        $this->network_check->set_dismiss_state($this->app_name, TRUE);
+
+        // Load view data
+        //---------------
+
+        $this->load->library('user_agent');
+
+        redirect($this->agent->referrer());
     }
 }

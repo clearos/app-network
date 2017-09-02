@@ -1,7 +1,7 @@
 
 Name: app-network
 Epoch: 1
-Version: 2.4.1
+Version: 2.4.2
 Release: 1%{dist}
 Summary: IP Settings
 License: GPLv3
@@ -59,6 +59,7 @@ install -d -m 0755 %{buildroot}/var/clearos/events/network_connected
 install -d -m 0755 %{buildroot}/var/clearos/events/network_peerdns
 install -d -m 0755 %{buildroot}/var/clearos/network
 install -d -m 0755 %{buildroot}/var/clearos/network/backup
+install -d -m 0755 %{buildroot}/var/clearos/network/check
 install -D -m 0755 packaging/clearos_speed_test %{buildroot}/usr/sbin/clearos_speed_test
 install -D -m 0755 packaging/dhclient-exit-hooks %{buildroot}/etc/dhcp/dhclient-exit-hooks
 install -D -m 0644 packaging/filewatch-network-configuration-event.conf %{buildroot}/etc/clearsync.d/filewatch-network-configuration-event.conf
@@ -116,6 +117,7 @@ exit 0
 %dir /var/clearos/events/network_peerdns
 %dir /var/clearos/network
 %dir /var/clearos/network/backup
+%dir /var/clearos/network/check
 /usr/clearos/apps/network/deploy
 /usr/clearos/apps/network/language
 /usr/clearos/apps/network/libraries

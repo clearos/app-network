@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'network';
-$app['version'] = '2.4.1';
+$app['version'] = '2.4.2';
 $app['release'] = '1';
 $app['vendor'] = 'ClearFoundation';
 $app['packager'] = 'ClearFoundation';
@@ -112,6 +112,7 @@ $app['core_directory_manifest'] = array(
     '/etc/clearos/network.d' => array(),
     '/var/clearos/network' => array(),
     '/var/clearos/network/backup' => array(),
+    '/var/clearos/network/check' => array(),
     '/var/clearos/events/network_configuration' => array(),
     '/var/clearos/events/network_connected' => array(),
     '/var/clearos/events/network_peerdns' => array(),
