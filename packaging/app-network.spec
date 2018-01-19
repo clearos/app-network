@@ -120,6 +120,7 @@ exit 0
 %dir /var/clearos/network/check
 /usr/clearos/apps/network/deploy
 /usr/clearos/apps/network/language
+/usr/clearos/apps/network/api
 /usr/clearos/apps/network/libraries
 /usr/sbin/clearos_speed_test
 /etc/dhcp/dhclient-exit-hooks
