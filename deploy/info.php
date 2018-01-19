@@ -5,7 +5,7 @@
 /////////////////////////////////////////////////////////////////////////////
 
 $app['basename'] = 'network';
-$app['version'] = '2.4.3';
+$app['version'] = '2.4.4';
 $app['release'] = '1';
 $app['vendor'] = 'ClearFoundation';
 $app['packager'] = 'ClearFoundation';
@@ -94,7 +94,6 @@ $app['core_requires'] = array(
     'net-tools',
     'ppp',
     'rp-pppoe >= 3.10-8.1',
-    'syswatch',
     'telnet',
     'traceroute',
     'tcpdump',
@@ -141,10 +140,6 @@ $app['core_file_manifest'] = array(
     ),
     'network-configuration-event'=> array(
         'target' => '/var/clearos/events/network_configuration/network',
-        'mode' => '0755'
-    ),
-    'network-connected-event'=> array(
-        'target' => '/var/clearos/events/network_connected/network',
         'mode' => '0755'
     ),
     'network_resolver2'=> array(

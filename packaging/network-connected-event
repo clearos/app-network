@@ -1,8 +1,0 @@
-#!/bin/sh
-
-# Autofix the hostname
-#---------------------
-
-/usr/clearos/apps/network/deploy/autofix-hostname
-
-exit 0
