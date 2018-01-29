@@ -7,7 +7,7 @@
  * @package    network
  * @subpackage controllers
  * @author     ClearFoundation <developer@clearfoundation.com>
- * @copyright  2011 ClearFoundation
+ * @copyright  2011-2018 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
  * @link       http://www.clearfoundation.com/docs/developer/apps/network/
  */
@@ -47,7 +47,7 @@ use \clearos\apps\network\Role as Role;
  * @package    network
  * @subpackage controllers
  * @author     ClearFoundation <developer@clearfoundation.com>
- * @copyright  2011 ClearFoundation
+ * @copyright  2011-2018 ClearFoundation
  * @license    http://www.gnu.org/copyleft/gpl.html GNU General Public License version 3 or later
  * @link       http://www.clearfoundation.com/docs/developer/apps/network/
  */
@@ -107,6 +107,17 @@ class Iface extends ClearOS_Controller
     }
 
     /**
+     * Add bridged interface view.
+     *
+     * @return view
+     */
+
+    function add_bridge()
+    {
+        $this->_bridge_item('add');
+    }
+
+    /**
      * Add virutal interface view.
      *
      * @return view
@@ -160,6 +171,19 @@ class Iface extends ClearOS_Controller
     function edit($interface = NULL)
     {
         $this->_item('edit', $interface);
+    }
+
+    /**
+     * Edit bridge interface view.
+     *
+     * @param string $interface interface
+     *
+     * @return view
+     */
+
+    function edit_bridge($interface = NULL)
+    {
+        $this->_bridge_item('edit', $interface);
     }
 
     /**
@@ -503,6 +527,67 @@ class Iface extends ClearOS_Controller
             $this->page->view_exception($e);
             return;
         }
+    }
+
+    /**
+     * Common add/edit/view form handler for bridged interfaces.
+     *
+     * @param string $form_type form type
+     * @param string $interface interface
+     *
+     * @return view
+     */
+
+    function _bridge_item($form_type, $interface = '')
+    {
+        if ($form_type === 'add')
+            $interface = $this->input->post('iface');
+
+        // Load libraries
+        //---------------
+
+        $this->load->library('network/Iface', $interface);
+        $this->load->library('network/Iface_Manager');
+        $this->load->library('network/Proxy');
+
+// pete
+        // Handle form submit
+        //-------------------
+
+        if ($this->input->post('submit')) {
+
+            try {
+$ifaces = [ 'enp0s10', 'enp0s9' ];
+                $this->iface_manager->save_bridge($this->input->post('bridge'), $ifaces);
+
+                $this->page->set_status_updated();
+                redirect('/network/iface');
+            } catch (Exception $e) {
+                $this->page->view_exception($e);
+                return;
+            }
+        }
+
+        // Load the view data 
+        //------------------- 
+
+        try {
+            $data['form_type'] = $form_type;
+
+$data['bridge'] = 'br0'; // FIXME
+
+            $data['unconfigured'] = $this->iface_manager->get_unconfigured_interfaces();
+        } catch (Exception $e) {
+            $this->page->view_exception($e);
+            return;
+        }
+
+        // Load the views
+        //---------------
+
+        $page_options['type'] = (clearos_console()) ? MY_Page::TYPE_CONSOLE : NULL;
+
+        $this->page->view_form('network/bridge', $data, lang('network_bridge_interface'), $page_options);
     }
 
     /**

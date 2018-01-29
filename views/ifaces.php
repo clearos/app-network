@@ -70,8 +70,9 @@ if ($form_type === 'wizard') {
     $anchors = array();
 } else {
     $anchors = array();
-    $anchors[] = anchor_custom('/app/network/iface/add_vlan', lang('network_add_vlan_interface'));
-    $anchors[] = anchor_custom('/app/network/iface/add_virtual', lang('network_add_virtual_interface'));
+    $anchors[] = anchor_custom('/app/network/iface/add_vlan', lang('network_add_vlan'));
+    $anchors[] = anchor_custom('/app/network/iface/add_virtual', lang('network_add_virtual'));
+    $anchors[] = anchor_custom('/app/network/iface/add_bridge', lang('network_add_bridge'));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -152,10 +153,19 @@ foreach ($network_interfaces as $interface => $detail) {
                 anchor_delete('/app/network/iface/delete/' . $interface)
             );
 
-        // Show view for bridged, bonded, and wireless types
-        //--------------------------------------------------
+        // Bridged interfaces
+        //------------------
 
-        } else if (($detail['type'] === Iface::TYPE_BONDED) || ($detail['type'] === Iface::TYPE_BRIDGED)) {
+        } else if ($detail['type'] === Iface::TYPE_BRIDGED) {
+            $buttons = array(
+                anchor_edit('/app/network/iface/edit_bridge/' . $interface),
+                anchor_delete('/app/network/iface/delete/' . $interface)
+            );
+
+        // Bonded interfaces
+        //------------------
+
+        } else if ($detail['type'] === Iface::TYPE_BONDED) {
             $buttons = array(
                 anchor_view('/app/network/iface/view/' . $interface),
             );

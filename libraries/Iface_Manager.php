@@ -301,6 +301,29 @@ class Iface_Manager extends Engine
     }
 
     /**
+     * Returns list of unconfigured interfaces.
+     *
+     * @return array list of unconfigured interfaces
+     * @throws Engine_Exception
+     */
+
+    public function get_unconfigured_interfaces()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $iface_details = $this->get_interface_details();
+
+        $ifaces = [];
+
+        foreach ($iface_details as $iface => $details) {
+            if (!$details['configured'])
+                $ifaces[] = $iface;
+        }
+
+        return $ifaces;
+    }
+
+    /**
      * Returns list of Wifi interfaces.
      *
      * @return array list of Wifi interfaces
@@ -417,6 +440,29 @@ class Iface_Manager extends Engine
         }
 
         return $ifaces;
+    }
+
+    /**
+     * Saves a bridge configuration.
+     *
+     * @return void
+     * @throws Engine_Exception
+     */
+
+    public function save_bridge($master, $ifaces)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        // FIXME: validate
+
+        foreach ($ifaces as $iface_name) {
+            $iface = new Iface($iface_name);
+            $iface->save_bridge_minion_config($master);
+        }
+
+        $iface = new Iface($master);
+        $iface->save_bridge_master_config($master);
+
     }
 
     ///////////////////////////////////////////////////////////////////////////////

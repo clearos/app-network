@@ -1740,6 +1740,56 @@ class Iface extends Engine
     }
 
     /**
+     * Creates a standard bridge master configuration.
+     *
+     * @return void
+     * @throws  Engine_Exception
+     */
+
+    public function save_bridge_master_config()
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        $info = array();
+        $info['DEVICE'] = $this->iface;
+        $info['TYPE'] = self::TYPE_BRIDGED;
+        $info['ONBOOT'] = 'yes';
+        $info['USERCTL'] = 'no';
+        $info['BRIDGE_STP'] = 'yes';
+
+        $this->write_config($info);
+        $this->config = NULL;
+    }
+
+    /**
+     * Creates a standard bridge minion configuration.
+     *
+     * @param string $master master interface name
+     *
+     * @return void
+     * @throws  Engine_Exception
+     */
+
+    public function save_bridge_minion_config($master)
+    {
+        clearos_profile(__METHOD__, __LINE__);
+
+        // FIXME
+        // Validation_Exception::is_valid($this->validate_netmask($netmask));
+
+        $info = array();
+        $info['DEVICE'] = $this->iface;
+        $info['TYPE'] = self::TYPE_BRIDGED_SLAVE;
+        $info['ONBOOT'] = 'yes';
+        $info['USERCTL'] = 'no';
+        $info['BRIDGE'] = $master;
+        $info['PROMISC'] = 'yes';
+
+        $this->write_config($info);
+        $this->config = NULL;
+    }
+
+    /**
      * Creates a standard ethernet configuration.
      *
      * @param string $ip       IP address (for static only)
