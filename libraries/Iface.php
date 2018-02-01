@@ -554,7 +554,7 @@ class Iface extends Engine
 
         $config = $this->read_config();
         $bootproto = $this->get_boot_protocol();
-    
+
         if ($bootproto == self::BOOTPROTO_PPPOE) {
 
             $file = new File(self::FILE_LOG, TRUE);
@@ -623,7 +623,7 @@ class Iface extends Engine
         $output = $shell->get_output();
 
         $match = array();
-        
+
         for ($i = 0; $i < sizeof($output); $i++) {
             if (preg_match('/Link detected: ([A-z]*)/', $output[$i], $match)) {
                 $link = ($match[1] == 'yes') ? 1 : 0;
@@ -885,7 +885,7 @@ class Iface extends Engine
             $shell->execute(self::COMMAND_IW, $this->iface . ' link', FALSE, $options);
             $output = $shell->get_output();
             $matches = array();
-            
+
             foreach ($output as $line) {
                 if (preg_match('/bitrate:\s*([0-9]*)/', $line, $matches)) {
                     $speed = $matches[1];
@@ -1281,7 +1281,7 @@ class Iface extends Engine
         }
 
         if ($details['device'] == NULL) {
-            if (!$is_usb) 
+            if (!$is_usb)
                 fclose($fh);
 
             return $details;
@@ -1318,7 +1318,7 @@ class Iface extends Engine
 
         return $details;
     }
-    
+
     /**
      * Returns state of interface.
      *
@@ -1508,12 +1508,12 @@ class Iface extends Engine
                 $netinfo['bootprototext'] = lang('network_bootproto_pppoe');
             else if ($netinfo['bootproto'] == self::BOOTPROTO_BOOTP)
                 $netinfo['bootprototext'] = lang('network_bootproto_bootp');
-            else 
+            else
                 $netinfo['bootprototext'] = lang('network_bootproto_static');
         }
 
         // Set some default based on behavior of network scripts
-        if ((isset($netinfo['bootproto']) 
+        if ((isset($netinfo['bootproto'])
             && (($netinfo['bootproto'] == self::BOOTPROTO_PPPOE) || ($netinfo['bootproto'] == self::BOOTPROTO_DHCP)))
             && (!isset($netinfo['peerdns']))
         )
