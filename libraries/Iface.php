@@ -1367,7 +1367,7 @@ class Iface extends Engine
             || preg_match('/^wl/', $this->iface)
             || preg_match('/^ww/', $this->iface)
             || preg_match('/^p\d+p/', $this->iface)
-            || preg_match('/^br/', $this->iface) 
+            || preg_match('/^br[0-9]/', $this->iface)
             || preg_match('/^bond/', $this->iface)
             || preg_match('/^netw/', $this->iface)
             || (preg_match('/^ppp/', $this->iface) && $this->is_configured())
@@ -2030,7 +2030,7 @@ class Iface extends Engine
     {
         clearos_profile(__METHOD__, __LINE__);
 
-        if (! preg_match('/^[a-zA-Z0-9:\._]+$/', $interface))
+        if (! preg_match('/^[a-zA-Z0-9:\-\._]+$/', $interface))
             return lang('network_network_interface_invalid');
     }
 
