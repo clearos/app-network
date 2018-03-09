@@ -149,7 +149,7 @@ class Iface extends Engine
     const BOOTPROTO_STATIC = 'static';
 
     // Network types
-    const TYPE_BONDED = 'Bonded';
+    const TYPE_BONDED = 'Bond';
     const TYPE_BONDED_SLAVE = 'BondedChild';
     const TYPE_BRIDGED = 'Bridge';
     const TYPE_BRIDGED_SLAVE = 'BridgeChild';
