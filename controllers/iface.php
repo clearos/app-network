@@ -550,7 +550,6 @@ class Iface extends ClearOS_Controller
         $this->load->library('network/Iface_Manager');
         $this->load->library('network/Proxy');
 
-// pete
         // Handle form submit
         //-------------------
 
