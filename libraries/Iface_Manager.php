@@ -535,6 +535,9 @@ class Iface_Manager extends Engine
         $interfaces = array();
 
         foreach ($rawlist as $iface) {
+            if ($iface == 'br')
+                continue;
+
             if ($options['filter_imq'] && preg_match('/^imq/', $iface))
                 continue;
 
